@@ -1,0 +1,111 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users{
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique 
+  role Role @default(USER)
+  password String 
+  balance Float @default(0)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+
+  //Relatioins
+  referrals Referral[] @relation("UserReferrals")
+  referradBy Referral[] @relation("Referrer")
+
+
+  orders Orders[] 
+  payments Payments[]
+  products Products[] @relation("CreatedProducts")
+  
+  @@map("users")
+}
+
+
+model Referral{
+  id Int @id @default(autoincrement())
+  referal_token String @unique
+  user_id Int 
+  referal_user_id Int @default(0)
+  referals Json?
+
+  //Relatioins
+  user Users @relation("UserReferrals",fields: [user_id],references: [id])
+  referrendBy Users @relation("Referrer",fields: [referal_user_id],references: [id])
+
+  @@map("referal")
+}
+
+model Products{
+  id Int @id @default(autoincrement())
+  title String
+  body String
+  term Int
+  referral_bonus Int
+  createdAt DateTime @default(now())
+  created_user Int
+
+
+  //Relations 
+
+  creator Users @relation("CreatedProducts",fields: [created_user],references: [id])
+
+  orders Orders[]
+  products Payments[]
+
+  @@map("products")
+}
+model Orders{
+  id Int @id @default(autoincrement())
+  user_id Int
+  product_id Int
+  ordersAt DateTime @default(now())
+  isChacket Boolean @default(false)
+  chackedAt DateTime?
+
+  //Relations
+  user Users @relation(fields: [user_id],references: [id])
+  product Products @relation(fields: [product_id],references: [id])
+
+  payments Payments?
+
+  @@map("Orders")
+}
+
+model Payments{
+  id Int @id @default(autoincrement())
+  user_id Int
+  order_id Int @unique
+  product_id Int
+  photo_url String @unique
+  to_send_date DateTime @default(now())
+  to_chacked_date DateTime?
+
+  //Relations
+  user Users @relation(fields: [user_id],references: [id])
+  order Orders @relation(fields: [order_id],references: [id])
+  products Products @relation(fields: [product_id],references: [id])
+}
+
+
+
+
+
+
+
+
+
+enum Role{
+  ADMIN
+  USER
+}
