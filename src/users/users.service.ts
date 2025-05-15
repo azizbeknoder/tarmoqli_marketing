@@ -60,5 +60,35 @@ export class UsersService {
       
         return updatedUser;
       }
+      async block(id:string){
+        const userId = Number(id);
+      
+        const oldUser = await this.prisma.users.findUnique({
+          where: { id: userId },
+        });
+      
+        if (!oldUser) {
+          throw new CustomError(404, "Foydalanuvchi topilmadi");
+        }
+        const data = await this.prisma.users.update({where:{id:Number(id)},data:{isActive:false}})
+        return data
+
+      }
+      async deBlock(id:string){
+        const userId = Number(id);
+      
+        const oldUser = await this.prisma.users.findUnique({
+          where: { id: userId },
+        });
+      
+        if (!oldUser) {
+          throw new CustomError(404, "Foydalanuvchi topilmadi");
+        }
+        const data = await this.prisma.users.update({where:{id:Number(id)},data:{isActive:true}})
+        return data
+        
+      }
       
 }
+
+

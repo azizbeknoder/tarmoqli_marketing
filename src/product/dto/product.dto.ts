@@ -1,19 +1,41 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsInt, IsString, IsArray, ValidateNested, IsNumber, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
-class ProductCreateDto{
+class ProductTranslationDto {
+  @IsString()
+  language: string;  // 'en', 'ru', 'uz', 'kz', 'kg', 'tj', 'cn'
 
-    @IsString()
-    @IsNotEmpty()
-    title:string
+  @IsString()
+  title: string;
 
-    @IsString()
-    @IsNotEmpty()
-    body:string
+  @IsString()
+  body: string;
+}
 
-    @IsNumber()
-    term:number
+class ProductPriceDto {
+  @IsString()
+  currency: string; // 'USD', 'UZS', 'RUB', etc.
 
-    @IsNumber()
-    referal_number:number
+  @IsNumber()
+  @Min(0)
+  value: number;
+}
 
+export class CreateProductDto {
+  @IsInt()
+  term: number;
+
+  @IsInt()
+  referral_bonus: number;
+
+  
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductTranslationDto)
+  translations: ProductTranslationDto[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductPriceDto)
+  prices: ProductPriceDto[];
 }

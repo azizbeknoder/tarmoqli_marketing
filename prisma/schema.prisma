@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,106 +7,128 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users{
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique 
-  role Role @default(USER)
-  password String 
-  balance Float @default(0)
-  createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+model Users {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  role      Role      @default(USER)
+  password  String
+  balance   Float     @default(0)
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  isActive Boolean @default(true)
 
+  // Relations
+  referrals   Referral[]  @relation("UserReferrals")
+  referradBy  Referral[]  @relation("Referrer")
 
-  //Relatioins
-  referrals Referral[] @relation("UserReferrals")
-  referradBy Referral[] @relation("Referrer")
+  orders      Orders[]
+  payments    Payments[]
+  products    Products[]  @relation("CreatedProducts")
 
-
-  orders Orders[] 
-  payments Payments[]
-  products Products[] @relation("CreatedProducts")
-  
   @@map("users")
 }
 
-
 model Referral {
-  id               Int    @id @default(autoincrement())
-  referal_token    String @unique
-  user_id          Int
-  referal_user_id  Int?   @default(1)  // nullable qilib belgiladik
-  referals         Json?
+  id              Int     @id @default(autoincrement())
+  referal_token   String  @unique
+  user_id         Int
+  referal_user_id Int?    @default(1)
+  referals        Json?
 
   // Relations
-  user             Users @relation("UserReferrals", fields: [user_id], references: [id])
-  referrendBy      Users? @relation("Referrer", fields: [referal_user_id], references: [id])  // Optional qilib belgiladik
+  user        Users  @relation("UserReferrals", fields: [user_id], references: [id], onDelete: Cascade)
+  referrendBy Users? @relation("Referrer", fields: [referal_user_id], references: [id], onDelete: SetNull)
 
   @@map("referal")
 }
 
-
-
-model Products{
-  id Int @id @default(autoincrement())
-  title String
-  body String
-  term Int
+model Products {
+  id             Int                  @id @default(autoincrement())
+  term           Int
   referral_bonus Int
-  createdAt DateTime @default(now())
-  created_user Int
-  photo_url String
+  createdAt      DateTime             @default(now())
+  created_user   Int
+  photo_url      String
 
-  //Relations 
-
-  creator Users @relation("CreatedProducts",fields: [created_user],references: [id])
-
-  orders Orders[]
-  products Payments[]
+  // Relations
+  creator      Users                @relation("CreatedProducts", fields: [created_user], references: [id], onDelete: Cascade)
+  orders       Orders[]             // bog'liq buyurtmalar
+  payments     Payments[]           // bog'liq to‘lovlar
+  
+  translations ProductTranslation[] @relation("ProductTranslations")
+  prices       ProductPrice[]       @relation("ProductPrices")
 
   @@map("products")
 }
-model Orders{
-  id Int @id @default(autoincrement())
-  user_id Int
+
+model ProductTranslation {
+  id         Int       @id @default(autoincrement())
+  productId  Int
+  language   String
+  title      String
+  body       String
+
+  // Relation
+  product    Products  @relation("ProductTranslations", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, language])
+}
+
+model ProductPrice {
+  id        Int       @id @default(autoincrement())
+  productId Int
+  currency  String
+  value     Float
+
+  // Relation
+  product   Products  @relation("ProductPrices", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, currency])
+}
+
+model Orders {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
   product_id Int
-  ordersAt DateTime @default(now())
-  isChacket Boolean @default(false)
-  chackedAt DateTime?
+  isChecket  Boolean   @default(false)
+  ordersAt   DateTime  @default(now())
+  chackedAt  DateTime?
 
-  //Relations
-  user Users @relation(fields: [user_id],references: [id])
-  product Products @relation(fields: [product_id],references: [id])
-
+  // Relations
+  user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product  Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
   payments Payments?
 
   @@map("Orders")
 }
 
-model Payments{
-  id Int @id @default(autoincrement())
-  user_id Int
-  order_id Int @unique
-  product_id Int
-  photo_url String @unique
-  to_send_date DateTime @default(now())
+model Payments {
+  id              Int       @id @default(autoincrement())
+  user_id         Int
+  order_id        Int       @unique
+  isChecket       Boolean   @default(false)
+  product_id      Int
+  photo_url       String    @unique
+  to_send_date    DateTime  @default(now())
   to_chacked_date DateTime?
 
-  //Relations
-  user Users @relation(fields: [user_id],references: [id])
-  order Orders @relation(fields: [order_id],references: [id])
-  products Products @relation(fields: [product_id],references: [id])
+  // Relations
+  user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  order    Orders   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  products Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
 }
 
+model Card{
+  id Int @id @default(autoincrement())
+  card_seria_number String @unique
+  cauntries String
+  card_type String?
+}
 
-
-
-
-
-
-
-
-enum Role{
+enum Role {
+  SUPERADMIN
   ADMIN
   USER
 }
+

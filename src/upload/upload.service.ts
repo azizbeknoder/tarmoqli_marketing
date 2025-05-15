@@ -30,15 +30,18 @@ export class FileUploadService {
     };
   }
 
-  uploadImage(file: Express.Multer.File): string {
+  async uploadImage(file: Express.Multer.File) {
     const imagesBaseUrl = this.config.get<string>('IMAGES_BASE_URL');
-    return `${imagesBaseUrl}/images/${file.filename}`;
+    const data = await `${imagesBaseUrl}/images/${file.filename}`;
+    return data
   }
 
   deleteImage(filename: string): void {
-    const path = `${this.uploadPath}/${filename}`;
-    if (existsSync(path)) {
-      unlinkSync(path);
+    const path = `/${filename}`;
+    let url = `/uploads/${path.split('/')[5]}`
+    if (existsSync(url)) {
+      unlinkSync(url);
     }
   }
 }
+
