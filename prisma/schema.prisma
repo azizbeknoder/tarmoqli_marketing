@@ -32,19 +32,21 @@ model Users{
 }
 
 
-model Referral{
-  id Int @id @default(autoincrement())
-  referal_token String @unique
-  user_id Int 
-  referal_user_id Int @default(0)
-  referals Json?
+model Referral {
+  id               Int    @id @default(autoincrement())
+  referal_token    String @unique
+  user_id          Int
+  referal_user_id  Int?   @default(1)  // nullable qilib belgiladik
+  referals         Json?
 
-  //Relatioins
-  user Users @relation("UserReferrals",fields: [user_id],references: [id])
-  referrendBy Users @relation("Referrer",fields: [referal_user_id],references: [id])
+  // Relations
+  user             Users @relation("UserReferrals", fields: [user_id], references: [id])
+  referrendBy      Users? @relation("Referrer", fields: [referal_user_id], references: [id])  // Optional qilib belgiladik
 
   @@map("referal")
 }
+
+
 
 model Products{
   id Int @id @default(autoincrement())
@@ -54,7 +56,7 @@ model Products{
   referral_bonus Int
   createdAt DateTime @default(now())
   created_user Int
-
+  photo_url String
 
   //Relations 
 

@@ -10,7 +10,7 @@ export class AuthDtoRegister {
     
     @IsString()
     password:string
-
+    @IsOptional()
     @IsString()
     referal?:string
 }

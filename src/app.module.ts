@@ -6,14 +6,16 @@ import { PrismaModule } from './prisma/prisma.module';
 import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 
-import { TokenService } from './token/token.service';
-import { TokenModule } from './token/token.module';
+
 import { ReferalModule } from './referal/referal.module';
 import { UsersModule } from './users/users.module';
+import { ConfigModule } from '@nestjs/config';
+import { ProductModule } from './product/product.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, TokenModule, ReferalModule, UsersModule, ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), ProductModule, UploadModule ],
   controllers: [AppController],
-  providers: [AppService, MailService, TokenService],
+  providers: [AppService, MailService, ],
 })
 export class AppModule {}
