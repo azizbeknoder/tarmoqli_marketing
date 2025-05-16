@@ -2,50 +2,52 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { CustomErrorFilter } from './utils/customer-error.filter';
-import { AllExceptionsFilter } from './utils/all-exceptions.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import createSuperAdmin from './script/create-super-admin';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Global Validation Pipe (DTO uchun)
+  const configService = app.get(ConfigService); // 👈 to‘g‘ri yo‘li shu!
+
+  // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,            // DTO da yo'q atributlarni avtomatik olib tashlash
-      forbidNonWhitelisted: true, // noma'lum atribut bo'lsa xato chiqarish
-      transform: true,            // stringlarni kerakli tipga avtomatik o‘zgartirish
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
-  // Global Exception Filters
+  // Global Exception Filter
   app.useGlobalFilters(new CustomErrorFilter());
-  // Agar AllExceptionsFilter kerak bo'lsa, uni ham shu yerga qo'shing
-  // app.useGlobalFilters(new AllExceptionsFilter());
 
-  // Swagger dokumentatsiyasini sozlash
-  const config = new DocumentBuilder()
+  // Swagger
+  const swaggerConfig = new DocumentBuilder()
     .setTitle('My API')
     .setDescription('Product API with image upload')
     .setVersion('1.0')
-    // Agar JWT auth qo'shmoqchi bo'lsangiz, qo'shing:
-    // .addBearerAuth()
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // Swagger docs url: http://localhost:3000/api
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api', app, document);
 
-  // 'uploads' papkasini static qilib ulash
+  // Static 'uploads'
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
-  await createSuperAdmin()
-  const port = process.env.PORT ?? 3000;
-  await app.listen(port);
-  console.log(`Server is running on http://localhost:${port}`);
-  console.log(`Swagger docs available at http://localhost:${port}/api`);
+
+  // Superadmin yaratish
+  await createSuperAdmin();
+
+  const port = configService.get<number>('PORT') || 3000; // ✅ PORT ni olamiz
+  await app.listen(port, '0.0.0.0'); // ✅ render.com uchun to‘g‘risi
+
+  console.log(`🚀 Server running on http://localhost:${port}`);
+  console.log(`📚 Swagger at http://localhost:${port}/api`);
 }
 
 bootstrap();
