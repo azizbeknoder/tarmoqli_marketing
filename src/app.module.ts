@@ -14,9 +14,10 @@ import { ProductModule } from './product/product.module';
 import { UploadModule } from './upload/upload.module';
 import { OrdersModule } from './orders/orders.module';
 import { CardModule } from './card/card.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), ProductModule, UploadModule, OrdersModule, CardModule,  ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), ProductModule, UploadModule, OrdersModule, CardModule, AdminModule,  ],
   controllers: [AppController],
   providers: [AppService, MailService, ],
 })

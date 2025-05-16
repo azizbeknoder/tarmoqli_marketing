@@ -16,10 +16,13 @@ import {
       const user = request.user;
   
       const dbUser = await this.prisma.users.findFirst({
-        where: { email: user.email },
+        where: { email: user.email},
       });
-  
-      if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPERADMIN')) {
+      if(!dbUser || dbUser.isActive == false){
+        throw new ForbiddenException('This user blocked')
+      }
+      
+      if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPERADMIN' )) {
         throw new ForbiddenException('Faqat Admin yoki SuperAdmin kirishi mumkin');
       }
   

@@ -18,6 +18,10 @@ import {
       const dbUser = await this.prisma.users.findFirst({
         where: { email: user.email },
       });
+      
+      if(!dbUser || dbUser.isActive == false){
+        throw new ForbiddenException('This user blocked')
+      }
   
       if (!dbUser || dbUser.role !== 'SUPERADMIN') {
         throw new ForbiddenException('Faqat SuperAdmin kirishi mumkin');
