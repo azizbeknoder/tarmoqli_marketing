@@ -33,7 +33,10 @@ export class AdminService {
     return newAdmin;
   }
   async getAll(){
-    const data = await this.prisma.users.findMany()
+    const data = await this.prisma.users.findMany({where:{role:{in:['ADMIN','SUPERADMIN']}}})
+    return data
     
   }
+  
+  
 }

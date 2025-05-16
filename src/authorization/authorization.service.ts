@@ -27,7 +27,7 @@ export class AuthorizationService {
     const mailToken = await this.authService.createMailToken(body);
     await this.mailService.sendMail(email, mailToken);
 
-    return { message: 'Emailingizga tasdiqlash codesi yuborildi' };
+    return { message: 'success' };
   }
 
   async verify(token: string) {
@@ -70,7 +70,7 @@ export class AuthorizationService {
       },
     });
   
-    return createdUser;
+    return {data:createdUser,message:'success'};
   }
   
   
@@ -90,6 +90,6 @@ export class AuthorizationService {
 
     const token = await this.authService.createAccessToken({ email });
 
-    return { token };
+    return { token,message:'success' };
   }
 }

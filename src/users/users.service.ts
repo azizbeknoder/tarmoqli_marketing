@@ -26,8 +26,13 @@ export class UsersService {
         const data = await this.prisma.users.delete({where:{id:Number(id)}})
         return data
     }
-    async update(body: UserDtoUpdate, id: string) {
+    async update(body: UserDtoUpdate, id: string,req:any) {
         const userId = Number(id);
+
+        const whyUser = await this.prisma.users.findFirst({where:{email:req.email}})
+        if(!whyUser || whyUser.id != userId || whyUser.role != 'ADMIN' ){
+          throw new CustomError(404,"Siz bu uchun huquq mavjud emas")
+        }
       
         const oldUser = await this.prisma.users.findUnique({
           where: { id: userId },

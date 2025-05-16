@@ -12,11 +12,11 @@ export class CardService {
             throw new CustomError(403,"Card al ready exists")
         }
         const data = await this.prisma.card.create({data:body})
-        return data
+        return {data,message:"success"}
     }
     async getAllCard(){
         const data = await this.prisma.card.findMany()
-        return data
+        return {data,message:"success"}
     }
     async deleteCard(id:string){
         const oldCard = await this.prisma.card.findMany({where:{id:Number(id)}})
@@ -24,14 +24,14 @@ export class CardService {
             throw new CustomError(404,"card not found")
         }
         const data = await this.prisma.card.delete({where:{id:Number(id)}})
-        return data
+        return{ data,message:"success"}
     }
     async getTypeCard(card_type:string){
         const data = await this.prisma.card.findMany({where:{card_type:card_type}})
-        return data
+        return {data,message:"success"}
     }
     async getCountriesCard(countires:string){
         const data = await this.prisma.card.findMany({where:{cauntries:countires}})
-        return data
+        return {data,message:"success"}
     }
 }

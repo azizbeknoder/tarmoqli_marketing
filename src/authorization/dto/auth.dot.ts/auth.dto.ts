@@ -21,10 +21,12 @@ export class AuthDtoRegister {
     referal?:string
 }
 export class AuthDtoLogin{
+    @ApiProperty({example:"example@gmail.com",description:"Foydalanuvchi emaili"})
     @IsString()
     @IsEmail()
     email:string
 
+    @ApiProperty({example:"12345678", description:"Minimum 8 ta belgi maximum 22 ta"})
     @IsString()
     @MinLength(8)
     @MaxLength(22)
