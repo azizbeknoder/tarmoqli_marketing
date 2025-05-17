@@ -1,6 +1,6 @@
-import { IsInt, IsString, IsArray, ValidateNested, IsNumber, Min } from 'class-validator';
+import { IsInt, IsString, IsArray, ValidateNested, IsNumber, Min, IsOptional, IsUrl } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 class ProductTranslationDto {
   @ApiProperty({example:"'en', 'ru', 'uz', 'kz', 'kg', 'tj', 'cn'",description:"Shu mavjud tillar kiritilishi mumkun"})
@@ -36,16 +36,53 @@ export class CreateProductDto {
   @IsInt()
   referral_bonus: number;
 
+  // Yangi qo‘shilgan maydon: rasm URL
+  @ApiProperty({ example: 'http://localhost:3000/uploads/filename.jpg', description: 'Mahsulot rasmi URL manzili' })
+  @IsString()
+  photo_url: string;
+
   @ApiProperty({ type: [ProductTranslationDto] })
-@IsArray()
-@ValidateNested({ each: true })
-@Type(() => ProductTranslationDto)
-translations: ProductTranslationDto[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductTranslationDto)
+  translations: ProductTranslationDto[];
 
-@ApiProperty({ type: [ProductPriceDto] })
-@IsArray()
-@ValidateNested({ each: true })
-@Type(() => ProductPriceDto)
-prices: ProductPriceDto[];
-
+  @ApiProperty({ type: [ProductPriceDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductPriceDto)
+  prices: ProductPriceDto[];
 }
+
+export class UpdateProductDto {
+  @ApiPropertyOptional({ example: 30, description: "Mahsulot muddati" })
+  @IsInt()
+  @IsOptional()
+  term?: number;
+
+  @ApiPropertyOptional({ example: 20, description: "Referal uchun necha foiz bonus berishi" })
+  @IsInt()
+  @IsOptional()
+  referral_bonus?: number;
+
+  // Photo URL ham ixtiyoriy bo‘ladi update uchun
+  @ApiPropertyOptional({ example: 'http://localhost:3000/uploads/filename.jpg', description: 'Mahsulot rasmi URL manzili' })
+  @IsString()
+  @IsOptional()
+  photo_url?: string;
+
+  @ApiPropertyOptional({ type: [ProductTranslationDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductTranslationDto)
+  @IsOptional()
+  translations?: ProductTranslationDto[];
+
+  @ApiPropertyOptional({ type: [ProductPriceDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductPriceDto)
+  @IsOptional()
+  prices?: ProductPriceDto[];
+}
+

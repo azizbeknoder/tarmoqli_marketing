@@ -90,6 +90,6 @@ export class AuthorizationService {
 
     const token = await this.authService.createAccessToken({ email });
 
-    return { token,message:'success' };
+    return { token,message:'success',data:{user} };
   }
 }

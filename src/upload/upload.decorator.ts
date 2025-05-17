@@ -1,21 +1,24 @@
 import { applyDecorators, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from './upload.service';
 import { ApiConsumes, ApiBody } from '@nestjs/swagger';
 
-export function FileUpload(fieldname: string) {
+export function FileUpload(fieldname: string, maxCount = 10) {
   const config = FileUploadService.getMulterConfig(fieldname);
 
   return applyDecorators(
-    UseInterceptors(FileInterceptor(fieldname, config)),
+    UseInterceptors(FilesInterceptor(fieldname, maxCount, config)),
     ApiConsumes('multipart/form-data'),
     ApiBody({
       schema: {
         type: 'object',
         properties: {
           [fieldname]: {
-            type: 'string',
-            format: 'binary',
+            type: 'array',
+            items: {
+              type: 'string',
+              format: 'binary',
+            },
           },
         },
       },

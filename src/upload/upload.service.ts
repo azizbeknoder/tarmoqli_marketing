@@ -32,7 +32,7 @@ export class FileUploadService {
 
   async uploadImage(file: Express.Multer.File) {
     const imagesBaseUrl = this.config.get<string>('IMAGES_BASE_URL');
-    const data = await `${imagesBaseUrl}/images/${file.filename}`;
+    const data = await `${imagesBaseUrl}/images/${file[0].path}`;
     return data
   }
 
@@ -44,4 +44,5 @@ export class FileUploadService {
     }
   }
 }
+
 

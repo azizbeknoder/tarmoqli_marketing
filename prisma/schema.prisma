@@ -25,6 +25,9 @@ model Users {
   orders      Orders[]
   payments    Payments[]
   products    Products[]  @relation("CreatedProducts")
+  productTwos ProductTwo[] @relation("UserProductTwos") // <-- buni qo‘shish kerak
+
+  
 
   @@map("users")
 }
@@ -132,3 +135,51 @@ enum Role {
   USER
 }
 
+model ProductTwo {
+  id           Int                      @id @default(autoincrement())
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  creatorId    Int
+
+  // Relations
+  creator      Users                    @relation("UserProductTwos", fields: [creatorId], references: [id], onDelete: Cascade)
+  photos       ProductTwoPhoto[]        @relation("ProductTwoPhotos")
+  translations ProductTwoTranslation[]  @relation("ProductTwoTranslations")
+  prices       ProductTwoPrice[]        @relation("ProductTwoPrices")
+
+  @@map("product_two")
+}
+model ProductTwoTranslation {
+  id          Int        @id @default(autoincrement())
+  productId   Int
+  language    String
+  title       String
+  description String
+
+  product     ProductTwo @relation("ProductTwoTranslations", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, language])
+  @@map("product_two_translation")
+}
+
+model ProductTwoPrice {
+  id        Int        @id @default(autoincrement())
+  productId Int
+  currency  String
+  value     Float
+
+  product   ProductTwo @relation("ProductTwoPrices", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, currency])
+  @@map("product_two_price")
+}
+
+model ProductTwoPhoto {
+  id         Int        @id @default(autoincrement())
+  productId  Int
+  url        String
+
+  product    ProductTwo @relation("ProductTwoPhotos", fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_two_photo")
+}

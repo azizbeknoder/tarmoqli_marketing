@@ -9,23 +9,25 @@ import createSuperAdmin from './script/create-super-admin';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
+  // NestJS ilovasini NestExpressApplication tipida yaratamiz (statik fayllar uchun kerak)
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  const configService = app.get(ConfigService); // 👈 to‘g‘ri yo‘li shu!
+  // ConfigService ni olish uchun
+  const configService = app.get(ConfigService);
 
-  // Global Validation Pipe
+  // Global ValidationPipe: kiruvchi ma'lumotlarni validatsiya qiladi
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
+      whitelist: true, // faqat DTO da belgilangan propertylarni ruxsat beradi
+      forbidNonWhitelisted: true, // ruxsat etilmagan property bo'lsa xato beradi
+      transform: true, // kiruvchi ma'lumotlarni DTO klassiga o'zgartiradi
     }),
   );
 
-  // Global Exception Filter
+  // Global Exception Filter: xatolarni global tutib, mos javob beradi
   app.useGlobalFilters(new CustomErrorFilter());
 
-  // Swagger
+  // Swagger sozlamalari
   const swaggerConfig = new DocumentBuilder()
     .setTitle('My API')
     .setDescription('Product API with image upload')
@@ -33,18 +35,23 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('/api', app, document);
 
-  // Static 'uploads'
+  // Statik fayllar uchun `/uploads` papkasini xizmatga qo'yish
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
+    prefix: '/uploads/', // URL manzil oldidan /uploads/ prefiksi qo'shiladi
   });
 
-  // Superadmin yaratish
+  // Dastlabki superadmin yaratish (agar kerak bo'lsa)
   await createSuperAdmin();
 
-  const port = configService.get<number>('PORT') || 3000; // ✅ PORT ni olamiz
-  await app.listen(port, '0.0.0.0'); // ✅ render.com uchun to‘g‘risi
+  // PORT ni olish (env dan yoki default 3000)
+  const port = configService.get<number>('PORT') || 3000;
+
+  app.enableCors(); // CORS ni yoqish
+
+  // Serverni ishga tushirish
+  await app.listen(port, '0.0.0.0'); // '0.0.0.0' umumiy IPda ishga tushirish (render.com kabi platformalar uchun)
 
   console.log(`🚀 Server running on http://localhost:${port}`);
   console.log(`📚 Swagger at http://localhost:${port}/api`);
