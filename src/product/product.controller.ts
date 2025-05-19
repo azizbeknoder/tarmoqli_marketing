@@ -17,8 +17,7 @@ export class ProductController {
     @Body() body: CreateProductDto,
     @Req() req: any,
   ) {
-    console.log(body);
-    
+
     const data = await this.service.addProduct(body, req.user);
     return data;
   }
