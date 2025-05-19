@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { CreateCardDto } from 'src/card/dto/card.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import CustomError from 'src/utils/custom-error';
+import { CreatedOrderDto } from './dto/orders.dto';
 
 @Injectable()
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
-  async createOrder(body: any, req: any) {
+  async createOrder(body:CreatedOrderDto , req: any) {
     const oldUser = await this.prisma.users.findFirst({
-      where: { email: req.email },
+      where: { email: req.user.email },
     });
     if (!oldUser) {
       throw new CustomError(404, 'User not found');
     }
 
     const { id: userId } = oldUser;
-    const productId = Number(body.product_id);
+    const productId = body.product_id;
     const product = await this.prisma.products.findUnique({
       where: { id: productId },
     });

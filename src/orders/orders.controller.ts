@@ -3,6 +3,7 @@ import { OrdersService } from './orders.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CreatedOrderDto } from './dto/orders.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -11,7 +12,7 @@ export class OrdersController {
     @ApiOperation({summary:"Yani order yaratish uchun."})
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard)
-    async createOrder(@Body() body:any, @Req() req:Request){
+    async createOrder(@Body() body:CreatedOrderDto, @Req() req:Request){
         const data = await this.service.createOrder(body,req)
         return data
     }
