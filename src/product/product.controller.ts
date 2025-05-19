@@ -26,7 +26,7 @@ export class ProductController {
   @Get()
   @ApiOperation({ summary: "Barcha productlarni olish uchun" })
   @ApiResponse({ status: 200, description: 'success' })
-  @UseGuards(AuthGuard)
+//   @UseGuards(AuthGuard)
   async getAll() {
     const data = await this.service.getAll();
     return data;
@@ -35,7 +35,7 @@ export class ProductController {
   @Get(':id')
   @ApiOperation({ summary: "Productni id si bo'yicha olish" })
   @ApiResponse({ status: 200, description: 'success' })
-  @UseGuards(AuthGuard)
+//   @UseGuards(AuthGuard)
   async getOne(@Param('id') id: string) {
     const data = await this.service.getOne(id);
     return data;
