@@ -8,28 +8,36 @@ datasource db {
 }
 
 model Users {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  role      Role      @default(USER)
-  password  String
-  balance   Float     @default(0)
-  createdAt DateTime  @default(now())
-  updateAt  DateTime  @updatedAt
-  isActive Boolean @default(true)
+  id         Int            @id @default(autoincrement())
+  name       String
+  email      String         @unique
+  role       Role           @default(USER)
+  password   String
+  createdAt  DateTime       @default(now())
+  updateAt   DateTime       @updatedAt
+  isActive   Boolean        @default(true)
 
   // Relations
-  referrals   Referral[]  @relation("UserReferrals")
-  referradBy  Referral[]  @relation("Referrer")
+  referrals     Referral[]     @relation("UserReferrals")
+  referradBy    Referral[]     @relation("Referrer")
 
-  orders      Orders[]
-  payments    Payments[]
-  products    Products[]  @relation("CreatedProducts")
-  productTwos ProductTwo[] @relation("UserProductTwos") // <-- buni qo‘shish kerak
-
-  
+  orders        Orders[]
+  payments      Payments[]
+  products      Products[]     @relation("CreatedProducts")
+  balances      UserBalance[]
 
   @@map("users")
+}
+
+model UserBalance {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  currency  String
+  amount    Float   @default(0)
+
+  user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, currency])
 }
 
 model Referral {
@@ -56,9 +64,7 @@ model Products {
 
   // Relations
   creator      Users                @relation("CreatedProducts", fields: [created_user], references: [id], onDelete: Cascade)
-  orders       Orders[]             // bog'liq buyurtmalar
-  payments     Payments[]           // bog'liq to‘lovlar
-  
+  orders       Orders[]             
   translations ProductTranslation[] @relation("ProductTranslations")
   prices       ProductPrice[]       @relation("ProductPrices")
 
@@ -72,7 +78,6 @@ model ProductTranslation {
   title      String
   body       String
 
-  // Relation
   product    Products  @relation("ProductTranslations", fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, language])
@@ -84,7 +89,6 @@ model ProductPrice {
   currency  String
   value     Float
 
-  // Relation
   product   Products  @relation("ProductPrices", fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, currency])
@@ -101,7 +105,6 @@ model Orders {
   // Relations
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   product  Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  payments Payments?
 
   @@map("Orders")
 }
@@ -109,25 +112,25 @@ model Orders {
 model Payments {
   id              Int       @id @default(autoincrement())
   user_id         Int
-  order_id        Int       @unique
-  isChecket       Boolean   @default(false)
-  product_id      Int
-  photo_url       String    @unique
+  status          PaymentStatus @default(PENDING)
+  photo_url       String?    @unique
   to_send_date    DateTime  @default(now())
   to_chacked_date DateTime?
+  currency        String    // <-- Qo‘shildi
 
   // Relations
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  order    Orders   @relation(fields: [order_id], references: [id], onDelete: Cascade)
-  products Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
+ 
 }
 
-model Card{
-  id Int @id @default(autoincrement())
-  card_seria_number String @unique
-  cauntries String
-  card_type String?
+model Card {
+  id                 Int     @id @default(autoincrement())
+  card_seria_number String  @unique
+  cauntries          String
+  card_type          String?
 }
+
+
 
 enum Role {
   SUPERADMIN
@@ -135,51 +138,8 @@ enum Role {
   USER
 }
 
-model ProductTwo {
-  id           Int                      @id @default(autoincrement())
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  creatorId    Int
-
-  // Relations
-  creator      Users                    @relation("UserProductTwos", fields: [creatorId], references: [id], onDelete: Cascade)
-  photos       ProductTwoPhoto[]        @relation("ProductTwoPhotos")
-  translations ProductTwoTranslation[]  @relation("ProductTwoTranslations")
-  prices       ProductTwoPrice[]        @relation("ProductTwoPrices")
-
-  @@map("product_two")
-}
-model ProductTwoTranslation {
-  id          Int        @id @default(autoincrement())
-  productId   Int
-  language    String
-  title       String
-  description String
-
-  product     ProductTwo @relation("ProductTwoTranslations", fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([productId, language])
-  @@map("product_two_translation")
-}
-
-model ProductTwoPrice {
-  id        Int        @id @default(autoincrement())
-  productId Int
-  currency  String
-  value     Float
-
-  product   ProductTwo @relation("ProductTwoPrices", fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([productId, currency])
-  @@map("product_two_price")
-}
-
-model ProductTwoPhoto {
-  id         Int        @id @default(autoincrement())
-  productId  Int
-  url        String
-
-  product    ProductTwo @relation("ProductTwoPhotos", fields: [productId], references: [id], onDelete: Cascade)
-
-  @@map("product_two_photo")
+enum PaymentStatus{
+  PENDING
+  CANCELLED
+  SUCCESS
 }

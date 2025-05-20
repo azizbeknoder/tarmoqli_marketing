@@ -15,10 +15,14 @@ import { UploadModule } from './upload/upload.module';
 import { OrdersModule } from './orders/orders.module';
 import { CardModule } from './card/card.module';
 import { AdminModule } from './admin/admin.module';
+import { NotificationGateway } from './gateway/notification.geteway';
+import { PaymentsModule } from './payments/payments.module';
+import { PaymentGateway } from './payments/payments.gateway';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), ProductModule, UploadModule, OrdersModule, CardModule, AdminModule,  ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), ProductModule, UploadModule, OrdersModule, CardModule, AdminModule, PaymentsModule,  ],
   controllers: [AppController],
-  providers: [AppService, MailService, ],
+  providers: [AppService, MailService, NotificationGateway,PaymentGateway],
+  exports:[NotificationGateway]
 })
 export class AppModule {}

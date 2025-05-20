@@ -32,7 +32,10 @@ async function bootstrap() {
     .setTitle('My API')
     .setDescription('Product API with image upload')
     .setVersion('1.0')
-    .build();
+    .addBearerAuth()
+    .build()
+    
+    
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/api', app, document);

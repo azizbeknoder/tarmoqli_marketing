@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { UserDtoUpdate } from './dto/user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { SuperAdminGuard } from 'src/auth/super-admin.guard';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminGuard } from 'src/auth/admin.guard';
 
 @Controller('users')
@@ -12,6 +12,7 @@ export class UsersController {
     }
     @Get('')
     @ApiOperation({summary:"Barcha userlarni olish uchun"})
+    @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard,AdminGuard)
     async findAll(){
@@ -20,6 +21,7 @@ export class UsersController {
     }
     @Get(':id')
     @ApiOperation({summary:"Bitta userni olish /id bilan"})
+    @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard)
     async findOne(@Param('id') id:string){
@@ -28,6 +30,7 @@ export class UsersController {
     }
     @Delete(':id')
     @ApiOperation({summary:"Bitta userni o'chirish /id bilan"})
+    @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard,AdminGuard)
     async deleteOne(@Param('id') id:string){
@@ -36,6 +39,7 @@ export class UsersController {
     }
     @Put(':id')
     @ApiOperation({summary:"Bitta userni o'chirish /id bilan"})
+    @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard)
     async update(@Body() body:UserDtoUpdate, @Param('id') id:string, @Req() request:any){
@@ -45,6 +49,7 @@ export class UsersController {
     }
     @Get("block/:id")
     @ApiOperation({summary:"Userni block qilish uchun block/id bilan"})
+    @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard,SuperAdminGuard)
     async blcok(@Param('id') id:string){
@@ -54,6 +59,7 @@ export class UsersController {
     }
     @Get("deblock/:id")
     @ApiOperation({summary:"Userni blockdan ochish uchun block/id bilan"})
+    @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     async deBlock(@Param('id') id:string){
         const data = await this.service.deBlock(id)

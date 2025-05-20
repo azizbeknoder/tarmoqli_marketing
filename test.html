@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment WebSocket Test</title>
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #log { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 400px; }
+  </style>
+</head>
+<body>
+  <h1>Payment WebSocket Test</h1>
+
+  <label>User ID:</label>
+  <input type="number" id="userId" placeholder="Enter your user ID" value="1" />
+
+  <button id="connectBtn">Connect</button>
+
+  <div id="log"></div>
+
+  <script>
+    let socket;
+    const logEl = document.getElementById('log');
+    const userIdInput = document.getElementById('userId');
+    const connectBtn = document.getElementById('connectBtn');
+
+    function log(msg) {
+      const p = document.createElement('p');
+      p.textContent = msg;
+      logEl.appendChild(p);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    connectBtn.onclick = () => {
+      if (socket && socket.connected) {
+        log('Already connected');
+        return;
+      }
+
+      const userId = parseInt(userIdInput.value);
+      if (!userId) {
+        alert('Please enter a valid User ID');
+        return;
+      }
+
+      socket = io('http://localhost:3000', {
+        transports: ['websocket'],
+      });
+
+      socket.on('connect', () => {
+        log(`Connected with socket ID: ${socket.id}`);
+        socket.emit('join', userId);
+        log(`Joined room for user-${userId}`);
+      });
+
+      socket.on('disconnect', () => {
+        log('Disconnected from server');
+      });
+
+      socket.on('payment-created', (data) => {
+        log(`[payment-created] Payment ID: ${data.paymentId}, Status: ${data.status}`);
+      });
+
+      socket.on('payment-success', (data) => {
+        log(`[payment-success] Payment ID: ${data.paymentId}, Status: ${data.status}, Amount Added: ${data.amountAdded}`);
+      });
+
+      socket.on('payment-cancelled', (data) => {
+        log(`[payment-cancelled] Payment ID: ${data.paymentId}, Status: ${data.status}`);
+      });
+
+      socket.on('connect_error', (err) => {
+        log(`Connection error: ${err.message}`);
+      });
+    };
+  </script>
+</body>
+</html>
