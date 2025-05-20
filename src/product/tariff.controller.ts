@@ -1,20 +1,20 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import { TariffService } from './tariff.service';
+import { CreatedTariffDto, UpdateTariffDto } from './dto/tariff.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminGuard } from 'src/auth/admin.guard';
 
-@Controller('product')
-export class ProductController {
-  constructor(private readonly service: ProductService) {}
+@Controller('tariff')
+export class TariffController {
+  constructor(private readonly service: TariffService) {}
 
   @Post('add')
-  @ApiOperation({ summary: "Product qo'shish uchun" })
+  @ApiOperation({ summary: "Tariff qo'shish uchun" })
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(AuthGuard, AdminGuard)
-  async productAdd(
-    @Body() body: CreateProductDto,
+  async tarifAdd(
+    @Body() body: CreatedTariffDto,
     @Req() req: any,
   ) {
 
@@ -23,7 +23,7 @@ export class ProductController {
   }
 
   @Get()
-  @ApiOperation({ summary: "Barcha productlarni olish uchun" })
+  @ApiOperation({ summary: "Barcha tariflarni olish uchun" })
   @ApiResponse({ status: 200, description: 'success' })
 //   @UseGuards(AuthGuard)
   async getAll() {
@@ -31,8 +31,9 @@ export class ProductController {
     return data;
   }
 
+
   @Get(':id')
-  @ApiOperation({ summary: "Productni id si bo'yicha olish" })
+  @ApiOperation({ summary: "Tarifni id si bo'yicha olish" })
   @ApiResponse({ status: 200, description: 'success' })
 //   @UseGuards(AuthGuard)
   async getOne(@Param('id') id: string) {
@@ -41,7 +42,7 @@ export class ProductController {
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "Product o'chirish" })
+  @ApiOperation({ summary: "Tarif o'chirish" })
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(AuthGuard, AdminGuard)
   async delete(@Param('id') id: string) {
@@ -50,12 +51,12 @@ export class ProductController {
   }
 
   @Put('update/:id')
-  @ApiOperation({ summary: "Productni yangilash uchun" })
+  @ApiOperation({ summary: "Tarifni yangilash uchun" })
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(AuthGuard, AdminGuard)
-  async productUpdate(
+  async tarifUpdate(
     @Param('id') id: string,
-    @Body() body: UpdateProductDto,
+    @Body() body: UpdateTariffDto,
     @Req() req: any,
   ) {
     const productId = parseInt(id, 10);

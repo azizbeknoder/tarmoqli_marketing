@@ -18,7 +18,7 @@ export class OrdersService {
 
     const { id: userId } = oldUser;
     const productId = body.product_id;
-    const product = await this.prisma.products.findUnique({
+    const product = await this.prisma.tariff.findUnique({
       where: { id: productId },
     });
     if (!product) {
@@ -28,7 +28,7 @@ export class OrdersService {
     const data = await this.prisma.orders.create({
       data: {
         user_id: userId,
-        product_id: productId,
+        tariff_id: productId,
       },
       include: {
         user: {
@@ -40,7 +40,7 @@ export class OrdersService {
             isActive: true,
           },
         },
-        product: {
+        tariff: {
           select: {
             id: true,
             term: true,
@@ -61,7 +61,7 @@ export class OrdersService {
         user: {
           select: { id: true, name: true, email: true, role: true },
         },
-        product: {
+        tariff: {
           select: { id: true, term: true, referral_bonus: true, photo_url: true },
         },
       },
@@ -76,7 +76,7 @@ export class OrdersService {
       where: { id: orderId },
       include: {
         user: true,
-        product: true,
+        tariff: true,
       },
     });
     if (!order) {
@@ -105,7 +105,7 @@ export class OrdersService {
       },
       include: {
         user: true,
-        product: true,
+        tariff: true,
       },
     });
 

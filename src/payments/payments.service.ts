@@ -35,7 +35,7 @@ export class PaymentService {
     // To'lovni SUCCESS qilib yangilash
     const payment = await this.prisma.payments.update({
       where: { id: paymentId },
-      data: { status: PaymentStatus.SUCCESS, to_chacked_date: new Date() },
+      data: { status: PaymentStatus.SUCCESS, to_checked_date: new Date() },
       include: { user: true },
     });
 
@@ -57,7 +57,7 @@ export class PaymentService {
   async cancelPayment(paymentId: number) {
     const payment = await this.prisma.payments.update({
       where: { id: paymentId },
-      data: { status: PaymentStatus.CANCELLED, to_chacked_date: new Date() },
+      data: { status: PaymentStatus.CANCELLED, to_checked_date: new Date() },
     });
 
     this.paymentGateway.sendToUser(payment.user_id, 'payment-cancelled', {

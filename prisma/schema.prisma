@@ -17,13 +17,12 @@ model Users {
   updateAt   DateTime       @updatedAt
   isActive   Boolean        @default(true)
 
-  // Relations
   referrals     Referral[]     @relation("UserReferrals")
   referradBy    Referral[]     @relation("Referrer")
 
   orders        Orders[]
   payments      Payments[]
-  products      Products[]     @relation("CreatedProducts")
+  products      Tariff[]       @relation("CreatedProducts")
   balances      UserBalance[]
 
   @@map("users")
@@ -47,14 +46,13 @@ model Referral {
   referal_user_id Int?    @default(1)
   referals        Json?
 
-  // Relations
   user        Users  @relation("UserReferrals", fields: [user_id], references: [id], onDelete: Cascade)
   referrendBy Users? @relation("Referrer", fields: [referal_user_id], references: [id], onDelete: SetNull)
 
   @@map("referal")
 }
 
-model Products {
+model Tariff {
   id             Int                  @id @default(autoincrement())
   term           Int
   referral_bonus Int
@@ -62,75 +60,75 @@ model Products {
   created_user   Int
   photo_url      String
 
-  // Relations
   creator      Users                @relation("CreatedProducts", fields: [created_user], references: [id], onDelete: Cascade)
   orders       Orders[]             
-  translations ProductTranslation[] @relation("ProductTranslations")
-  prices       ProductPrice[]       @relation("ProductPrices")
+  translations ProductTranslation[] @relation("TariffTranslations")
+  prices       ProductPrice[]       @relation("TariffPrices")
 
   @@map("products")
 }
 
 model ProductTranslation {
   id         Int       @id @default(autoincrement())
-  productId  Int
+  tariff_id  Int
   language   String
   title      String
   body       String
 
-  product    Products  @relation("ProductTranslations", fields: [productId], references: [id], onDelete: Cascade)
+  tariff     Tariff    @relation("TariffTranslations", fields: [tariff_id], references: [id], onDelete: Cascade)
 
-  @@unique([productId, language])
+  @@unique([tariff_id, language])
+  @@map("product_translations")
 }
 
 model ProductPrice {
   id        Int       @id @default(autoincrement())
-  productId Int
+  tariff_id Int
   currency  String
   value     Float
 
-  product   Products  @relation("ProductPrices", fields: [productId], references: [id], onDelete: Cascade)
+  tariff    Tariff    @relation("TariffPrices", fields: [tariff_id], references: [id], onDelete: Cascade)
 
-  @@unique([productId, currency])
+  @@unique([tariff_id, currency])
+  @@map("product_prices")
 }
 
 model Orders {
   id         Int       @id @default(autoincrement())
   user_id    Int
-  product_id Int
-  isChecket  Boolean   @default(false)
-  ordersAt   DateTime  @default(now())
-  chackedAt  DateTime?
+  tariff_id  Int
+  isChecked  Boolean   @default(false)
+  orderedAt  DateTime  @default(now())
+  checkedAt  DateTime?
 
-  // Relations
-  user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  product  Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  user     Users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  tariff   Tariff  @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
 
-  @@map("Orders")
+  @@map("orders")
 }
 
 model Payments {
-  id              Int       @id @default(autoincrement())
+  id              Int          @id @default(autoincrement())
   user_id         Int
   status          PaymentStatus @default(PENDING)
-  photo_url       String?    @unique
-  to_send_date    DateTime  @default(now())
-  to_chacked_date DateTime?
-  currency        String    // <-- Qo‘shildi
+  photo_url       String?      @unique
+  to_send_date    DateTime     @default(now())
+  to_checked_date DateTime?
+  currency        String
 
-  // Relations
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
- 
+
+  @@map("payments")
 }
 
 model Card {
   id                 Int     @id @default(autoincrement())
-  card_seria_number String  @unique
-  cauntries          String
+  card_seria_number  String  @unique
+  countries          String
   card_type          String?
+  
+  @@map("cards")
 }
-
-
 
 enum Role {
   SUPERADMIN
@@ -138,7 +136,7 @@ enum Role {
   USER
 }
 
-enum PaymentStatus{
+enum PaymentStatus {
   PENDING
   CANCELLED
   SUCCESS

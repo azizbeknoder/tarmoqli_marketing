@@ -31,7 +31,7 @@ export class CardService {
         return {data,message:"success"}
     }
     async getCountriesCard(countires:string){
-        const data = await this.prisma.card.findMany({where:{cauntries:countires}})
+        const data = await this.prisma.card.findMany({where:{countries:countires}})
         return {data,message:"success"}
     }
 }

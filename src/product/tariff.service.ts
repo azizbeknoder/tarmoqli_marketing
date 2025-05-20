@@ -1,27 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import { CreatedTariffDto, UpdateTariffDto } from './dto/tariff.dto';
 import CustomError from 'src/utils/custom-error';
 
 @Injectable()
-export class ProductService {
+export class TariffService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async addProduct(dto: CreateProductDto, user: any) {
-
-    // Userni olish
+  async addProduct(dto: CreatedTariffDto, user: any) {
     const oldUser = await this.prisma.users.findFirst({ where: { email: user.email } });
     if (!oldUser) {
       throw new CustomError(404, 'User topilmadi');
     }
     const user_id = oldUser.id;
-    // Mahsulot yaratish
-    const data = await this.prisma.products.create({
-      
+
+    const data = await this.prisma.tariff.create({
       data: {
         term: dto.term,
         referral_bonus: dto.referral_bonus,
-        photo_url: dto.photo_url,  // Front-enddan keladi
+        photo_url: dto.photo_url,
         created_user: user_id,
         translations: {
           create: dto.translations.map(t => ({
@@ -47,7 +44,7 @@ export class ProductService {
   }
 
   async getAll() {
-    const result = await this.prisma.products.findMany({
+    const result = await this.prisma.tariff.findMany({
       include: {
         translations: true,
         prices: true,
@@ -57,7 +54,7 @@ export class ProductService {
   }
 
   async getOne(id: string) {
-    const result = await this.prisma.products.findUnique({
+    const result = await this.prisma.tariff.findUnique({
       where: { id: Number(id) },
       include: {
         translations: true,
@@ -69,31 +66,26 @@ export class ProductService {
   }
 
   async delete(id: string) {
-    const oldProduct = await this.prisma.products.findUnique({ where: { id: Number(id) } });
+    const oldProduct = await this.prisma.tariff.findUnique({ where: { id: Number(id) } });
     if (!oldProduct) {
       throw new CustomError(404, 'Bunday qiymat topilmadi');
     }
 
-    // Agar siz rasmni serverdan o'chirishni xohlasangiz,
-    // upload service yordamida shu yerda o'chirishni qo'shishingiz mumkin.
-
-    const result = await this.prisma.products.delete({ where: { id: Number(id) } });
+    const result = await this.prisma.tariff.delete({ where: { id: Number(id) } });
     return result;
   }
 
   async updateProduct(
     productId: number,
-    dto: UpdateProductDto,
+    dto: UpdateTariffDto,
     user: any,
   ) {
-    // Userni olish
     const oldUser = await this.prisma.users.findFirst({ where: { email: user.email } });
     if (!oldUser) {
       throw new CustomError(404, 'User topilmadi');
     }
     const user_id = oldUser.id;
 
-    // Yangilash uchun obekt tayyorlash
     const updateData: any = {
       created_user: user_id,
     };
@@ -111,12 +103,10 @@ export class ProductService {
     }
 
     if (dto.translations) {
-      // Avval translationlarni o'chirish
       await this.prisma.productTranslation.deleteMany({
-        where: { productId: productId },
+        where: { tariff_id: productId },
       });
 
-      // Keyin yangilarini yaratish
       updateData.translations = {
         create: dto.translations.map(t => ({
           language: t.language,
@@ -127,12 +117,10 @@ export class ProductService {
     }
 
     if (dto.prices) {
-      // Avval narxlarni o'chirish
       await this.prisma.productPrice.deleteMany({
-        where: { productId: productId },
+        where: { tariff_id: productId },
       });
 
-      // Keyin yangilarini yaratish
       updateData.prices = {
         create: dto.prices.map(p => ({
           currency: p.currency,
@@ -141,8 +129,7 @@ export class ProductService {
       };
     }
 
-    // Productni yangilash
-    const updatedProduct = await this.prisma.products.update({
+    const updatedProduct = await this.prisma.tariff.update({
       where: { id: productId },
       data: updateData,
       include: {
@@ -154,4 +141,3 @@ export class ProductService {
     return updatedProduct;
   }
 }
-

@@ -9,7 +9,7 @@ export class CreateCardDto{
 
     @ApiProperty({example:"uzb",description:"karta raqam qaysi davlatga tegishli ekanligi aniqlanadi ru uz eng orqali"})
     @IsString()
-    cauntries:string
+    countries:string
 
     @ApiProperty({example:"click",description:"Bu yerga kiritish ixtiyoriy lekin masalan kiritib qo'yish mumkun click payme yoki payeer"})
     @IsOptional()
