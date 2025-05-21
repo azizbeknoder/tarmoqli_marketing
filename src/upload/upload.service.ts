@@ -7,7 +7,9 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class FileUploadService {
   private readonly uploadPath = './uploads';
-  constructor(private config:ConfigService){}
+
+  constructor(private config: ConfigService) {}
+
   static getMulterConfig(fieldname: string) {
     return {
       storage: diskStorage({
@@ -25,24 +27,20 @@ export class FileUploadService {
         cb(null, true);
       },
       limits: {
-        fileSize: 5 * 1024 * 1024, // 2MB
+        fileSize: 5 * 1024 * 1024, // 5MB
       },
     };
   }
 
-  async uploadImage(file: Express.Multer.File) {
-    const imagesBaseUrl = this.config.get<string>('IMAGES_BASE_URL');
-    const data = await `${imagesBaseUrl}/images/${file[0].path}`;
-    return data
+  getFileUrl(filename: string): string {
+    const baseUrl = this.config.get<string>('IMAGES_BASE_URL') || 'http://localhost:3000';
+    return `${baseUrl}/uploads/${filename}`;
   }
 
   deleteImage(filename: string): void {
-    const path = `/${filename}`;
-    let url = `/uploads/${path.split('/')[5]}`
-    if (existsSync(url)) {
-      unlinkSync(url);
+    const filePath = `${this.uploadPath}/${filename}`;
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
     }
   }
 }
-
-

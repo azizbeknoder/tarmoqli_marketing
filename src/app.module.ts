@@ -10,7 +10,7 @@ import { MailModule } from './mail/mail.module';
 import { ReferalModule } from './referal/referal.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import {  TariffModule } from './product/tariff.module';
+import {  TariffModule } from './tariff/tariff.module';
 import { UploadModule } from './upload/upload.module';
 import { OrdersModule } from './orders/orders.module';
 import { CardModule } from './card/card.module';
@@ -18,9 +18,10 @@ import { AdminModule } from './admin/admin.module';
 import { NotificationGateway } from './gateway/notification.geteway';
 import { PaymentsModule } from './payments/payments.module';
 import { PaymentGateway } from './payments/payments.gateway';
+import { ProductModule } from './product/product.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, PaymentsModule,  ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, PaymentsModule, ProductModule,  ],
   controllers: [AppController],
   providers: [AppService, MailService, NotificationGateway,PaymentGateway],
   exports:[NotificationGateway]

@@ -31,47 +31,68 @@ export class AuthorizationService {
   }
 
   async verify(token: string) {
-    // Token orqali foydalanuvchi tekshiriladi
+    // 1. Token orqali foydalanuvchi ma'lumotlarini yechib olamiz
     const user = await this.authService.verifyMailToken(token);
     const { name, email, password, referal }: AuthDtoRegister = user;
   
-    // Email orqali mavjud foydalanuvchini qidirish
+    // 2. Email orqali mavjud foydalanuvchini tekshiramiz
     const oldUser = await this.prisma.users.findFirst({ where: { email } });
     if (oldUser) {
       throw new CustomError(403, 'Sizning emailingiz allaqachon tasdiqlangan');
     }
   
-    // Parolni hash qilish
+    // 3. Parolni hash qilamiz
     const hashedPassword = await bcrypt.hash(password, 10);
   
-    // Yangi foydalanuvchi yaratish
+    // 4. Foydalanuvchini yaratamiz
     const createdUser = await this.prisma.users.create({
       data: { name, email, password: hashedPassword },
     });
   
-    // Referalni qidirish
-    const referalUser = await this.prisma.referral.findFirst({
-      where: { referal_token: referal || '' },
-    });
-    
+    // 5. Agar referal ID mavjud bo‘lsa, uni tekshiramiz
+    let referal_user_id: number | null = null;
   
-    // Agar referal foydalanuvchisi topilmasa, uni null deb belgilash
-    const referalUserId = referalUser ? referalUser.id : null;
+    if (referal) {
+      const referalExists = await this.prisma.users.findUnique({
+        where: { id: Number(referal) },
+      });
   
-    // Yangi referal token yaratish
-    const createReferalToken = await this.referal.createReferal(email);
+      if (referalExists) {
+        referal_user_id = referalExists.id;
+      }
+    }
   
-    // Yangi referal yaratish
+    // 6. Yangi user uchun referral yozuvi yaratamiz
     await this.prisma.referral.create({
       data: {
-        referal_token: createReferalToken,
-        referal_user_id: referalUserId, // Agar referal foydalanuvchisi bo'lsa, ularning ID-si qo'llaniladi
-        user_id: createdUser.id, // Yangi foydalanuvchining user_id-si qo'shiladi
+        user_id: createdUser.id,
+        referal_user_id: referal_user_id, // null bo‘lishi ham mumkin
+        referals: [],
       },
     });
   
-    return {data:createdUser,message:'success'};
+    // 7. Agar taklif qilgan foydalanuvchi bo‘lsa — uni referral yozuviga bu userni qo‘shamiz
+    if (referal_user_id) {
+      const referalRecord = await this.prisma.referral.findFirst({
+        where: { user_id: referal_user_id },
+      });
+  
+      if (referalRecord) {
+        const existingReferals = (referalRecord.referals as number[] | null) ?? [];
+        existingReferals.push(createdUser.id);
+  
+        await this.prisma.referral.update({
+          where: { id: referalRecord.id },
+          data: {
+            referals: existingReferals,
+          },
+        });
+      }
+    }
+  
+    return { data: createdUser, message: 'success' };
   }
+  
   
   
 

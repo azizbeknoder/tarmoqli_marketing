@@ -7,7 +7,10 @@ import * as bcrypt from 'bcrypt'
 export class UsersService {
     constructor(private prisma:PrismaService){}
     async findAll(){
-        const data = await this.prisma.users.findMany()
+        const data = await this.prisma.users.findMany({include:{
+          balances:true,
+          referrals:true
+        }})
         return data
 
     }

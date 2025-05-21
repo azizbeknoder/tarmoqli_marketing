@@ -24,6 +24,7 @@ model Users {
   payments      Payments[]
   products      Tariff[]       @relation("CreatedProducts")
   balances      UserBalance[]
+  createdProducts Product[]    @relation("CreatedMainProducts")
 
   @@map("users")
 }
@@ -41,8 +42,7 @@ model UserBalance {
 
 model Referral {
   id              Int     @id @default(autoincrement())
-  referal_token   String  @unique
-  user_id         Int
+  user_id         Int     @unique()
   referal_user_id Int?    @default(1)
   referals        Json?
 
@@ -70,26 +70,37 @@ model Tariff {
 
 model ProductTranslation {
   id         Int       @id @default(autoincrement())
-  tariff_id  Int
-  language   String
-  title      String
-  body       String
+  tariff_id  Int?
+  product_id Int?
+  language   String?
+  name      String?
+  description       String?
+  longDescription String?
+  features String?
+  usage String?
 
-  tariff     Tariff    @relation("TariffTranslations", fields: [tariff_id], references: [id], onDelete: Cascade)
+
+
+  tariff     Tariff?    @relation("TariffTranslations", fields: [tariff_id], references: [id], onDelete: Cascade)
+  product    Product?   @relation("ProductTranslations", fields: [product_id], references: [id], onDelete: Cascade)
 
   @@unique([tariff_id, language])
+  @@unique([product_id, language])
   @@map("product_translations")
 }
 
 model ProductPrice {
-  id        Int       @id @default(autoincrement())
-  tariff_id Int
-  currency  String
-  value     Float
+  id         Int       @id @default(autoincrement())
+  tariff_id  Int?
+  product_id Int?
+  currency   String
+  value      Float
 
-  tariff    Tariff    @relation("TariffPrices", fields: [tariff_id], references: [id], onDelete: Cascade)
+  tariff     Tariff?   @relation("TariffPrices", fields: [tariff_id], references: [id], onDelete: Cascade)
+  product    Product?  @relation("ProductPrices", fields: [product_id], references: [id], onDelete: Cascade)
 
   @@unique([tariff_id, currency])
+  @@unique([product_id, currency])
   @@map("product_prices")
 }
 
@@ -126,8 +137,23 @@ model Card {
   card_seria_number  String  @unique
   countries          String
   card_type          String?
-  
+
   @@map("cards")
+}
+
+model Product {
+  id            Int                  @id @default(autoincrement())
+  createdAt     DateTime             @default(now())
+  created_user  Int
+  photo_url     ProductImage[]
+  rating       Int
+  rewiev       Int
+
+  creator       Users                @relation("CreatedMainProducts", fields: [created_user], references: [id], onDelete: Cascade)
+  translations  ProductTranslation[] @relation("ProductTranslations")
+  prices        ProductPrice[]       @relation("ProductPrices")
+
+  @@map("main_products")
 }
 
 enum Role {
@@ -140,4 +166,14 @@ enum PaymentStatus {
   PENDING
   CANCELLED
   SUCCESS
+}
+
+model ProductImage {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  photo_url  String
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
 }
