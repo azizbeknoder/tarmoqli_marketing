@@ -177,3 +177,36 @@ model ProductImage {
 
   @@map("product_images")
 }
+
+
+model StatsWidget {
+  id            String         @id @default(uuid())
+  onlineUserCount Int
+  totalEarned    Decimal
+  statEarnings   StatEarning[]
+  recentUsers    RecentUser[]
+}
+
+model StatEarning {
+  id         String       @id @default(uuid())
+  currency   String       // Masalan: 'USD', 'UZS'
+  amount     Decimal
+  widget     StatsWidget?  @relation(fields: [widgetId], references: [id],onDelete: Cascade)
+  widgetId   String?
+}
+
+model RecentUser {
+  id           String       @id @default(uuid())
+  email        String?
+  widget       StatsWidget? @relation(fields: [widgetId], references: [id],onDelete: Cascade)
+  widgetId     String?
+  userEarnings UserEarning[]
+}
+
+model UserEarning {
+  id           String       @id @default(uuid())
+  currency     String
+  amount       Decimal
+  recentUser   RecentUser   @relation(fields: [recentUserId], references: [id],onDelete: Cascade)
+  recentUserId String
+}
