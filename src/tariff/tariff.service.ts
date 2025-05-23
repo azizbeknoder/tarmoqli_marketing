@@ -20,6 +20,7 @@ export class TariffService {
         referral_bonus: dto.referral_bonus,
         photo_url: dto.photo_url,
         created_user: user_id,
+        dailyProfit:Number(dto.dailyProfit),
         translations: {
           create: dto.translations.map(t => ({
             language: t.language,

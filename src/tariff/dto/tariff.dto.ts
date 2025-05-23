@@ -65,6 +65,10 @@ export class CreatedTariffDto {
   @ValidateNested({ each: true })
   @Type(() => TariffPriceDto)
   prices: TariffPriceDto[];
+
+  @IsString()
+  @IsOptional()
+  dailyProfit?:string
 }
 
 export class UpdateTariffDto {
