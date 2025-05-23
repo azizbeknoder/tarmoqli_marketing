@@ -3,18 +3,31 @@ import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 class TariffTranslateDto {
-  @ApiProperty({example:"'en', 'ru', 'uz', 'kz', 'kg', 'tj', 'cn'",description:"Shu mavjud tillar kiritilishi mumkun"})
+  @ApiProperty({ example: "'en', 'ru', 'uz'", description: "Shu mavjud tillar kiritilishi mumkun" })
   @IsString()
-  language: string;  // 'en', 'ru', 'uz', 'kz', 'kg', 'tj', 'cn'
+  language: string;
 
-  @ApiProperty({example:"Premium",description:"Product sarlavhasi"})
+  @ApiProperty({ example: "Premium", description: "Tariff nomi" })
   @IsString()
-  title: string;
+  name: string;
 
-  @ApiProperty({example:"Premium obuna barhca imkoniyatlar beradi",description:"Product haqidagi malumotlar"})
+  @ApiProperty({ example: "Qisqa tarif tavsifi", description: "Short description" })
   @IsString()
-  body: string;
+  description: string;
+
+  @ApiProperty({ example: "Uzunroq tafsilotli tarif haqida", description: "To‘liq izoh" })
+  @IsString()
+  longDescription: string;
+
+  @ApiProperty({ example: "Imkoniyatlar ro‘yxati", description: "Tarifdagi xususiyatlar" })
+  @IsString()
+  features: string;
+
+  @ApiProperty({ example: "Foydalanish yo‘riqnomasi", description: "Qanday foydalaniladi" })
+  @IsString()
+  usage: string;
 }
+
 
 class TariffPriceDto {
   @ApiProperty({example:"'USD', 'UZS', 'RUB', etc",description:"Kiritiladigon valyuta birligi"})

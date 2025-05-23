@@ -53,20 +53,22 @@ model Referral {
 }
 
 model Tariff {
-  id             Int                  @id @default(autoincrement())
+  id             Int               @id @default(autoincrement())
   term           Int
   referral_bonus Int
-  createdAt      DateTime             @default(now())
+  dailyProfit    Float             @default(0) // kunlik foyda
+  createdAt      DateTime          @default(now())
   created_user   Int
   photo_url      String
 
-  creator      Users                @relation("CreatedProducts", fields: [created_user], references: [id], onDelete: Cascade)
-  orders       Orders[]             
-  translations ProductTranslation[] @relation("TariffTranslations")
-  prices       ProductPrice[]       @relation("TariffPrices")
+  creator        Users             @relation("CreatedProducts", fields: [created_user], references: [id], onDelete: Cascade)
+  orders         Orders[]             
+  translations   TariffTranslation[]
+  prices         TariffPrice[]
 
   @@map("products")
 }
+
 
 model ProductTranslation {
   id         Int       @id @default(autoincrement())
@@ -81,7 +83,7 @@ model ProductTranslation {
 
 
 
-  tariff     Tariff?    @relation("TariffTranslations", fields: [tariff_id], references: [id], onDelete: Cascade)
+  
   product    Product?   @relation("ProductTranslations", fields: [product_id], references: [id], onDelete: Cascade)
 
   @@unique([tariff_id, language])
@@ -95,8 +97,6 @@ model ProductPrice {
   product_id Int?
   currency   String
   value      Float
-
-  tariff     Tariff?   @relation("TariffPrices", fields: [tariff_id], references: [id], onDelete: Cascade)
   product    Product?  @relation("ProductPrices", fields: [product_id], references: [id], onDelete: Cascade)
 
   @@unique([tariff_id, currency])
@@ -209,4 +209,31 @@ model UserEarning {
   amount       Decimal
   recentUser   RecentUser   @relation(fields: [recentUserId], references: [id],onDelete: Cascade)
   recentUserId String
+}
+
+
+model TariffTranslation {
+  id          Int      @id @default(autoincrement())
+  tariff_id   Int
+  language    String
+  name        String
+  description String?
+  longDescription String?
+  features    String?
+  usage       String?
+
+  tariff      Tariff   @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
+
+  @@unique([tariff_id, language])
+}
+
+model TariffPrice {
+  id        Int     @id @default(autoincrement())
+  tariff_id Int
+  currency  String
+  value     Float
+
+  tariff    Tariff  @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
+
+  @@unique([tariff_id, currency])
 }

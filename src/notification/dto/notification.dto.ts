@@ -16,3 +16,25 @@ export class SendNotificationMailDto{
     @ApiProperty({example:"Description",description:"Descrtion uchun"})
     description:string
 }
+export class SendNotificationMailAllUserDto{
+
+    @IsString()
+    @ApiProperty({example:"Title ",description:"Yuborilayotgan malumot uchun description"})
+    title:string
+
+    @IsString()
+    @ApiProperty({example:"Description",description:"Descrtion uchun"})
+    description:string
+}
+export class SendNotificationMailTariffUserDto{
+    @IsString()
+    @ApiProperty({example:'premium',description:"Foydalanuvchiga habar yuborish tarif bo'yicha"})
+
+    @IsString()
+    @ApiProperty({example:"Title ",description:"Yuborilayotgan malumot uchun description"})
+    title:string
+
+    @IsString()
+    @ApiProperty({example:"Description",description:"Descrtion uchun"})
+    description:string
+}

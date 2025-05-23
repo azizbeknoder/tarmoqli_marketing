@@ -16,14 +16,16 @@ import { OrdersModule } from './orders/orders.module';
 import { CardModule } from './card/card.module';
 import { AdminModule } from './admin/admin.module';
 import { NotificationGateway } from './gateway/notification.geteway';
-import { PaymentsModule } from './payments/payments.module';
-import { PaymentGateway } from './payments/payments.gateway';
 import { ProductModule } from './product/product.module';
 import { StatistikaModule } from './statistika/statistika.module';
 import { NotificationModule } from './notification/notification.module';
+import { GatewayModule } from './gateway/gateway.module';
+import { PaymetnsModule } from './paymetns/paymetns.module';
+import { PaymentGateway } from './payments/payments.gateway';
+import { EmailQueueModule } from './email-queue/email-queue.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, PaymentsModule, ProductModule, StatistikaModule, NotificationModule,  ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, StatistikaModule, NotificationModule, GatewayModule, PaymetnsModule, EmailQueueModule  ],
   controllers: [AppController],
   providers: [AppService, MailService, NotificationGateway,PaymentGateway],
   exports:[NotificationGateway]

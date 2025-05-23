@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Paneli - To‘lovlar</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #notifications, #screenshots { border: 1px solid #ccc; padding: 10px; height: 150px; overflow-y: auto; margin-bottom: 10px; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; max-width: 300px; }
+  </style>
+</head>
+<body>
+  <h2>Admin Paneli</h2>
+
+  <div>
+    <label>Foydalanuvchi ID uchun karta yuborish:</label>
+    <input type="text" id="userId" placeholder="User ID kiriting" />
+  </div>
+
+  <div>
+    <label>Karta raqami:</label>
+    <input type="text" id="cardNumber" placeholder="Karta raqamini kiriting" />
+  </div>
+
+  <button id="sendCardBtn">Kartani yuborish</button>
+
+  <h3>Yangi to‘lov so‘rovlari:</h3>
+  <div id="notifications"></div>
+
+  <h3>Yuklangan Screenshotlar:</h3>
+  <div id="screenshots"></div>
+
+  <h3>To‘lovni tasdiqlash:</h3>
+  <div>
+    <label>Foydalanuvchi ID:</label>
+    <input type="text" id="confirmUserId" placeholder="User ID kiriting" />
+  </div>
+  <div>
+    <label>To‘lovni tasdiqlash:</label>
+    <select id="confirmStatus">
+      <option value="true">Tasdiqlash</option>
+      <option value="false">Rad etish</option>
+    </select>
+  </div>
+  <button id="confirmPaymentBtn">Tasdiqlash yuborish</button>
+
+  <script>
+    const socket = io('http://localhost:3000', {
+      query: { role: 'admin' },
+    });
+
+    const notificationsDiv = document.getElementById('notifications');
+    const screenshotsDiv = document.getElementById('screenshots');
+
+    const userIdInput = document.getElementById('userId');
+    const cardNumberInput = document.getElementById('cardNumber');
+    const sendCardBtn = document.getElementById('sendCardBtn');
+
+    const confirmUserIdInput = document.getElementById('confirmUserId');
+    const confirmStatusSelect = document.getElementById('confirmStatus');
+    const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+
+    function logNotification(message) {
+      const p = document.createElement('p');
+      p.textContent = message;
+      notificationsDiv.appendChild(p);
+      notificationsDiv.scrollTop = notificationsDiv.scrollHeight;
+    }
+
+    function logScreenshot(message, url) {
+      const p = document.createElement('p');
+      p.innerHTML = message + ` <a href="${url}" target="_blank">Screenshot ko‘rish</a>`;
+      screenshotsDiv.appendChild(p);
+      screenshotsDiv.scrollTop = screenshotsDiv.scrollHeight;
+    }
+
+    socket.on('connect', () => {
+      logNotification('Admin socket ulanish o‘rnatildi');
+    });
+
+    socket.on('disconnect', () => {
+      logNotification('Socket uzildi');
+    });
+
+    // Yangi to'lov so'rovi kelganda
+    socket.on('admin_notification', (data) => {
+      logNotification(`Yangi to‘lov so‘rovi: userId=${data.userId}, summa=${data.amount} so'm`);
+    });
+
+    // Screenshot yuklanganda
+    socket.on('admin_screenshot', (data) => {
+      logScreenshot(`User ${data.userId} screenshot yubordi:`, data.screenshotUrl);
+    });
+
+    sendCardBtn.addEventListener('click', () => {
+      const userId = userIdInput.value.trim();
+      const cardNumber = cardNumberInput.value.trim();
+      if (!userId || !cardNumber) return alert('Foydalanuvchi ID va karta raqamini kiriting');
+      socket.emit('send_card', { userId, cardNumber });
+      logNotification(`Karta yuborildi userId=${userId}`);
+      userIdInput.value = '';
+      cardNumberInput.value = '';
+    });
+
+    confirmPaymentBtn.addEventListener('click', () => {
+      const userId = confirmUserIdInput.value.trim();
+      const status = confirmStatusSelect.value === 'true';
+      if (!userId) return alert('Foydalanuvchi ID kiriting');
+      socket.emit('confirm_payment', { userId, confirmed: status });
+      logNotification(`To‘lov tasdiqlash yuborildi userId=${userId}, tasdiq: ${status}`);
+      confirmUserIdInput.value = '';
+    });
+  </script>
+</body>
+</html>

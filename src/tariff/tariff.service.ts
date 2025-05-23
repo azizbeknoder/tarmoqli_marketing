@@ -23,8 +23,11 @@ export class TariffService {
         translations: {
           create: dto.translations.map(t => ({
             language: t.language,
-            title: t.title,
-            body: t.body,
+            name: t.name,
+            description: t.description,
+            longDescription: t.longDescription,
+            features: t.features,
+            usage: t.usage,
           })),
         },
         prices: {
@@ -39,6 +42,7 @@ export class TariffService {
         prices: true,
       },
     });
+    
 
     return data;
   }
@@ -85,42 +89,49 @@ export class TariffService {
       throw new CustomError(404, 'User topilmadi');
     }
     const user_id = oldUser.id;
-
+  
     const updateData: any = {
       created_user: user_id,
     };
-
+  
     if (dto.term !== undefined) {
       updateData.term = dto.term;
     }
-
+  
     if (dto.referral_bonus !== undefined) {
       updateData.referral_bonus = dto.referral_bonus;
     }
-
+  
     if (dto.photo_url !== undefined) {
       updateData.photo_url = dto.photo_url;
     }
-
+  
     if (dto.translations) {
+      // Eski tarjimalarni o'chirib tashlash
       await this.prisma.productTranslation.deleteMany({
         where: { tariff_id: productId },
       });
-
+  
+      // Yangilarini qo'shish
       updateData.translations = {
         create: dto.translations.map(t => ({
           language: t.language,
-          title: t.title,
-          body: t.body,
+          name: t.name,
+          description: t.description,
+          longDescription: t.longDescription,
+          features: t.features,
+          usage: t.usage,
         })),
       };
     }
-
+  
     if (dto.prices) {
+      // Eski narxlarni o'chirish
       await this.prisma.productPrice.deleteMany({
         where: { tariff_id: productId },
       });
-
+  
+      // Yangilarini qo‘shish
       updateData.prices = {
         create: dto.prices.map(p => ({
           currency: p.currency,
@@ -128,7 +139,8 @@ export class TariffService {
         })),
       };
     }
-
+  
+    // Yangilash
     const updatedProduct = await this.prisma.tariff.update({
       where: { id: productId },
       data: updateData,
@@ -137,7 +149,8 @@ export class TariffService {
         prices: true,
       },
     });
-
+  
     return updatedProduct;
   }
+  
 }

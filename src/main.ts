@@ -7,6 +7,7 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import createSuperAdmin from './script/create-super-admin';
 import { ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
 
 async function bootstrap() {
   // NestJS ilovasini NestExpressApplication tipida yaratamiz (statik fayllar uchun kerak)
@@ -23,9 +24,16 @@ async function bootstrap() {
       transform: true, // kiruvchi ma'lumotlarni DTO klassiga o'zgartiradi
     }),
   );
+  BullModule.forRoot({
+    redis: {
+      host: 'localhost',
+      port: 6379,
+    },
+  }),
 
   // Global Exception Filter: xatolarni global tutib, mos javob beradi
   app.useGlobalFilters(new CustomErrorFilter());
+  
 
   // Swagger sozlamalari
   const swaggerConfig = new DocumentBuilder()
