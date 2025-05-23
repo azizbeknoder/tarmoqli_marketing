@@ -18,7 +18,7 @@ export class MailService {
   async sendMail(to:string,token:string) {{
     const base_url = this.config.get('BASE_URL')
     const link = `${String(base_url)}authorization/verify/${token}`;
-2
+
     const subject = 'Emailni tasdiqlang';
     const text = `Quyidagi link orqali emailingizni tasdiqlang: ${link}`;
     const html = `<p>Assalomu alaykum,</p>
@@ -33,5 +33,15 @@ export class MailService {
       html,
     });
   }
+ 
+}
+async sendNotificationMail(to:string,subject:string,text:string){
+  const data = await this.transporter.sendMail({
+    from:`"Tizim" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    text
+  })
+  return data
 }
 }

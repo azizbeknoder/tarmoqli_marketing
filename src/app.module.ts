@@ -20,9 +20,10 @@ import { PaymentsModule } from './payments/payments.module';
 import { PaymentGateway } from './payments/payments.gateway';
 import { ProductModule } from './product/product.module';
 import { StatistikaModule } from './statistika/statistika.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, PaymentsModule, ProductModule, StatistikaModule,  ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, PaymentsModule, ProductModule, StatistikaModule, NotificationModule,  ],
   controllers: [AppController],
   providers: [AppService, MailService, NotificationGateway,PaymentGateway],
   exports:[NotificationGateway]
