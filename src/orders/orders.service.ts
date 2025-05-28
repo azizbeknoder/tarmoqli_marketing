@@ -17,42 +17,56 @@ export class OrdersService {
     }
 
     const { id: userId } = oldUser;
-    const productId = body.product_id;
-    const product = await this.prisma.tariff.findUnique({
-      where: { id: productId },
+    const tariff_id = body.tariff_id;
+    const tariff = await this.prisma.tariff.findUnique({
+      where: { id: tariff_id },
     });
-    if (!product) {
-      throw new CustomError(404, 'Product not found');
+    
+    if (!tariff) {
+      throw new CustomError(404, 'Tariff not found');
+    }
+    const tariffPrice = await this.prisma.tariffPrice.findFirst({where:{tariff_id:tariff_id},select:{value:true,currency:true}})
+    const userBalans = await this.prisma.userBalance.findFirst({where:{userId:userId},select:{amount:true,currency:true}})
+    if(Number(userBalans?.amount )>= Number(tariffPrice?.value)){
+      if(userBalans?.currency == tariffPrice?.currency){
+        const data = await this.prisma.orders.create({data:{user_id:userId,tariff_id:body.tariff_id,isChecked:'PENDING'}})
+        return data
+      }
+      else{
+        throw new CustomError(403,"Siz faqat hisob to'ldirgan valyutangizda mahsulot sotib ola olasiz.")
+      }
+    }else{
+      throw new CustomError(403,"Hisobingizda mabla'g yetarli emas.")
     }
 
-    const data = await this.prisma.orders.create({
-      data: {
-        user_id: userId,
-        tariff_id: productId,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-            isActive: true,
-          },
-        },
-        tariff: {
-          select: {
-            id: true,
-            term: true,
-            referral_bonus: true,
-            photo_url: true,
-            createdAt: true,
-          },
-        },
-      },
-    });
+    return {success:false}
+    // const data = await this.prisma.orders.create({
+    //   data: {
+    //     user_id: userId,
+    //     tariff_id: tariff_id,
+    //   },
+    //   include: {
+    //     user: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         email: true,
+    //         role: true,
+    //         isActive: true,
+    //       },
+    //     },
+    //     tariff: {
+    //       select: {
+    //         id: true,
+    //         term: true,
+    //         referral_bonus: true,
+    //         photo_url: true,
+    //         createdAt: true,
+    //       },
+    //     },
+    //   },
+    // });
 
-    return data;
   }
 
   async getAllOrders() {

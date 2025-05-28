@@ -8,18 +8,13 @@ export class TariffService {
   constructor(private readonly prisma: PrismaService) {}
 
   async addProduct(dto: CreatedTariffDto, user: any) {
-    const oldUser = await this.prisma.users.findFirst({ where: { email: user.email } });
-    if (!oldUser) {
-      throw new CustomError(404, 'User topilmadi');
-    }
-    const user_id = oldUser.id;
 
     const data = await this.prisma.tariff.create({
       data: {
         term: dto.term,
         referral_bonus: dto.referral_bonus,
         photo_url: dto.photo_url,
-        created_user: user_id,
+        
         dailyProfit:Number(dto.dailyProfit),
         translations: {
           create: dto.translations.map(t => ({

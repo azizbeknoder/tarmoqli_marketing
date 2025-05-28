@@ -20,14 +20,16 @@ import { ProductModule } from './product/product.module';
 import { StatistikaModule } from './statistika/statistika.module';
 import { NotificationModule } from './notification/notification.module';
 import { GatewayModule } from './gateway/gateway.module';
-import { PaymetnsModule } from './paymetns/paymetns.module';
+
 import { PaymentGateway } from './payments/payments.gateway';
 import { EmailQueueModule } from './email-queue/email-queue.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, StatistikaModule, NotificationModule, GatewayModule, PaymetnsModule, EmailQueueModule  ],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, StatistikaModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ],
   controllers: [AppController],
-  providers: [AppService, MailService, NotificationGateway,PaymentGateway],
+  providers: [AppService, MailService, NotificationGateway],
   exports:[NotificationGateway]
 })
 export class AppModule {}
+

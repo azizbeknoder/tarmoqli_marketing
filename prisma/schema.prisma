@@ -21,8 +21,8 @@ model Users {
   referradBy    Referral[]     @relation("Referrer")
 
   orders        Orders[]
+  ordersProduct OrdersProduct[]
   payments      Payments[]
-  products      Tariff[]       @relation("CreatedProducts")
   balances      UserBalance[]
   createdProducts Product[]    @relation("CreatedMainProducts")
 
@@ -58,10 +58,9 @@ model Tariff {
   referral_bonus Int
   dailyProfit    Float             @default(0) // kunlik foyda
   createdAt      DateTime          @default(now())
-  created_user   Int
   photo_url      String
 
-  creator        Users             @relation("CreatedProducts", fields: [created_user], references: [id], onDelete: Cascade)
+  
   orders         Orders[]             
   translations   TariffTranslation[]
   prices         TariffPrice[]
@@ -108,14 +107,29 @@ model Orders {
   id         Int       @id @default(autoincrement())
   user_id    Int
   tariff_id  Int
-  isChecked  Boolean   @default(false)
+  isChecked  PaymentStatus @default(PENDING)
   orderedAt  DateTime  @default(now())
   checkedAt  DateTime?
-
   user     Users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   tariff   Tariff  @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
 
   @@map("orders")
+}
+model OrdersProduct {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  product_id  Int
+  isChecked  PaymentStatus @default(PENDING)
+  product_jd Int
+  orderedAt  DateTime  @default(now())
+  checkedAt  DateTime?
+
+  user     Users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  main_products   Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  
+
+  @@map("orderProduct")
 }
 
 model Payments {
@@ -145,6 +159,7 @@ model Product {
   id            Int                  @id @default(autoincrement())
   createdAt     DateTime             @default(now())
   created_user  Int
+  count         Int?
   photo_url     ProductImage[]
   rating       Int
   rewiev       Int
@@ -152,7 +167,7 @@ model Product {
   creator       Users                @relation("CreatedMainProducts", fields: [created_user], references: [id], onDelete: Cascade)
   translations  ProductTranslation[] @relation("ProductTranslations")
   prices        ProductPrice[]       @relation("ProductPrices")
-
+  orders        OrdersProduct[]
   @@map("main_products")
 }
 

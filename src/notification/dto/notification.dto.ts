@@ -29,7 +29,7 @@ export class SendNotificationMailAllUserDto{
 export class SendNotificationMailTariffUserDto{
     @IsString()
     @ApiProperty({example:'premium',description:"Foydalanuvchiga habar yuborish tarif bo'yicha"})
-
+    tariff:string
     @IsString()
     @ApiProperty({example:"Title ",description:"Yuborilayotgan malumot uchun description"})
     title:string

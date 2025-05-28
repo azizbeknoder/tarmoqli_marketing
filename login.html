@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; max-width: 300px; }
+  </style>
+</head>
+<body>
+  <h2>Admin Login</h2>
+
+  <div>
+    <label>Email:</label>
+    <input type="email" id="email" placeholder="Email kiriting" />
+  </div>
+
+  <div>
+    <label>Parol:</label>
+    <input type="password" id="password" placeholder="Parol kiriting" />
+  </div>
+
+  <button id="loginBtn">Kirish</button>
+
+  <p id="message" style="color: red;"></p>
+
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const message = document.getElementById('message');
+
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        message.textContent = "Iltimos, barcha maydonlarni to‘ldiring.";
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/authorization/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.token) {
+          localStorage.setItem('token', data.token);
+          const role = data.data.user.role
+
+          
+          if(role == 'ADMIN'){
+            window.location.href = '/admin.html'; // Admin panelga o‘tish
+          }else if(role =='SUPERADMIN'){
+            window.location.href = '/admin.html'; // Admin panelga o‘tish
+          }else if (role == 'USER'){
+            window.location.href = '/test.html'; // Admin panelga o‘tish
+          }
+          
+        } else {
+          message.textContent = data.message || 'Login muvaffaqiyatsiz.';
+        }
+    
+
+      } catch (err) {
+        message.textContent = 'Server bilan ulanishda xatolik.';
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>

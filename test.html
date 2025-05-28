@@ -64,7 +64,7 @@
       if (!amount || amount <= 0) return alert('To‘lov summasini to‘g‘ri kiriting');
 
       if (!socket) {
-        socket = io('http://localhost:3000', {
+        socket = io('ws://mlm-backend.pixl.uz', {
           query: { role: 'user', userId },
         });
 

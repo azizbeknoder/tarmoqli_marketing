@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailService } from 'src/mail/mail.service';
-import { SendNotificationMailAllUserDto, SendNotificationMailDto } from './dto/notification.dto';
+import { SendNotificationMailAllUserDto, SendNotificationMailDto, SendNotificationMailTariffUserDto } from './dto/notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EmailQueueService } from 'src/email-queue/email-queue.service';
 
@@ -19,8 +19,10 @@ export class NotificationService {
         
         const data = await this.emailQueue.sendBulk(emails,title,description)
         
-        return 'success'
-        
-
+        return emails
+    }
+    async sendNotificationEmailTariffUser(body:SendNotificationMailTariffUserDto){
+        const {tariff,title,description} = body
+        const users = await this.prisma.tariff.findMany({where:{}})
     }
 }

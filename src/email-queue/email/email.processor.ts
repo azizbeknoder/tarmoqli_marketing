@@ -10,7 +10,7 @@ export class EmailProcessor {
     
     const transporter = nodemailer.createTransport({
         host: 'smtp.mail.ru',
-        port: 465,
+        port: 587,
         secure: true, // true = 465 port, false = 587 port
         auth: {
           user:  process.env.EMAIL_USER,

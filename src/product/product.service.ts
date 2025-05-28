@@ -18,6 +18,7 @@ export class ProductsService {
         created_user: oldUser.id,
         rating: dto.rating,
         rewiev: dto.rewiev,
+        count:dto.count,
         translations: {
           createMany: {
             data: dto.translations,
@@ -68,6 +69,7 @@ export class ProductsService {
     return this.prisma.product.update({
       where: { id },
       data: {
+        count: dto.count,
         rating: dto.rating,
         rewiev: dto.rewiev,
         // Note: updateMany yoki delete/createMany qilish mumkin tafsilotga qarab

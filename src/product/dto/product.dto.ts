@@ -65,6 +65,10 @@ export class CreateProductDto {
   @IsInt()
   rewiev: number;
 
+  @ApiProperty({example:10,description:"Product soni"})
+  @IsInt()
+  count:number
+
   @ApiProperty({
     type: [ProductImageDto],
     description: 'Mahsulotga tegishli rasm URL lar',
