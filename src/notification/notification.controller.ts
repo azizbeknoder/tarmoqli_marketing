@@ -15,6 +15,8 @@ export class NotificationController {
         const data = await this.service.sendNotificatinMail(body)
         return data
     }
+    @ApiOperation({summary:'Barcha foydalanuvchilar uchun',})
+    @UseGuards(AuthGuard,AdminGuard)
     @Post('all')
     async sendNotificationEmailAllUser(@Body() body:SendNotificationMailAllUserDto){
         const data = await this.service.sendNotificationEmailAllUser(body)

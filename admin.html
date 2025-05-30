@@ -5,9 +5,53 @@
   <title>Admin Paneli - To‘lovlar</title>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #notifications, #screenshots { border: 1px solid #ccc; padding: 10px; height: 150px; overflow-y: auto; margin-bottom: 10px; }
-    input, button { padding: 8px; margin: 5px 0; width: 100%; max-width: 300px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h2, h3 {
+      color: #333;
+    }
+
+    #notifications, #screenshots {
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .payment-entry {
+      background-color: #e8f0fe;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-left: 4px solid #4285f4;
+    }
+
+    input, button, select {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      max-width: 300px;
+      display: block;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -21,6 +65,11 @@
   <div>
     <label>Karta raqami:</label>
     <input type="text" id="cardNumber" placeholder="Karta raqamini kiriting" />
+  </div>
+
+  <div>
+    <label>Payment ID:</label>
+    <input type="text" id="paymentId" placeholder="Payment ID kiriting" />
   </div>
 
   <button id="sendCardBtn">Kartani yuborish</button>
@@ -46,8 +95,11 @@
   <button id="confirmPaymentBtn">Tasdiqlash yuborish</button>
 
   <script>
-    const socket = io('ws://mlm-backend.pixl.uz', {
-      query: { role: 'admin' },
+    const token = localStorage.getItem('token');
+    const socket = io('ws://localhost:3000', {
+      auth: {
+        token: token,
+      }
     });
 
     const notificationsDiv = document.getElementById('notifications');
@@ -55,16 +107,18 @@
 
     const userIdInput = document.getElementById('userId');
     const cardNumberInput = document.getElementById('cardNumber');
+    const paymentIdInput = document.getElementById('paymentId');
     const sendCardBtn = document.getElementById('sendCardBtn');
 
     const confirmUserIdInput = document.getElementById('confirmUserId');
     const confirmStatusSelect = document.getElementById('confirmStatus');
     const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
 
-    function logNotification(message) {
-      const p = document.createElement('p');
-      p.textContent = message;
-      notificationsDiv.appendChild(p);
+    function logNotification(htmlContent) {
+      const div = document.createElement('div');
+      div.classList.add('payment-entry');
+      div.innerHTML = htmlContent;
+      notificationsDiv.appendChild(div);
       notificationsDiv.scrollTop = notificationsDiv.scrollHeight;
     }
 
@@ -76,39 +130,69 @@
     }
 
     socket.on('connect', () => {
-      logNotification('Admin socket ulanish o‘rnatildi');
+      logNotification('<strong>Admin socket ulandi</strong>');
     });
 
     socket.on('disconnect', () => {
-      logNotification('Socket uzildi');
+      logNotification('<strong>Socket uzildi</strong>');
     });
 
-    // Yangi to'lov so'rovi kelganda
-    socket.on('admin_notification', (data) => {
-      logNotification(`Yangi to‘lov so‘rovi: userId=${data.userId}, summa=${data.amount} so'm`);
+    // ✅ Yangi to‘lov so‘rovi
+    socket.on('newPayment', (data) => {
+      const {
+        paymentId,
+        userId,
+        date,
+        howMuch,
+        currencsy,
+        status
+      } = data;
+
+      const message = `
+        <strong>📥 Yangi to‘lov so‘rovi:</strong><br/>
+        🆔 <strong>Payment ID:</strong> ${paymentId}<br/>
+        👤 <strong>Foydalanuvchi ID:</strong> ${userId}<br/>
+        📅 <strong>Sana:</strong> ${new Date(date).toLocaleString()}<br/>
+        💰 <strong>Miqdor:</strong> ${howMuch} ${currencsy}<br/>
+        📌 <strong>Status:</strong> ${status}
+      `;
+      logNotification(message);
     });
 
-    // Screenshot yuklanganda
+    // ✅ Screenshot hodisasi
     socket.on('admin_screenshot', (data) => {
-      logScreenshot(`User ${data.userId} screenshot yubordi:`, data.screenshotUrl);
+      logScreenshot(`👤 User <strong>${data.userId}</strong> screenshot yubordi:`, data.screenshotUrl);
     });
 
+    // ✅ Karta yuborish (paymentId qo‘shildi)
     sendCardBtn.addEventListener('click', () => {
-      const userId = userIdInput.value.trim();
+      const roomName = userIdInput.value.trim();
       const cardNumber = cardNumberInput.value.trim();
-      if (!userId || !cardNumber) return alert('Foydalanuvchi ID va karta raqamini kiriting');
-      socket.emit('send_card', { userId, cardNumber });
-      logNotification(`Karta yuborildi userId=${userId}`);
+      const paymentId = paymentIdInput.value.trim();
+
+      if (!roomName || !cardNumber || !paymentId) {
+        return alert('Foydalanuvchi ID, karta raqami va Payment ID ni kiriting');
+      }
+
+      socket.emit('adminResponse', {
+        roomName,
+        cardNumber,
+        paymentId
+      });
+
+      logNotification(`📤 Karta yuborildi: userId=${roomName}, paymentId=${paymentId}`);
       userIdInput.value = '';
       cardNumberInput.value = '';
+      paymentIdInput.value = '';
     });
 
+    // ✅ To‘lov tasdiqlash
     confirmPaymentBtn.addEventListener('click', () => {
-      const userId = confirmUserIdInput.value.trim();
+      const paymentId = confirmUserIdInput.value.trim();
       const status = confirmStatusSelect.value === 'true';
-      if (!userId) return alert('Foydalanuvchi ID kiriting');
-      socket.emit('confirm_payment', { userId, confirmed: status });
-      logNotification(`To‘lov tasdiqlash yuborildi userId=${userId}, tasdiq: ${status}`);
+      if (!paymentId) return alert('Payment id kiriting');
+      socket.emit('confirm_payment', { paymentId, confirmed: status });
+      logNotification(`✅ To‘lov tasdiqlash yuborildi: userId=${userId}, tasdiq: ${status}`);
       confirmUserIdInput.value = '';
     });
   </script>

@@ -2,115 +2,126 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
-  <title>Foydalanuvchi Paneli - To‘lov</title>
+  <title>Real-Time To‘lov Paneli</title>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #messages { border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: auto; margin-bottom: 10px; }
-    input, button { padding: 8px; margin: 5px 0; width: 100%; max-width: 300px; }
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      background: #f5f5f5;
+    }
+    #chat {
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: white;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      max-width: 300px;
+    }
+    #cardSection {
+      border: 1px dashed #999;
+      padding: 10px;
+      margin-top: 15px;
+      background: #f0f0f0;
+    }
   </style>
 </head>
 <body>
-  <h2>Foydalanuvchi Paneli</h2>
+  <h2>💬 Real-Time To‘lov Paneli</h2>
 
   <div>
-    <label>Foydalanuvchi ID:</label>
-    <input type="text" id="userId" placeholder="User ID kiriting" />
+    <input type="text" id="currency" placeholder="Valyuta (UZS, USD, ...)" />
+    <input type="text" id="how_much" placeholder="Qancha miqdor (masalan: 50000)" />
+    <button onclick="sendPaymentRequest()">To‘lov so‘rovi yuborish</button>
   </div>
 
-  <div>
-    <label>To‘lov summasi (so'm):</label>
-    <input type="number" id="amount" placeholder="To‘lov summasi" />
-  </div>
-
-  <button id="sendPaymentRequest">To‘lov so‘rovi yuborish</button>
-
-  <h3>Xabarlar:</h3>
-  <div id="messages"></div>
+  <div id="chat"></div>
 
   <div id="cardSection" style="display:none;">
     <h3>Karta ma'lumotlari</h3>
     <p><strong>Karta raqami:</strong> <span id="cardNumber"></span></p>
-
-    <label>Sizning to‘lov screenshot manzilingiz (URL):</label>
-    <input type="text" id="screenshotUrl" placeholder="Masalan: https://imgur.com/screenshot123" />
+    <input type="text" id="screenshotUrl" placeholder="Screenshot URL (masalan: https://imgur.com/123)" />
     <button id="uploadScreenshotBtn">Screenshot yuborish</button>
   </div>
 
   <script>
+    const token = localStorage.getItem('token') || 'demo-token';
     let socket = null;
+    let roomName;
 
-    const messagesDiv = document.getElementById('messages');
-    const userIdInput = document.getElementById('userId');
-    const amountInput = document.getElementById('amount');
-    const sendPaymentRequestBtn = document.getElementById('sendPaymentRequest');
+    const chatDiv = document.getElementById('chat');
     const cardSection = document.getElementById('cardSection');
     const cardNumberSpan = document.getElementById('cardNumber');
     const screenshotUrlInput = document.getElementById('screenshotUrl');
     const uploadScreenshotBtn = document.getElementById('uploadScreenshotBtn');
 
-    function logMessage(message) {
-      const p = document.createElement('p');
-      p.textContent = message;
-      messagesDiv.appendChild(p);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    function logMessage(text) {
+      const msg = document.createElement('div');
+      msg.textContent = text;
+      chatDiv.appendChild(msg);
+      chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
-    sendPaymentRequestBtn.addEventListener('click', () => {
-      const userId = userIdInput.value.trim();
-      const amount = Number(amountInput.value.trim());
+    socket = io('ws://localhost:3000', {
+      auth: { token },
+    });
 
-      if (!userId) return alert('Foydalanuvchi ID kiriting');
-      if (!amount || amount <= 0) return alert('To‘lov summasini to‘g‘ri kiriting');
+    socket.on('connect', () => {
+      console.log('🔌 Ulandi:', socket.id);
+      logMessage(`🔌 Socket ID: ${socket.id}`);
+    });
 
-      if (!socket) {
-        socket = io('ws://mlm-backend.pixl.uz', {
-          query: { role: 'user', userId },
-        });
+    socket.on('roomAssigned', (data) => {
+      roomName = data.roomName;
+      logMessage(`✅ Siz ${roomName} roomga qo‘shildingiz`);
+    });
 
-        // Foydalanuvchi uchun hodisalar
-        socket.on('connect', () => {
-          logMessage('Socket ulanish o‘rnatildi');
-        });
+    socket.on('paymentResponse', (data) => {
+      logMessage(`💸 Javob: ${data.message ?? JSON.stringify(data)}`);
+    });
 
-        socket.on('disconnect', () => {
-          logMessage('Socket uzildi');
-        });
+    socket.on('card_info', (data) => {
+      logMessage('📨 Serverdan karta ma\'lumoti kelmoqda...');
+      cardNumberSpan.textContent = data.cardNumber;
+      logMessage(data.message);
+      cardSection.style.display = 'block';
+    });
 
-        socket.on('payment_response', (data) => {
-          logMessage('Server: ' + data.message);
-        });
+    socket.on('payment_confirmed', (data) => {
+      logMessage(data.message);
+      if (data.confirmed) {
+        alert('✅ To‘lov tasdiqlandi. Rahmat!');
+        cardSection.style.display = 'none';
+      } else {
+        alert('❌ To‘lov rad etildi. Iltimos, admin bilan bog‘laning.');
+      }
+    });
 
-        socket.on('card_info', (data) => {
-          logMessage('Serverdan karta ma\'lumoti kelmoqda...');
-          cardNumberSpan.textContent = data.cardNumber;
-          logMessage(data.message);
-          cardSection.style.display = 'block';
-        });
+    function sendPaymentRequest() {
+      const currency = document.getElementById('currency').value.trim();
+      const how_much = document.getElementById('how_much').value.trim();
 
-        socket.on('payment_confirmed', (data) => {
-          logMessage(data.message);
-          if (data.confirmed) {
-            alert('To‘lov tasdiqlandi. Rahmat!');
-            cardSection.style.display = 'none';
-          } else {
-            alert('To‘lov rad etildi. Iltimos, admin bilan bog‘laning.');
-          }
-        });
+      if (!currency || !how_much) {
+        alert('Valyuta va miqdorni to‘liq kiriting');
+        return;
       }
 
-      socket.emit('payment_request', { userId, amount });
-      logMessage(`To‘lov so‘rovi yuborildi: summa ${amount} so'm`);
-    });
+      socket.emit('paymentRequest', { currency, how_much });
+      logMessage(`📤 So‘rov yuborildi: ${currency} ${how_much}`);
+    }
 
     uploadScreenshotBtn.addEventListener('click', () => {
       const screenshotUrl = screenshotUrlInput.value.trim();
-      const userId = userIdInput.value.trim();
       if (!screenshotUrl) return alert('Screenshot URL kiriting');
-      if (!userId) return alert('Foydalanuvchi ID kiriting');
 
-      socket.emit('upload_screenshot', { userId, screenshotUrl });
-      logMessage('Screenshot serverga yuborildi: ' + screenshotUrl);
+      socket.emit('upload_screenshot', { screenshotUrl });
+      logMessage('🖼️ Screenshot yuborildi: ' + screenshotUrl);
       screenshotUrlInput.value = '';
     });
   </script>

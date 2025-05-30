@@ -30,7 +30,7 @@ async function bootstrap() {
       port: 6379,
     },
   }),
-
+  app.useStaticAssets(join(__dirname, '..', ''));
   // Global Exception Filter: xatolarni global tutib, mos javob beradi
   app.useGlobalFilters(new CustomErrorFilter());
   

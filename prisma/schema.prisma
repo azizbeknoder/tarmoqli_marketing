@@ -140,6 +140,8 @@ model Payments {
   to_send_date    DateTime     @default(now())
   to_checked_date DateTime?
   currency        String
+  how_much        Float
+  card            BigInt?
 
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
@@ -181,6 +183,9 @@ enum PaymentStatus {
   PENDING
   CANCELLED
   SUCCESS
+  SENDING
+  SCRINSHOTUPLOAD
+  CANCELLEDADMIN
 }
 
 model ProductImage {
@@ -252,3 +257,4 @@ model TariffPrice {
 
   @@unique([tariff_id, currency])
 }
+

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "payments" ALTER COLUMN "card" SET DATA TYPE BIGINT;

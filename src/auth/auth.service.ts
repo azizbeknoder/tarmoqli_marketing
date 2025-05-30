@@ -4,12 +4,14 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthDtoRegister } from 'src/authorization/dto/auth.dot.ts/auth.dto';
 import CustomError from 'src/utils/custom-error';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private prisma:PrismaService
   ) {}
 
   // Email tasdiqlash tokenini yaratish
@@ -56,7 +58,9 @@ export class AuthService {
 
   // Kirish tokenini tekshirish
   async verifyAccessToken(token: string) {
-    try {
+    try {      
+      console.log(token);
+      
       return await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('ACCESS_SECRET'),
       });
@@ -64,6 +68,26 @@ export class AuthService {
       return false
     }
   }
+  async verifyAccestokenSocket(token:string){
+    try{
+      const t = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
+      
+      const deToken =  await this.jwtService.verifyAsync(t,{
+        secret: this.configService.get<string>("ACCESS_SECRET")
+      })
+
+      const oldUser = await this.prisma.users.findFirst({where:{email:deToken.email}});
+      
+      if(!oldUser){
+        return false
+      }
+      return oldUser
+      
+    }catch(error){
+      return false
+    }
+  }
+
   
 }
 
