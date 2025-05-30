@@ -96,7 +96,7 @@
 
   <script>
     const token = localStorage.getItem('token');
-    const socket = io('wss://mlm-bakcend.pixl.uz', {
+    const socket = io('https://mlm-backend.pixl.uz/', {
       auth: {
         token: token,
       }

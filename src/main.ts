@@ -16,7 +16,7 @@ async function bootstrap() {
   // ConfigService ni olish uchun
   const configService = app.get(ConfigService);
 
-  // Global ValidationPipe: kiruvchi ma'lumotlarni validatsiya qiladi
+  // Global ValidationPipe: kiruvchi ma'lumotlarni yvalidatsiya qiladi
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // faqat DTO da belgilangan propertylarni ruxsat beradi
