@@ -5,6 +5,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import verifyHtml from './verif'
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { WsAuthGuard } from 'src/auth/ws.guard';
 
 @ApiTags("Authorization")
 @Controller('authorization')
@@ -49,5 +50,17 @@ async googleAuthRedirect(@Req() req, @Res() res) {
   // ✅ Frontendga token yuborish uchun redirect
   const redirectUrl = `${this.configService.get('GOOGLE_SUCCESS_REDIRECT')}?token=${token}`;
   return res.redirect(redirectUrl);
+}
+@Get('callback/:token')
+async callback(@Param('token') req:any){
+    console.log(req);
+    return req
+}
+@Get('user')
+@ApiOperation({summary:"Google orqali ro'yhatdan o'tganda foydalanuvchi malumotlarini olish"})
+@UseGuards(WsAuthGuard)
+async authorizationUserGet(@Req() req:any){
+    const data = await this.service.authorizationUserGet(req.user.email)
+    return data
 }
 }

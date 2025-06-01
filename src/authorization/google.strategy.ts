@@ -28,16 +28,27 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     // DBdan Google ID bo'yicha foydalanuvchini qidiramiz
     let user = await this.prisma.users.findUnique({ where: { googleId: id } });
 
-    if (!user) {
-      // Agar foydalanuvchi yo'q bo'lsa, yangi yaratamiz
-      user = await this.prisma.users.create({
-        data: {
-          googleId: id,
-          email,
-          name: name?.givenName,
-        },
-      });
-    }
+if (!user) {
+  // Email orqali tekshiramiz
+  user = await this.prisma.users.findUnique({ where: { email } });
+
+  if (user) {
+    // Email bor, lekin googleId yo‘q — yangilaymiz
+    user = await this.prisma.users.update({
+      where: { email },
+      data: { googleId: id },
+    });
+  } else {
+    // Foydalanuvchi yo‘q, yangisini yaratamiz
+    user = await this.prisma.users.create({
+      data: {
+        googleId: id,
+        email,
+        name: name?.givenName,
+      },
+    });
+  }
+}
     const token = await this.authSerivce.createAccessToken({email})
     
     done(null, {user,token},);

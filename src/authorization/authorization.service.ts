@@ -113,4 +113,8 @@ export class AuthorizationService {
 
     return { token,message:'success',data:{user} };
   }
+  async authorizationUserGet(email){
+    const data = await this.prisma.users.findFirst({where:{email:email}})
+    return data
+  }
 }
