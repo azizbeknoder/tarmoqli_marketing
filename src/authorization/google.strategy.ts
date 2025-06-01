@@ -38,8 +38,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         },
       });
     }
-    const token = await this.authSerivce.createAccessToken(email)
+    const token = await this.authSerivce.createAccessToken({email})
     
-    done(token, user,);
+    done(null, {user,token},);
   }
 }

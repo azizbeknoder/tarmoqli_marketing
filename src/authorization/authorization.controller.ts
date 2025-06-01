@@ -41,12 +41,11 @@ export class AuthorizationController {
 
   // 2. Google callback (redirect URL) endpoint
   @Get('/google/redirect')
-  @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
-    // Google login muvaffaqiyatli bo'lsa, bu yerga foydalanuvchi ma'lumotlari bilan keladi
-    // req.user — GoogleStrategy validate metodidan qaytgan user obyekti
+@UseGuards(AuthGuard('google'))
+async googleAuthRedirect(@Req() req, @Res() res) {
+  const { user, token } = req.user;
 
-    // Bu yerda siz token yaratish, sessiya saqlash yoki frontendga foydalanuvchi ma'lumotlarini yuborish mumkin
-    return req.user;
-  }
+  // ✅ Frontendga token yuborish uchun redirect
+  return res.redirect(`http://localhost:5173/auth/callback?token=${token}`);
+}
 }
