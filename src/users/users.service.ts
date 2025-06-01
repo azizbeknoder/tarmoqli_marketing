@@ -8,7 +8,6 @@ export class UsersService {
     constructor(private prisma:PrismaService){}
     async findAll(){
         const data = await this.prisma.users.findMany({include:{
-          balances:true,
           referrals:true,
           payments:true,
           orders:true,
@@ -18,7 +17,7 @@ export class UsersService {
 
     }
     async findOne(id:string){
-        const data = await this.prisma.users.findMany({where:{id:Number(id)}})
+        const data = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,}})
         if(!data[0]){
             throw new CustomError(404,"Foydalanuvchi topilmadi")
         }
@@ -98,6 +97,11 @@ export class UsersService {
         const data = await this.prisma.users.update({where:{id:Number(id)},data:{isActive:true}})
         return data
         
+      }
+      async getOneUserToken(email){
+        const data = this.prisma.users.findFirst({where:{email:email},include:{payments:true,orders:true}})
+        return data
+
       }
       
 }

@@ -10,6 +10,17 @@ import { AdminGuard } from 'src/auth/admin.guard';
 export class UsersController {
     constructor(private readonly service:UsersService){
     }
+    @Get('token')
+    @ApiOperation({summary:"Token orqali foydalanuvchi olish"})
+    @ApiBearerAuth()
+    @ApiResponse({status:200,description:"success"})
+    @UseGuards(AuthGuard)
+    async findOneToken(@Req() req:any){
+
+        const data = await this.service.getOneUserToken(req.user.email)
+        return data
+    }
+
     @Get('')
     @ApiOperation({summary:"Barcha userlarni olish uchun"})
     @ApiBearerAuth()
@@ -65,6 +76,7 @@ export class UsersController {
         const data = await this.service.deBlock(id)
         return data
     }
+   
 
 }
 

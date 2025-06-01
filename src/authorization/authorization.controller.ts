@@ -5,12 +5,21 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import verifyHtml from './verif'
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
-import { WsAuthGuard } from 'src/auth/ws.guard';
+import {AuthGuard1} from 'src/auth/auth.guard'
 
 @ApiTags("Authorization")
 @Controller('authorization')
 export class AuthorizationController {
     constructor(private readonly service:AuthorizationService,private configService:ConfigService){}
+    @Get('user')
+@ApiOperation({summary:"Google orqali ro'yhatdan o'tganda foydalanuvchi malumotlarini olish"})
+@UseGuards(AuthGuard1)
+async authorizationUserGet(@Req() req:any){
+    console.log(req);
+    
+    const data = await this.service.authorizationUserGet(req.user.email)
+    return data
+}
     @Post('register')
     @ApiOperation({summary:"Ro'yhatdan o'tish."})
     @ApiResponse({status:201,description:"success"})
@@ -56,11 +65,6 @@ async callback(@Param('token') req:any){
     console.log(req);
     return req
 }
-@Get('user')
-@ApiOperation({summary:"Google orqali ro'yhatdan o'tganda foydalanuvchi malumotlarini olish"})
-@UseGuards(WsAuthGuard)
-async authorizationUserGet(@Req() req:any){
-    const data = await this.service.authorizationUserGet(req.user.email)
-    return data
+
 }
-}
+
