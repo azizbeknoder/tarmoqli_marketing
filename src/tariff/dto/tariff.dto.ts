@@ -29,16 +29,16 @@ class TariffTranslateDto {
 }
 
 
-class TariffPriceDto {
-  @ApiProperty({example:"'USD', 'UZS', 'RUB', etc",description:"Kiritiladigon valyuta birligi"})
-  @IsString()
-  currency: string; // 'USD', 'UZS', 'RUB', etc.
+// class TariffPriceDto {
+//   @ApiProperty({example:"'USD', 'UZS', 'RUB', etc",description:"Kiritiladigon valyuta birligi"})
+//   @IsString()
+//   currency: string; // 'USD', 'UZS', 'RUB', etc.
 
-  @ApiProperty({example:1000,description:"Kiritiladigon summa miqdori"})
-  @IsNumber()
-  @Min(0)
-  value: number;
-}
+//   @ApiProperty({example:1000,description:"Kiritiladigon summa miqdori"})
+//   @IsNumber()
+//   @Min(0)
+//   value: number;
+// }
 
 export class CreatedTariffDto {
   @ApiProperty({example:30,description:"Mahsulot muddati"})
@@ -60,11 +60,15 @@ export class CreatedTariffDto {
   @Type(() => TariffTranslateDto)
   translations: TariffTranslateDto[];
 
-  @ApiProperty({ type: [TariffPriceDto] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => TariffPriceDto)
-  prices: TariffPriceDto[];
+  // @ApiProperty({ type: [TariffPriceDto] })
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => TariffPriceDto)
+  // prices: TariffPriceDto[];
+
+  @ApiProperty({example:13,description:"Tarifning narxi coin bilan"})
+  @IsNumber()
+  coin:number
 
   @IsString()
   @IsOptional()
@@ -95,11 +99,11 @@ export class UpdateTariffDto {
   @IsOptional()
   translations?: TariffTranslateDto[];
 
-  @ApiPropertyOptional({ type: [TariffPriceDto] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => TariffPriceDto)
-  @IsOptional()
-  prices?: TariffPriceDto[];
+  // @ApiPropertyOptional({ type: [TariffPriceDto] })
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => TariffPriceDto)
+  // @IsOptional()
+  // prices?: TariffPriceDto[];
 }
 

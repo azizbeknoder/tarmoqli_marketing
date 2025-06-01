@@ -16,6 +16,7 @@ model Users {
   createdAt  DateTime       @default(now())
   updateAt   DateTime       @updatedAt
   isActive   Boolean        @default(true)
+  coin      Int? @default(0)
 
   referrals     Referral[]     @relation("UserReferrals")
   referradBy    Referral[]     @relation("Referrer")
@@ -59,11 +60,11 @@ model Tariff {
   dailyProfit    Float             @default(0) // kunlik foyda
   createdAt      DateTime          @default(now())
   photo_url      String
-
+  coin   Int?
   
   orders         Orders[]             
   translations   TariffTranslation[]
-  prices         TariffPrice[]
+  // prices         TariffPrice[]
 
   @@map("products")
 }
@@ -90,18 +91,18 @@ model ProductTranslation {
   @@map("product_translations")
 }
 
-model ProductPrice {
-  id         Int       @id @default(autoincrement())
-  tariff_id  Int?
-  product_id Int?
-  currency   String
-  value      Float
-  product    Product?  @relation("ProductPrices", fields: [product_id], references: [id], onDelete: Cascade)
+// model ProductPrice {
+//   id         Int       @id @default(autoincrement())
+//   tariff_id  Int?
+//   product_id Int?
+//   currency   String
+//   value      Float
+//   product    Product?  @relation("ProductPrices", fields: [product_id], references: [id], onDelete: Cascade)
 
-  @@unique([tariff_id, currency])
-  @@unique([product_id, currency])
-  @@map("product_prices")
-}
+//   @@unique([tariff_id, currency])
+//   @@unique([product_id, currency])
+//   @@map("product_prices")
+// }
 
 model Orders {
   id         Int       @id @default(autoincrement())
@@ -141,7 +142,9 @@ model Payments {
   to_checked_date DateTime?
   currency        String
   how_much        Float
-  card            BigInt?
+  card            String?
+  coin            Int?
+  
 
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
@@ -165,10 +168,11 @@ model Product {
   photo_url     ProductImage[]
   rating       Int
   rewiev       Int
+  coin      Int?
 
   creator       Users                @relation("CreatedMainProducts", fields: [created_user], references: [id], onDelete: Cascade)
   translations  ProductTranslation[] @relation("ProductTranslations")
-  prices        ProductPrice[]       @relation("ProductPrices")
+  // prices        ProductPrice[]       @relation("ProductPrices")
   orders        OrdersProduct[]
   @@map("main_products")
 }
@@ -247,14 +251,14 @@ model TariffTranslation {
   @@unique([tariff_id, language])
 }
 
-model TariffPrice {
-  id        Int     @id @default(autoincrement())
-  tariff_id Int
-  currency  String
-  value     Float
+// model TariffPrice {
+//   id        Int     @id @default(autoincrement())
+//   tariff_id Int
+//   currency  String
+//   value     Float
 
-  tariff    Tariff  @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
+//   tariff    Tariff  @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
 
-  @@unique([tariff_id, currency])
-}
+//   @@unique([tariff_id, currency])
+// }
 

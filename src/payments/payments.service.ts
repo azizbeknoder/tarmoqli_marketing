@@ -21,30 +21,30 @@ export  class PaymentService{
         const result = await this.prisma.payments.update({where:{id:id},data:{status:'CANCELLED'}})
         return {message:result,status:'CANCELLED',success:true}
     }
-    async cardSend(id:any,cardNumber:number){
+    async cardSend(id:any,cardNumber:string){
           
           const result = await this.prisma.payments.update({
             where: { id: Number(id),status:'PENDING' },
-            data: { card:Number(cardNumber),status:'SENDING' },
+            data: { card:cardNumber,status:'SENDING' },
           });
         
           return result;
     }
     async uploadScreenshot(photo_url:any,id:any){
         
-            const oldPayments = await this.prisma.payments.findFirst({
-              where: {
-                user_id: Number(id),
-                status: 'SENDING',
-              },
-            });
+            // const oldPayments = await this.prisma.payments.findFirst({
+            //   where: {
+            //     user_id: Number(id),
+            //     status: 'SENDING',
+            //   },
+            // });
           
-            if (!oldPayments) {
-              return false
-            }
+            // if (!oldPayments) {
+            //   return false
+            // }
           
             const result = await this.prisma.payments.update({
-              where: { id: oldPayments.id },
+              where: { id: Number(id) },
               data: { photo_url, status:'SCRINSHOTUPLOAD'},
               include:{
                 user:true

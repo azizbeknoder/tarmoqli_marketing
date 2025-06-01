@@ -33,6 +33,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
     // console.log(`Client connected ${client.id}`)
   }
   handleDisconnect(client: any) {
+
     // console.log(`Client disconnected: ${client.id}`);
     
   }
@@ -66,12 +67,14 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
     const serviceResult:any = await this.paymentService.paymentRequest(deToken,data)
     if(!serviceResult.success){
       return this.server.to(roomName).emit('paymentResponse',{
-        message:"Avvalgi to'lovingiz hali hamon kutilmoqda."
+        message:"Avvalgi to'lovingiz hali hamon kutilmoqda.",
+        success:false,
+        status:'PENDING'
       })
     }
     this.server.to(roomName).emit('paymentResponse',{
       message:"To'lov ko'rib chiqilmoqda sizga 2 daqiqa ichida karta ko'rsatiladi.",
-      success:serviceResult.success,
+      success:true,
       status:serviceResult.status
     })
     
@@ -81,7 +84,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       userId:serviceResult.message.user_id,
       date:serviceResult.message.to_send_date,
       howMuch:serviceResult.message.how_much,
-      currencsy:serviceResult.message.currency,
+      currency:serviceResult.message.currency,
       status:serviceResult.message.status
     })
     // console.log(`${data.username} sent: ${data.message}`)
@@ -111,7 +114,8 @@ async handleUserMessage(@ConnectedSocket() client: Socket, @MessageBody() body: 
   const serviceResult = await this.paymentService.cardSend(body.paymentId,body.cardNumber)
   this.server.to(body.roomName).emit('card_info', {
     cardNumber: body.cardNumber,
-    message: 'Test karta yuborildi'
+    currency:body.currency,
+    type:body.type
   });
 }
 @SubscribeMessage('upload_screenshot')
@@ -133,7 +137,7 @@ async uploadScreenshot(@ConnectedSocket()client:Socket, @MessageBody() body:any)
   }
   // console.log(body);
   
-  const serviceResult:any = await this.paymentService.uploadScreenshot(body.screenshotUrl,deToken.id)
+  const serviceResult:any = await this.paymentService.uploadScreenshot(body.screenshotUrl,body.id)
   // console.log(serviceResult);
   
   if(!serviceResult){

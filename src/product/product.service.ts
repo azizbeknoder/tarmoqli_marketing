@@ -19,14 +19,10 @@ export class ProductsService {
         rating: dto.rating,
         rewiev: dto.rewiev,
         count:dto.count,
+        coin:dto.coin,
         translations: {
           createMany: {
             data: dto.translations,
-          },
-        },
-        prices: {
-          createMany: {
-            data: dto.prices,
           },
         },
         photo_url: {
@@ -37,7 +33,7 @@ export class ProductsService {
       },
       include: {
         translations: true,
-        prices: true,
+
         photo_url: true,
       },
     });
@@ -49,7 +45,7 @@ export class ProductsService {
       include: {
         photo_url: true,
         translations: true,
-        prices: true,
+
       },
     });
   }
@@ -60,7 +56,7 @@ export class ProductsService {
       include: {
         photo_url: true,
         translations: true,
-        prices: true,
+
       },
     });
   }
@@ -72,12 +68,13 @@ export class ProductsService {
         count: dto.count,
         rating: dto.rating,
         rewiev: dto.rewiev,
+        coin:dto.coin
         // Note: updateMany yoki delete/createMany qilish mumkin tafsilotga qarab
       },
       include: {
         photo_url: true,
         translations: true,
-        prices: true,
+        // prices: true,
       },
     });
   }

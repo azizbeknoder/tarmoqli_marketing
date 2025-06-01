@@ -6,6 +6,7 @@ import {
   IsArray,
   ValidateNested,
   IsNotEmpty,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -46,15 +47,15 @@ export class ProductTranslationDto {
   usage?: string;
 }
 
-export class ProductPriceDto {
-  @ApiProperty({ example: 'USD', description: 'Valyuta turi' })
-  @IsString()
-  currency: string;
+// export class ProductPriceDto {
+//   @ApiProperty({ example: 'USD', description: 'Valyuta turi' })
+//   @IsString()
+//   currency: string;
 
-  @ApiProperty({ example: 19.99 })
-  @IsInt()
-  value: number;
-}
+//   @ApiProperty({ example: 19.99 })
+//   @IsInt()
+//   value: number;
+// }
 
 export class CreateProductDto {
   @ApiProperty({ example: 5, description: 'Reyting (1-5 oralig‘ida)' })
@@ -78,6 +79,11 @@ export class CreateProductDto {
   @Type(() => ProductImageDto)
   photo_url: ProductImageDto[];
 
+  @ApiProperty({example:1,description:"Maxsulotning narxi tokenda"})
+  @IsNumber()
+  coin:number
+  
+
   @ApiProperty({
     type: [ProductTranslationDto],
     description: 'Mahsulot tarjimalari (ko‘p tillilik)',
@@ -87,12 +93,5 @@ export class CreateProductDto {
   @Type(() => ProductTranslationDto)
   translations: ProductTranslationDto[];
 
-  @ApiProperty({
-    type: [ProductPriceDto],
-    description: 'Narxlar ro‘yxati (har bir valyutada)',
-  })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ProductPriceDto)
-  prices: ProductPriceDto[];
+  
 }

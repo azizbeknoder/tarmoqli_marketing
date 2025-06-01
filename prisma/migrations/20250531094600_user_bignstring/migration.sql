@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "users" ALTER COLUMN "coin" SET DEFAULT '0',
+ALTER COLUMN "coin" SET DATA TYPE TEXT;

@@ -20,7 +20,8 @@ export class AuthGuard implements CanActivate {
     
     try {
       const decoded = await this.authService.verifyAccessToken(token)
-
+      console.log(decoded);
+      
       if(!decoded){
         throw new UnauthorizedException("To'ken vaqti o'tgan yokida eskirgan")
       }
