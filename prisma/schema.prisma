@@ -262,3 +262,9 @@ model TariffTranslation {
 //   @@unique([tariff_id, currency])
 // }
 
+model Coin{
+  id Int @id @default(autoincrement())
+  currency String
+  count Int
+  @@unique([currency])
+}
