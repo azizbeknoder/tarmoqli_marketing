@@ -9,7 +9,10 @@ export class UsersService {
     async findAll(){
         const data = await this.prisma.users.findMany({include:{
           balances:true,
-          referrals:true
+          referrals:true,
+          payments:true,
+          orders:true,
+          ordersProduct:true
         }})
         return data
 

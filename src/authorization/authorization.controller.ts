@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthDtoLogin, AuthDtoRegister } from './dto/auth.dot.ts/auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import verifyHtml from './verif'
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags("Authorization")
 @Controller('authorization')
@@ -31,4 +32,21 @@ export class AuthorizationController {
         const data = await this.service.login(body)
         return data
     }
+     // 1. Google login uchun endpoint
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {
+    // Bu yerga kelmaydi, chunki Passport Google login sahifasiga yo'naltiradi
+  }
+
+  // 2. Google callback (redirect URL) endpoint
+  @Get('/google/redirect')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req) {
+    // Google login muvaffaqiyatli bo'lsa, bu yerga foydalanuvchi ma'lumotlari bilan keladi
+    // req.user — GoogleStrategy validate metodidan qaytgan user obyekti
+
+    // Bu yerda siz token yaratish, sessiya saqlash yoki frontendga foydalanuvchi ma'lumotlarini yuborish mumkin
+    return req.user;
+  }
 }

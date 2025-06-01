@@ -59,8 +59,7 @@ export class AuthService {
   // Kirish tokenini tekshirish
   async verifyAccessToken(token: string) {
     try {      
-      console.log(token);
-      
+  
       return await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('ACCESS_SECRET'),
       });

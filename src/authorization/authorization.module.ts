@@ -7,10 +7,11 @@ import { ReferalModule } from 'src/referal/referal.module';
 import { ReferalService } from 'src/referal/referal.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [PrismaModule,MailModule,ReferalModule,AuthModule],
-  providers: [AuthorizationService,ReferalService],
+  providers: [AuthorizationService,ReferalService,GoogleStrategy],
   controllers: [AuthorizationController],
   exports: [AuthorizationService]
 })

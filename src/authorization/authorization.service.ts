@@ -104,7 +104,7 @@ export class AuthorizationService {
       throw new CustomError(404, "Ro'yhatdan o'ting!");
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password || '');
     if (!isMatch) {
       throw new CustomError(400, 'Email yoki parol xato!');
     }
