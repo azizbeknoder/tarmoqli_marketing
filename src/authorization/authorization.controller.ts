@@ -4,11 +4,12 @@ import { AuthDtoLogin, AuthDtoRegister } from './dto/auth.dot.ts/auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import verifyHtml from './verif'
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags("Authorization")
 @Controller('authorization')
 export class AuthorizationController {
-    constructor(private readonly service:AuthorizationService){}
+    constructor(private readonly service:AuthorizationService,private configService:ConfigService){}
     @Post('register')
     @ApiOperation({summary:"Ro'yhatdan o'tish."})
     @ApiResponse({status:201,description:"success"})
@@ -46,6 +47,7 @@ async googleAuthRedirect(@Req() req, @Res() res) {
   const { user, token } = req.user;
 
   // ✅ Frontendga token yuborish uchun redirect
-  return res.redirect(`http://localhost:5173/auth/callback?token=${token}`);
+  const redirectUrl = `${this.configService.get('GOOGLE_SUCCESS_REDIRECT')}?token=${token}`;
+  return res.redirect(redirectUrl);
 }
 }
