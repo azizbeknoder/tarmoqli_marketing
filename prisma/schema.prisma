@@ -27,6 +27,7 @@ model Users {
   payments      Payments[]
   balances      UserBalance[]
   createdProducts Product[]    @relation("CreatedMainProducts")
+  userTariff      UserTarif[]
 
   @@map("users")
 }
@@ -63,6 +64,7 @@ model Tariff {
   photo_url      String
   coin   Int?
   
+  userTariff UserTarif[]
   orders         Orders[]             
   translations   TariffTranslation[]
   // prices         TariffPrice[]
@@ -268,4 +270,21 @@ model Coin{
   currency String
   count Int
   @@unique([currency])
+}
+
+model UserTarif{
+  id Int @id @default(autoincrement())
+  user_id Int
+  tariff_id Int
+  start_time DateTime @default(now())
+  end_time DateTime?
+  lastBonusDate DateTime?
+  user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)
+  tariff Tariff @relation(fields: [tariff_id],references: [id],onDelete: Cascade)
+}
+model SpinValue{
+  id Int @id @default(autoincrement())
+  name String?
+  color String?
+  precent Int?
 }

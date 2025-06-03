@@ -3,83 +3,35 @@ import { CreateCardDto } from 'src/card/dto/card.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import CustomError from 'src/utils/custom-error';
 import { CreatedOrderDto } from './dto/orders.dto';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
-  async createOrder(body:CreatedOrderDto , req: any) {
-    const oldUser = await this.prisma.users.findFirst({
-      where: { email: req.user.email },
-    });
-    if (!oldUser) {
-      throw new CustomError(404, 'User not found');
-    }
-
-    const { id: userId } = oldUser;
-    const tariff_id = body.tariff_id;
-    const tariff = await this.prisma.tariff.findUnique({
-      where: { id: tariff_id },
-    });
-    
-    // if (!tariff) {
-    //   throw new CustomError(404, 'Tariff not found');
-    // }
-    // const tariffPrice = await this.prisma.tariffPrice.findFirst({where:{tariff_id:tariff_id},select:{value:true,currency:true}})
-    // const userBalans = await this.prisma.userBalance.findFirst({where:{userId:userId},select:{amount:true,currency:true}})
-    // if(Number(userBalans?.amount )>= Number(tariffPrice?.value)){
-    //   if(userBalans?.currency == tariffPrice?.currency){
-    //     const data = await this.prisma.orders.create({data:{user_id:userId,tariff_id:body.tariff_id,isChecked:'PENDING'}})
-    //     return data
-    //   }
-    //   else{
-    //     throw new CustomError(403,"Siz faqat hisob to'ldirgan valyutangizda mahsulot sotib ola olasiz.")
-    //   }
-    // }else{
-    //   throw new CustomError(403,"Hisobingizda mabla'g yetarli emas.")
-    // }
-
-    return {success:false}
-    // const data = await this.prisma.orders.create({
-    //   data: {
-    //     user_id: userId,
-    //     tariff_id: tariff_id,
-    //   },
-    //   include: {
-    //     user: {
-    //       select: {
-    //         id: true,
-    //         name: true,
-    //         email: true,
-    //         role: true,
-    //         isActive: true,
-    //       },
-    //     },
-    //     tariff: {
-    //       select: {
-    //         id: true,
-    //         term: true,
-    //         referral_bonus: true,
-    //         photo_url: true,
-    //         createdAt: true,
-    //       },
-    //     },
-    //   },
-    // });
-
+  async createOrder(body:CreatedOrderDto,req:any){
+      const oldUser:any = await this.prisma.users.findFirst({where:{id:req.user.id}})
+      if(!oldUser){
+        throw new CustomError(403,"User not found")
+      }
+      const oldTariff = await this.prisma.tariff.findFirst({where:{id:body.tariff_id}})
+      if(!oldTariff){
+        throw new CustomError(403,"Tariff not found")
+      }
+      if(oldTariff.coin || 1000000000  <= oldUser.coin ){
+        throw new CustomError(402,"coin is not enough")
+      }
+      
+      const now = new Date()
+      const endTime = await addDays(now,oldTariff.term)
+      const orders = await this.prisma.orders.create({data:{user_id:oldUser.id,tariff_id:body.tariff_id}})
+      const userTariff = await this.prisma.userTarif.create({data:{user_id:oldUser.id,tariff_id:body.tariff_id,end_time:endTime}})
+      return {orders,userTariff}
   }
 
-  async getAllOrders() {
-    return this.prisma.orders.findMany({
-      include: {
-        user: {
-          select: { id: true, name: true, email: true, role: true },
-        },
-        tariff: {
-          select: { id: true, term: true, referral_bonus: true, photo_url: true },
-        },
-      },
-    });
+  async getAllOrders(){
+    const data = await this.prisma.orders.findMany({include:{user:true,tariff:true}})
+    return data
   }
 
   // ─── YANGI METODLAR ─────────────────────────────────────────────────────

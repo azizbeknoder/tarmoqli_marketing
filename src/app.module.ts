@@ -28,9 +28,11 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CheckerService } from './task/checker.service';
 import { CoinModule } from './coin/coin.module';
 import { BalanceModule } from './balance/balance.module';
+import { SpinModule } from './spin/spin.module';
+import { BonusModule } from './bonus/bonus.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, StatistikaModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ,ScheduleModule.forRoot(), CoinModule, BalanceModule],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, StatistikaModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ,ScheduleModule.forRoot(), CoinModule, BalanceModule, SpinModule, BonusModule],
   controllers: [AppController],
   providers: [AppService, MailService, NotificationGateway,CheckerService],
   exports:[NotificationGateway]

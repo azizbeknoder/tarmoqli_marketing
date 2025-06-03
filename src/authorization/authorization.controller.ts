@@ -12,9 +12,9 @@ import {AuthGuard1} from 'src/auth/auth.guard'
 export class AuthorizationController {
     constructor(private readonly service:AuthorizationService,private configService:ConfigService){}
     @Get('user')
-@ApiOperation({summary:"Google orqali ro'yhatdan o'tganda foydalanuvchi malumotlarini olish"})
-@UseGuards(AuthGuard1)
-async authorizationUserGet(@Req() req:any){
+    @ApiOperation({summary:"Google orqali ro'yhatdan o'tganda foydalanuvchi malumotlarini olish"})
+    @UseGuards(AuthGuard1)
+    async authorizationUserGet(@Req() req:any){
     console.log(req);
     
     const data = await this.service.authorizationUserGet(req.user.email)
@@ -64,6 +64,14 @@ async googleAuthRedirect(@Req() req, @Res() res) {
 async callback(@Param('token') req:any){
     console.log(req);
     return req
+}
+@Get('google/redirect')
+@UseGuards(AuthGuard('google'))
+async googleRedirect(@Req() req: any, @Res() res: any) {
+  const { token } = req.user as any;
+
+  const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+  return res.redirect(`${frontendUrl}/oauth-success?token=${token}`);
 }
 
 }

@@ -11,20 +11,21 @@ export class UsersService {
           referrals:true,
           payments:true,
           orders:true,
-          ordersProduct:true
+          ordersProduct:true,
+          userTariff:true
         }})
         return data
 
     }
     async findOne(id:string){
-        const data = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,}})
+        const data = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,userTariff:true,referradBy:true,orders:true,ordersProduct:true,payments:true}})
         if(!data[0]){
             throw new CustomError(404,"Foydalanuvchi topilmadi")
         }
         return data
     }
     async delete(id:string){
-        const oldUser = await this.prisma.users.findMany({where:{id:Number(id)}})
+        const oldUser = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,userTariff:true,referradBy:true}})
         if(!oldUser[0]){
             throw new CustomError(404,"Foydalanuvchi topilmadi")
         }
@@ -98,8 +99,8 @@ export class UsersService {
         return data
         
       }
-      async getOneUserToken(email){
-        const data = this.prisma.users.findFirst({where:{email:email},include:{payments:true,orders:true}})
+      async getOneUserToken(email:string){
+        const data = this.prisma.users.findFirst({where:{email:email},include:{payments:true,orders:true,userTariff:true,referradBy:true,referrals:true}})
         return data
 
       }

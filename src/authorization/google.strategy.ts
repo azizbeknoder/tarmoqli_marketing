@@ -10,47 +10,49 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
-    private authSerivce:AuthService
+    private readonly authService: AuthService,
   ) {
     super({
       clientID: configService.get<string>('GOOGLE_CLIENT_ID')!,
       clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET')!,
       callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL')!,
       scope: ['email', 'profile'],
-      passReqToCallback: true, // requestni validate()ga uzatish uchun kerak
+      passReqToCallback: true,
     });
   }
 
-  async validate(request: any, accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
-    const { id, name, emails, photos } = profile;
+  async validate(
+    request: any,
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: VerifyCallback,
+  ): Promise<any> {
+    const { id, name, emails } = profile;
     const email = emails?.[0].value;
 
-    // DBdan Google ID bo'yicha foydalanuvchini qidiramiz
     let user = await this.prisma.users.findUnique({ where: { googleId: id } });
 
-if (!user) {
-  // Email orqali tekshiramiz
-  user = await this.prisma.users.findUnique({ where: { email } });
+    if (!user) {
+      user = await this.prisma.users.findUnique({ where: { email } });
+      if (user) {
+        user = await this.prisma.users.update({
+          where: { email },
+          data: { googleId: id },
+        });
+      } else {
+        user = await this.prisma.users.create({
+          data: {
+            googleId: id,
+            email,
+            name: name?.givenName,
+          },
+        });
+      }
+    }
 
-  if (user) {
-    // Email bor, lekin googleId yo‘q — yangilaymiz
-    user = await this.prisma.users.update({
-      where: { email },
-      data: { googleId: id },
-    });
-  } else {
-    // Foydalanuvchi yo‘q, yangisini yaratamiz
-    user = await this.prisma.users.create({
-      data: {
-        googleId: id,
-        email,
-        name: name?.givenName,
-      },
-    });
-  }
-}
-    const token = await this.authSerivce.createAccessToken({email})
-    
-    done(null, {user,token},);
+    const token = await this.authService.createAccessToken({ email });
+
+    done(null, { user, token });
   }
 }
