@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentHTTPService } from './paymentHTTP.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { PaymentStatus } from '@prisma/client';
-import { CheckedPaymentDto } from './dto/payment.dto';
+import { CheckedPaymentDto, RejectedPaymentDto } from './dto/payment.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
 
@@ -45,6 +45,13 @@ export class PaymentsController {
     @Post("checked")
     async checkedPayments(@Body() body:CheckedPaymentDto){
         const data = await this.service.checkedPayments(body)
+        return data
+    }
+    @ApiOperation({summary:"To'lovni admin tomonidan rad etish"})
+    @UseGuards(AuthGuard,AdminGuard)
+    @Post('rejected')
+    async rejectedPayments(@Body() body:RejectedPaymentDto){
+        const data = await this.service.rejectedPayments(body)
         return data
     }
     

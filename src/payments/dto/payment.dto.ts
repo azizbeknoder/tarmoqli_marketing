@@ -18,3 +18,8 @@ export class CheckedPaymentDto{
     @IsNumber()
     id:number
 }
+export class RejectedPaymentDto{
+    @ApiProperty({example:'1',description:"Payments id si yoziladi"})
+    @IsNumber()
+    id:number
+}

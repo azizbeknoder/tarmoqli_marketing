@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PaymentStatus } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { CheckedPaymentDto } from "./dto/payment.dto";
+import { CheckedPaymentDto, RejectedPaymentDto } from "./dto/payment.dto";
 import CustomError from "src/utils/custom-error";
 
 @Injectable()
@@ -27,6 +27,16 @@ export class PaymentHTTPService{
         const data = await this.prisma.payments.update({where:{id:dto.id},data:{status:'SUCCESS',currency:dto.currency,how_much:dto.how_much,coin:dto.coin,to_checked_date: new Date()}})
         const userBalance = await this.prisma.users.update({where:{id:data.user_id},data:{coin:{increment:dto.coin}}})
         return{success:true,message:'success',payment:data,user:userBalance}
+        
+    }
+    async rejectedPayments(dto:RejectedPaymentDto){
+        const oldPayments = await this.prisma.payments.findFirst({where:{id:dto.id}})
+        // if(oldPayments && oldPayments.status == 'SUCCESS'){
+        //     throw new CustomError(403,"already exists success payments")
+        // }
+        const data = await this.prisma.payments.update({where:{id:dto.id},data:{status:'CANCELLEDADMIN',to_checked_date: new Date()},include:{user:true}})
+        // const userBalance = await this.prisma.users.update({where:{id:data.user_id},data:{coin:{increment:dto.coin}}})
+        return{success:true,message:'success',payment:data,}
         
     }
     async getAllPaymentForUser(email:string){
