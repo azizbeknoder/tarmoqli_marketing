@@ -76,6 +76,15 @@ export class UsersController {
         const data = await this.service.deBlock(id)
         return data
     }
+    @Get('/token')
+    @ApiOperation({summary:"Bitta userni olish /id bilan"})
+    @ApiBearerAuth()
+    @ApiResponse({status:200,description:"success"})
+    @UseGuards(AuthGuard)
+    async userToken(@Param('id') id:string){
+        const data = await this.service.getOneUserToken(id)
+        return data
+    }
    
 
 }
