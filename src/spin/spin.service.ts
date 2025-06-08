@@ -6,6 +6,8 @@ import { AddSpinValue, UpdateSpinValue } from './dto/spin.dto';
 export class SpinService {
     constructor(private prisma:PrismaService){}
     async addSpinValue(body:AddSpinValue){
+        console.log(body);
+        
         const data = await this.prisma.spinValue.create({data:{name:body.name,color:body.color,precent:body.precent}})
         return data
     }

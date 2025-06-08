@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { SpinService } from './spin.service';
 import { AddSpinValue, UpdateSpinValue } from './dto/spin.dto';
 import { ApiOperation } from '@nestjs/swagger';
@@ -13,7 +13,9 @@ export class SpinController {
     @ApiOperation({summary:"Spin uchun value qo'shish"})
     @UseGuards(AuthGuard,AdminGuard)
     @Post('value')
-    async addSpinValue(body:AddSpinValue){
+    async addSpinValue(@Body() body:AddSpinValue){
+        console.log(body);
+        
         const data = await this.service.addSpinValue(body)
         return data
     }
@@ -33,8 +35,8 @@ export class SpinController {
     }
     @ApiOperation({summary:"Spin valyuseni update qilish"})
     @UseGuards(AuthGuard,AdminGuard)
-    @Post('value')
-    async updateSpinValue(body:UpdateSpinValue){
+    @Put('value')
+    async updateSpinValue(@Body() body:UpdateSpinValue){
         const data = await this.service.updateSpinValue(body)
         return data
     }

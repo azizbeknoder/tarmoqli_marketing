@@ -3,8 +3,8 @@ import { PaymentService } from "./payments.service";
 
 
 import { Server, Socket } from "socket.io";
-import { Body, flatten, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "src/auth/auth.guard";
+// import { Body, flatten, UseGuards } from "@nestjs/common";
+// import { AuthGuard } from "src/auth/auth.guard";
 import { AuthService } from "src/auth/auth.service";
 
 @WebSocketGateway({

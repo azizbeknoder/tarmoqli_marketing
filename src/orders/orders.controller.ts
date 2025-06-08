@@ -42,8 +42,9 @@ export class OrdersController {
     @ApiOperation({summary:"Foydalanuvchini orderlarini ko'rish uchun /id kerak emas foydalanuvchi token orqali topiladi"})
     @ApiResponse({status:200,description:"success"})
     @UseGuards(AuthGuard)
-    async getAllOrderForUser(@Req()req:any){
+    async getAllOrderForUser(@Req() req:any){
         const data = await this.service.getAllOrdersForUsers(req)
         return data
     }
+   
 }

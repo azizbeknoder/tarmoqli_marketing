@@ -19,7 +19,11 @@ export class CheckedPaymentDto{
     id:number
 }
 export class RejectedPaymentDto{
-    @ApiProperty({example:'1',description:"Payments id si yoziladi"})
+    @ApiProperty({example:1,description:"Payments id si yoziladi"})
     @IsNumber()
     id:number
+
+    @ApiProperty({example:"Kartangiz blocklangani sabab qabul qilinmadi admin bilan bog'laning",description:'Paysment nega rad etilgani'})
+    @IsString()
+    reason:string
 }

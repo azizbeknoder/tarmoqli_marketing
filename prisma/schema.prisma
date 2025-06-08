@@ -147,6 +147,7 @@ model Payments {
   how_much        Float
   card            String?
   coin            Int?
+  reason          String?
   
 
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -287,4 +288,7 @@ model SpinValue{
   name String?
   color String?
   precent Int?
+}
+model BonusDetailes{
+  id Int @id @default(autoincrement())
 }
