@@ -8,6 +8,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import createSuperAdmin from './script/create-super-admin';
 import { ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
+import * as coocieParser from 'cookie-parser'
 
 async function bootstrap() {
   // NestJS ilovasini NestExpressApplication tipida yaratamiz (statik fayllar uchun kerak)
@@ -58,6 +59,7 @@ async function bootstrap() {
 
   // PORT ni olish (env dan yoki default 3000)
   const port = configService.get<number>('PORT') || 3000;
+  app.use(coocieParser());
 
   app.enableCors(); // CORS ni yoqish
 

@@ -18,7 +18,7 @@ export class AuthDtoRegister {
     @ApiProperty({example:"haksdhfakjsdf",description:"Agar foydalanuvchini kimdur taklif qilgan havola orqali ro'yhatdan o'tayotgan bo'lsa"})
     @IsOptional()
     @IsString()
-    referal?:string
+    referal:number
 }
 export class AuthDtoLogin{
     @ApiProperty({example:"example@gmail.com",description:"Foydalanuvchi emaili"})

@@ -67,28 +67,28 @@ export class AuthorizationService {
       data: {
         user_id: createdUser.id,
         referal_user_id: referal_user_id, // null bo‘lishi ham mumkin
-        referals: [],
+       
       },
     });
   
-    // 7. Agar taklif qilgan foydalanuvchi bo‘lsa — uni referral yozuviga bu userni qo‘shamiz
-    if (referal_user_id) {
-      const referalRecord = await this.prisma.referral.findFirst({
-        where: { user_id: referal_user_id },
-      });
+    // // 7. Agar taklif qilgan foydalanuvchi bo‘lsa — uni referral yozuviga bu userni qo‘shamiz
+    // if (referal_user_id) {
+    //   const referalRecord = await this.prisma.referral.findFirst({
+    //     where: { user_id: referal_user_id },
+    //   });
   
-      if (referalRecord) {
-        const existingReferals = (referalRecord.referals as number[] | null) ?? [];
-        existingReferals.push(createdUser.id);
+    //   if (referalRecord) {
+    //     const existingReferals = (referalRecord.referals as number[] | null) ?? [];
+    //     existingReferals.push(createdUser.id);
   
-        await this.prisma.referral.update({
-          where: { id: referalRecord.id },
-          data: {
-            referals: existingReferals,
-          },
-        });
-      }
-    }
+    //     await this.prisma.referral.update({
+    //       where: { id: referalRecord.id },
+    //       data: {
+    //         referals: existingReferals,
+    //       },
+    //     });
+    //   }
+    // }
   
     return { data: createdUser, message: 'success' };
   }

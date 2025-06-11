@@ -75,6 +75,7 @@ export class ProductsService {
         photo_url: true,
         translations: true,
         // prices: true,
+        
       },
     });
   }

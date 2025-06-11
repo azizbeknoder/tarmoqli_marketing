@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthDtoLogin, AuthDtoRegister } from './dto/auth.dot.ts/auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -6,6 +6,7 @@ import verifyHtml from './verif'
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import {AuthGuard1} from 'src/auth/auth.guard'
+import { Response } from 'express';
 
 @ApiTags("Authorization")
 @Controller('authorization')
@@ -44,35 +45,43 @@ export class AuthorizationController {
         return data
     }
      // 1. Google login uchun endpoint
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {
-    // Bu yerga kelmaydi, chunki Passport Google login sahifasiga yo'naltiradi
-  }
-
-  // 2. Google callback (redirect URL) endpoint
-  @Get('/google/redirect')
-@UseGuards(AuthGuard('google'))
-async googleAuthRedirect(@Req() req, @Res() res) {
-  const { user, token } = req.user;
-
-  // ✅ Frontendga token yuborish uchun redirect
-  const redirectUrl = `${this.configService.get('GOOGLE_SUCCESS_REDIRECT')}?token=${token}`;
-  return res.redirect(redirectUrl);
-}
-@Get('callback/:token')
-async callback(@Param('token') req:any){
-    console.log(req);
-    return req
-}
-@Get('google/redirect')
-@UseGuards(AuthGuard('google'))
-async googleRedirect(@Req() req: any, @Res() res: any) {
-  const { token } = req.user as any;
-
-  const frontendUrl = this.configService.get<string>('FRONTEND_URL');
-  return res.redirect(`${frontendUrl}/oauth-success?token=${token}`);
-}
+     @Get('google')
+     async googleLogin(@Query('ref') ref: string, @Res() res: Response) {
+       if (ref) {
+         res.cookie('ref', ref, { maxAge: 5 * 60 * 1000 }); // 5 daqiqaga cookie saqlaymiz
+       }
+       return res.redirect('/authorization/google/redirect-to-google');
+     }
+   
+     // 2. Google auth uchun redirect (faqat yo‘naltirish uchun)
+     @Get('google/redirect-to-google')
+     @UseGuards(AuthGuard('google'))
+     async redirectToGoogle(@Req() req) {
+       // bu yerga hech qachon kelmaydi
+     }
+   
+     // 3. Google callback – login muvaffaqiyatli tugaganda
+     @Get('google/redirect')
+     @UseGuards(AuthGuard('google'))
+     async googleRedirect(@Req() req: any, @Res() res: Response) {
+       const { user, token } = req.user;
+       const ref = req.cookies?.ref;
+   
+       if (ref) {
+         await this.saveReferral(ref, user.id);
+         res.clearCookie('ref');
+       }
+   
+       const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+       return res.redirect(`${frontendUrl}/oauth-success?token=${token}`);
+     }
+   
+     // Dummy referal saqlash
+     async saveReferral(referrerId: string, newUserId: number) {
+       console.log(`Foydalanuvchi ${newUserId} referal orqali ${referrerId} ga biriktirildi`);
+       // Bu yerda DBga yozish lozim
+     }
+   
 
 }
 

@@ -20,7 +20,8 @@ model Users {
   googleId   String? @unique
 
   referrals     Referral[]     @relation("UserReferrals")
-  referradBy    Referral[]     @relation("Referrer")
+  // referradBy    Referral[]     @relation("Referals")
+  
 
   orders        Orders[]
   ordersProduct OrdersProduct[]
@@ -46,11 +47,13 @@ model UserBalance {
 model Referral {
   id              Int     @id @default(autoincrement())
   user_id         Int     @unique()
-  referal_user_id Int?    @default(1)
-  referals        Json?
+  referal_user_id Int?    
+  date      DateTime @default(now())
+  // referals        Int 
 
+  // referalss   Users @relation("Referals",fields: [referals],references: [id],onDelete: Cascade)
   user        Users  @relation("UserReferrals", fields: [user_id], references: [id], onDelete: Cascade)
-  referrendBy Users? @relation("Referrer", fields: [referal_user_id], references: [id], onDelete: SetNull)
+  // referrendBy Users? @relation("Referrer", fields: [referal_user_id], references: [id], onDelete: SetNull)
 
   @@map("referal")
 }
@@ -172,7 +175,7 @@ model Product {
   photo_url     ProductImage[]
   rating       Int
   rewiev       Int
-  coin      Int?
+  coin      Int
 
   creator       Users                @relation("CreatedMainProducts", fields: [created_user], references: [id], onDelete: Cascade)
   translations  ProductTranslation[] @relation("ProductTranslations")
