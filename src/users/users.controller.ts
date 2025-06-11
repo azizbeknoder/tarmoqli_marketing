@@ -70,6 +70,7 @@ export class UsersController {
     }
     @Get("deblock/:id")
     @ApiOperation({summary:"Userni blockdan ochish uchun block/id bilan"})
+    @UseGuards(AuthGuard,AdminGuard)
     @ApiBearerAuth()
     @ApiResponse({status:200,description:"success"})
     async deBlock(@Param('id') id:string){

@@ -70,9 +70,8 @@ export class CreatedTariffDto {
   @IsNumber()
   coin:number
 
-  @IsString()
-  @IsOptional()
-  dailyProfit?:string
+  @IsNumber()
+  dailyProfit:number
 }
 
 export class UpdateTariffDto {

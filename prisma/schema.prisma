@@ -62,7 +62,7 @@ model Tariff {
   id             Int               @id @default(autoincrement())
   term           Int
   referral_bonus Int
-  dailyProfit    Float             @default(0) // kunlik foyda
+  dailyProfit    Int             @default(0) // kunlik foyda
   createdAt      DateTime          @default(now())
   photo_url      String
   coin   Int?
@@ -119,6 +119,7 @@ model Orders {
   checkedAt  DateTime?
   user     Users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   tariff   Tariff  @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
+  comment   String?
 
   @@map("orders")
 }
@@ -127,7 +128,10 @@ model OrdersProduct {
   user_id    Int
   product_id  Int
   isChecked  PaymentStatus @default(PENDING)
-  product_jd Int
+  // product_jd Int
+  comment     String?
+  contactNumber    String?
+  contactLink       String?
   orderedAt  DateTime  @default(now())
   checkedAt  DateTime?
 

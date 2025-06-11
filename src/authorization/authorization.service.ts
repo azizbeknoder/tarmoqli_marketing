@@ -63,13 +63,16 @@ export class AuthorizationService {
     }
   
     // 6. Yangi user uchun referral yozuvi yaratamiz
-    await this.prisma.referral.create({
-      data: {
-        user_id: createdUser.id,
-        referal_user_id: referal_user_id, // null bo‘lishi ham mumkin
-       
-      },
-    });
+    if(referal_user_id){
+      await this.prisma.referral.create({
+        data: {
+          user_id: createdUser.id,
+          referal_user_id: referal_user_id, // null bo‘lishi ham mumkin
+         
+        },
+      });
+    }
+    
   
     // // 7. Agar taklif qilgan foydalanuvchi bo‘lsa — uni referral yozuviga bu userni qo‘shamiz
     // if (referal_user_id) {

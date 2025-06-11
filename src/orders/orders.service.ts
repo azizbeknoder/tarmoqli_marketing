@@ -24,6 +24,7 @@ export class OrdersService {
       
       const now = new Date()
       const endTime = await addDays(now,oldTariff.term)
+      await this.prisma.users.update({where:{id:oldUser.id},data:{coin:{decrement:oldTariff.coin || 0}}})
       const orders = await this.prisma.orders.create({data:{user_id:oldUser.id,tariff_id:body.tariff_id,isChecked:'SUCCESS'}})
       const userTariff = await this.prisma.userTarif.create({data:{user_id:oldUser.id,tariff_id:body.tariff_id,end_time:endTime}})
       return {orders,userTariff}
