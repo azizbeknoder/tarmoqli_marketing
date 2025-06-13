@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "payments" ALTER COLUMN "coin" DROP NOT NULL,
+ALTER COLUMN "coin" DROP DEFAULT;

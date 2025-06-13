@@ -152,7 +152,7 @@ model Payments {
   to_send_date    DateTime     @default(now())
   to_checked_date DateTime?
   card            String?
-  coin            Int @default(0)
+  coin            Int?
   reason          String?
   
 
