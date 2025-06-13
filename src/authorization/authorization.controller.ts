@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthDtoLogin, AuthDtoRegister } from './dto/auth.dot.ts/auth.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import verifyHtml from './verif'
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
@@ -14,6 +14,7 @@ export class AuthorizationController {
     constructor(private readonly service:AuthorizationService,private configService:ConfigService){}
     @Get('user')
     @ApiOperation({summary:"Google orqali ro'yhatdan o'tganda foydalanuvchi malumotlarini olish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard1)
     async authorizationUserGet(@Req() req:any){
     console.log(req);
@@ -62,6 +63,7 @@ export class AuthorizationController {
    
      // 3. Google callback – login muvaffaqiyatli tugaganda
      @Get('google/redirect')
+     
      @UseGuards(AuthGuard('google'))
      async googleRedirect(@Req() req: any, @Res() res: Response) {
        const { user, token } = req.user;

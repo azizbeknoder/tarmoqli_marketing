@@ -18,7 +18,7 @@ export class TariffController {
     @Body() body: CreatedTariffDto,
     @Req() req: any,
   ) {
-
+    // return 'hello world'
     const data = await this.service.addProduct(body, req.user);
     return data;
   }

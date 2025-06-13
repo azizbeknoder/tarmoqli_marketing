@@ -318,3 +318,21 @@ model StatistikaWeb{
   userCount Int
   allCoin Int
 }
+model TakeOff{
+  id Int @id @default(autoincrement())
+  userId Int
+  cardNumber String
+  how_much   Int
+  status TakeOffStatus @default(PENDING)
+  requestDate  DateTime @default(now())
+  checkedDate DateTime?
+}
+
+enum TakeOffStatus {
+  PENDING
+  CANCELLED
+  SUCCESS
+  SENDING
+  SCRINSHOTUPLOAD
+  CANCELLEDADMIN
+}

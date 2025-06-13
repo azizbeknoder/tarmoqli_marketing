@@ -26,6 +26,8 @@ class TariffTranslateDto {
   @ApiProperty({ example: "Foydalanish yo‘riqnomasi", description: "Qanday foydalaniladi" })
   @IsString()
   usage: string;
+
+  
 }
 
 
@@ -70,6 +72,7 @@ export class CreatedTariffDto {
   @IsNumber()
   coin:number
 
+  @ApiProperty({example:1,description:"Kunlik cashback miqdori"})
   @IsNumber()
   dailyProfit:number
 }
