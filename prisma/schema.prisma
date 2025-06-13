@@ -16,7 +16,7 @@ model Users {
   createdAt  DateTime       @default(now())
   updateAt   DateTime       @updatedAt
   isActive   Boolean        @default(true)
-  coin      Int? @default(0)
+  coin      Int @default(0)
   googleId   String? @unique
 
   referrals     Referral[]     @relation("UserReferrals")
@@ -29,6 +29,7 @@ model Users {
   balances      UserBalance[]
   createdProducts Product[]    @relation("CreatedMainProducts")
   userTariff      UserTarif[]
+  takeOff         TakeOff[]
 
   @@map("users")
 }
@@ -150,10 +151,8 @@ model Payments {
   photo_url       String?      @unique
   to_send_date    DateTime     @default(now())
   to_checked_date DateTime?
-  currency        String
-  how_much        Float
   card            String?
-  coin            Int?
+  coin            Int
   reason          String?
   
 
@@ -326,6 +325,12 @@ model TakeOff{
   status TakeOffStatus @default(PENDING)
   requestDate  DateTime @default(now())
   checkedDate DateTime?
+  commend  String?
+
+
+    user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  
 }
 
 enum TakeOffStatus {
