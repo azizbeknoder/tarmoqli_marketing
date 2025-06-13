@@ -17,7 +17,7 @@ import { CardModule } from './card/card.module';
 import { AdminModule } from './admin/admin.module';
 import { NotificationGateway } from './gateway/notification.geteway';
 import { ProductModule } from './product/product.module';
-import { StatistikaModule } from './statistika/statistika.module';
+// import { StatistikaModule } from './statistika-pending/statistika.module';
 import { NotificationModule } from './notification/notification.module';
 import { GatewayModule } from './gateway/gateway.module';
 
@@ -34,9 +34,10 @@ import { OrdersProductModule } from './orders-product/orders-product.module';
 import { ReferalLevelModule } from './referal-level/referal-level.module';
 // import { ReferalLeverController } from './referal-lever/referal-lever.controller';
 import { TakeOffModule } from './take-off/take-off.module';
+import { StatistikaModule } from './statistika/statistika.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, StatistikaModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ,ScheduleModule.forRoot(), CoinModule, BalanceModule, SpinModule, BonusModule, OrdersProductModule, ReferalLevelModule, TakeOffModule],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ,ScheduleModule.forRoot(), CoinModule, BalanceModule, SpinModule, BonusModule, OrdersProductModule, ReferalLevelModule, TakeOffModule, StatistikaModule],
   controllers: [AppController,],
   providers: [AppService, MailService, NotificationGateway,CheckerService],
   exports:[NotificationGateway]
