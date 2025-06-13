@@ -43,4 +43,17 @@ export class BonusService {
         }
         return bonusResults
     }
+    async dailyBonusReferal(req:any){
+        const userEmail = req.user.email
+        const oldUser = await  this.prisma.users.findFirst({where:{email:userEmail}})
+        if(!oldUser){
+            throw new CustomError(404,"User not found")
+        }
+        const userReferalFriends = await this.prisma.referral.findMany({where:{user_id:oldUser?.id}})
+        if(!userReferalFriends[0]){
+            throw new CustomError(404,"User referall friends not")
+        }
+        return userReferalFriends
+
+    }
 }

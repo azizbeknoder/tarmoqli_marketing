@@ -14,7 +14,8 @@ export class ReferalService {
         if(!oldUser){
             throw new CustomError(403,"User not found")
         }
-        const result = await this.prisma.referral.findMany({where:{user_id:oldUser.id}})
-        return result 
+        const data = await this.prisma.referral.findMany({where:{user_id:oldUser.id}})
+        const count = await this.prisma.referral.count({where:{user_id:oldUser.id}})
+        return {data,count}
     }
 }

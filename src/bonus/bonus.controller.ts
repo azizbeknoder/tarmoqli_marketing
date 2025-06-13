@@ -13,4 +13,11 @@ export class BonusController {
         const data = await this.service.dailyBonus(req)
         return data
     }
+    @ApiOperation({summary:"Kunlik bonusni olish token orqali referal orqali do'stlarini taklif qilgani uchun"})
+    @UseGuards(AuthGuard)
+    @Get('daily/referal')
+    async dailyBonusReferal(@Req() req:any){
+        const data = await this.service.dailyBonusReferal(req)
+        return data
+    }
 }

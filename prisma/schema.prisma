@@ -299,3 +299,10 @@ model SpinValue{
 model BonusDetailes{
   id Int @id @default(autoincrement())
 }
+
+model ReferalLevel{
+  id Int @id @default(autoincrement())
+  level Int
+  prize String
+  count Int
+}

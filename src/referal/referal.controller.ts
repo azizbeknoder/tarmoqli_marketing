@@ -14,13 +14,14 @@ export class ReferalController {
         const data = await this.service.getAllReferal()
         return data
     }
-    
+
     @ApiOperation({summary:"Aynan foydalanuvchini tokeni bo'yicha o'zining referallarini olish"})
     @UseGuards(AuthGuard)
     @Get('user')
     async getReferalByToken(@Req() req:any){
         const user = req.user
         const data = await this.service.getReferalByToken(user)
-        return user
+        return data
     }
 }
+
