@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, R
 import { TariffService } from './tariff.service';
 import { CreatedTariffDto, UpdateTariffDto } from './dto/tariff.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminGuard } from 'src/auth/admin.guard';
 
 @Controller('tariff')
@@ -12,6 +12,7 @@ export class TariffController {
   @Post('add')
   @ApiOperation({ summary: "Tariff qo'shish uchun" })
   @ApiResponse({ status: 200, description: 'success' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, AdminGuard)
   async tarifAdd(
     @Body() body: CreatedTariffDto,
@@ -44,6 +45,7 @@ export class TariffController {
   @Delete(":id")
   @ApiOperation({ summary: "Tarif o'chirish" })
   @ApiResponse({ status: 200, description: 'success' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, AdminGuard)
   async delete(@Param('id') id: string) {
     const data = await this.service.delete(id);
@@ -53,6 +55,7 @@ export class TariffController {
   @Put('update/:id')
   @ApiOperation({ summary: "Tarifni yangilash uchun" })
   @ApiResponse({ status: 200, description: 'success' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard, AdminGuard)
   async tarifUpdate(
     @Param('id') id: string,

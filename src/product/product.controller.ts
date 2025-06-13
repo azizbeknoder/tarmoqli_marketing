@@ -11,7 +11,7 @@ import {
   } from '@nestjs/common';
 
 
-  import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+  import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/product.dto';
 import { ProductsService } from './product.service';
 import { AdminGuard } from 'src/auth/admin.guard';
@@ -25,6 +25,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
     @Post()
     @ApiOperation({ summary: 'Yangi mahsulot yaratish' })
     @ApiResponse({ status: 201, description: 'Mahsulot muvaffaqiyatli yaratildi' })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     create(@Body() createProductDto: CreateProductDto,@Req() req:any) {
       
@@ -46,6 +47,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
   
     @Patch(':id')
     @ApiOperation({ summary: 'Mahsulotni yangilash' })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     update(@Param('id') id: string, @Body() updateProductDto: any) {
       return this.productsService.update(+id, updateProductDto);
@@ -53,6 +55,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
   
     @Delete(':id')
     @ApiOperation({ summary: 'Mahsulotni o‘chirish' })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     remove(@Param('id') id: string) {
       return this.productsService.remove(+id);

@@ -4,7 +4,7 @@ import { AdminCreateDto } from './dto/admin.dto';
 
 import { SuperAdminGuard } from 'src/auth/super-admin.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('admin')
 export class AdminController {
@@ -12,6 +12,7 @@ export class AdminController {
 
     @Post('add')
     @ApiOperation({summary:"Admin qo'shish uchun"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,SuperAdminGuard)
     createAdmin(@Body() body:AdminCreateDto){
         const data = this.service.createAdmin(body)
@@ -19,6 +20,7 @@ export class AdminController {
     }
     @Get()
     @ApiOperation({summary:"Barcha adminlarni olish uchun role si superadmin yokida admin bo'lgan"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,SuperAdminGuard)
     async getAll(){
         const data = await this.service.getAll()

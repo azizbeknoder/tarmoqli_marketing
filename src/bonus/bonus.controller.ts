@@ -1,12 +1,13 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { BonusService } from './bonus.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('bonus')
 export class BonusController {
     constructor(private service:BonusService){}
     @ApiOperation({summary:"Kunlik bonusni olish uchun get so'rov yuboradi"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('daily')
     async dailyBonus(@Req() req:any){
@@ -14,6 +15,7 @@ export class BonusController {
         return data
     }
     @ApiOperation({summary:"Kunlik bonusni olish token orqali referal orqali do'stlarini taklif qilgani uchun"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('daily/referal')
     async dailyBonusReferal(@Req() req:any){

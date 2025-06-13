@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CoinService } from './coin.service';
 import { CreateCoinDto, UpdateCoinDto } from './dto/coin.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
 
@@ -9,6 +9,7 @@ import { AdminGuard } from 'src/auth/admin.guard';
 export class CoinController {
     constructor(private readonly service:CoinService){}
     @ApiOperation({summary:"Coin uchun yangi valyuta birligiga o'girish uchun valyuta qo'shish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Post()
     async addCoin(@Body() body:CreateCoinDto){
@@ -28,6 +29,7 @@ export class CoinController {
         return data
     }
     @ApiOperation({summary:"Coinni o'chirish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Delete(':id')
     async deleteCoin(@Param() id:string){
@@ -35,6 +37,7 @@ export class CoinController {
         return data
     }
     @ApiOperation({summary:"Coinni qiymatlarini yangilash"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Put(':id')
     async updateCoin(@Param('id') id:string,@Body() body:UpdateCoinDto){

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { SpinService } from './spin.service';
 import { AddSpinValue, UpdateSpinValue } from './dto/spin.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 import { AdminGuard } from 'src/auth/admin.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -11,6 +11,7 @@ export class SpinController {
     constructor(private  service:SpinService){}
 
     @ApiOperation({summary:"Spin uchun value qo'shish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Post('value')
     async addSpinValue(@Body() body:AddSpinValue){
@@ -20,6 +21,7 @@ export class SpinController {
         return data
     }
     @ApiOperation({summary:"Barcha spinvaluelarni olish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('value')
     async getAllSpinValue(){
@@ -27,6 +29,7 @@ export class SpinController {
         return data
     }
     @ApiOperation({summary:"Spinni id si bilan o'chirish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Delete('value/:id')
     async deleteSpinValue(@Param('id') id:string){
@@ -34,6 +37,7 @@ export class SpinController {
         return data
     }
     @ApiOperation({summary:"Spin valyuseni update qilish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Put('value')
     async updateSpinValue(@Body() body:UpdateSpinValue){

@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiOperation, ApiProperty } from "@nestjs/swagger";
 import { isNumber, IsNumber, IsOptional, IsString } from "class-validator";
 
 
@@ -24,4 +24,33 @@ export class UpdateRecentUserDto{
     @IsNumber()
     id:number
 
+}
+export class AddStatistikaWebDto{
+    @ApiProperty({example:1000,description:"Saytning barcha faol foydalanuvchilari"})
+    @IsNumber()
+    allCoin:number
+
+    @ApiProperty({example:1000,description:"Saytning barcha ishlatilgan coinlari"})
+    @IsNumber()
+    userCount:number
+
+    
+}
+
+export class UpdateStatistikaWebDto{
+    @ApiProperty({example:1000,description:"Saytning barcha faol foydalanuvchilari"})
+    @IsOptional()
+    @IsNumber()
+    allCoin?:number
+
+    @ApiProperty({example:1000,description:"Saytning barcha ishlatilgan coinlari"})
+    @IsOptional()
+    @IsNumber()
+    userCount?:number
+
+    @ApiProperty({example:1,description:"user id uchun"})
+    @IsNumber()
+    id:number
+
+    
 }

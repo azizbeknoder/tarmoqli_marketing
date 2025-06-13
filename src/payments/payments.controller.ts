@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseArrayPipe, Post, Req, UseGuards } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentHTTPService } from './paymentHTTP.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { PaymentStatus } from '@prisma/client';
 import { CheckedPaymentDto, RejectedPaymentDto } from './dto/payment.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -11,6 +11,7 @@ import { AdminGuard } from 'src/auth/admin.guard';
 export class PaymentsController {
     constructor(private readonly service:PaymentHTTPService){}
     @ApiOperation({summary:"Foydalanuvchiga barcha to'lovlari haqida malumot olish uchun"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard)
     @Get('user')
     async getAllPaymentForUser(@Req() req:any){
@@ -19,6 +20,7 @@ export class PaymentsController {
     }
 
     @ApiOperation({summary:"Barcha to'olarni ko'rish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Get()
     async getAllPayments(){
@@ -26,6 +28,7 @@ export class PaymentsController {
         return data
     }
     @ApiOperation({summary:"Aynan bir to'lovni olish id bilan"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Get(':id')
     async getOnePayments(@Param('id') id:string){
@@ -34,6 +37,7 @@ export class PaymentsController {
         return data
     }
     @ApiOperation({summary:"Status bo'yicha to'lovlarni olish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Get('status/:status')
     async getStatusPayments(@Param('status') status:PaymentStatus){
@@ -41,6 +45,7 @@ export class PaymentsController {
         return data
     }
     @ApiOperation({summary:"To'lovni tasdiqlash"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Post("checked")
     async checkedPayments(@Body() body:CheckedPaymentDto){
@@ -48,6 +53,7 @@ export class PaymentsController {
         return data
     }
     @ApiOperation({summary:"To'lovni admin tomonidan rad etish"})
+    @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Post('rejected')
     async rejectedPayments(@Body() body:RejectedPaymentDto){
