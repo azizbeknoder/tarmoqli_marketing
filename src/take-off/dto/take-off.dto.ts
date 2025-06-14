@@ -9,6 +9,9 @@ export class AddTakeOffDto{
     @ApiProperty({example:3000,description:"Yechib olinishi kerak bo'lgan summa"})
     @IsString()
     cardNumber:string
+    @ApiProperty({example:"azizbek tuychiyev",description:"Yechib oluvchining ism familyasi"})
+    @IsString()
+    fullName:string
 
 }
 export class CheckedTakeOffDto{

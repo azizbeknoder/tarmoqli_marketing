@@ -326,6 +326,7 @@ model TakeOff{
   requestDate  DateTime @default(now())
   checkedDate DateTime?
   commend  String?
+  fullName String?
 
 
     user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
