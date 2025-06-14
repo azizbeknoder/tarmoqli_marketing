@@ -7,7 +7,10 @@ import CustomError from 'src/utils/custom-error';
 export class TakeOffService {
     constructor(private prisma:PrismaService){}
     async addTakeOff(body:AddTakeOffDto,req:any){
-        const oldUser = await this.prisma.users.findFirst({where:{email:req.body.user.email}})
+       
+        const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
+        
+        
         if(!oldUser){
             throw new CustomError(404,"user not found")
         }
@@ -43,7 +46,7 @@ export class TakeOffService {
         if(!oldUser){
             throw new CustomError(404,'User not found')
         }
-        const result = await this.prisma.takeOff.update({where:{id:body.id},data:{commend:body.commend}})
+        const result = await this.prisma.takeOff.update({where:{id:body.id},data:{commend:body.commend,status:'CANCELLED'}})
         return result 
     }
     async getAllTakeOff(){
