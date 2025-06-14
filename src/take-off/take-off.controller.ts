@@ -37,5 +37,14 @@ export class TakeOffController {
     async rejectedTakeOff(@Body() body:RejectedTakeOffDto){
         return this.service.rejectedTakeOff(body)
     }
+    @ApiOperation({summary:"To'lovlarni olish user uchun to'ken bilan"})
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Get('user')
+    async getByToken(@Req() req:any){
+        return this.service.getByToken(req)
+        
+    }
+
 }
 

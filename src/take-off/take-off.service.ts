@@ -54,5 +54,13 @@ export class TakeOffService {
         const result = await this.prisma.takeOff.findMany()
         return result 
     }
+    async getByToken(req:any){
+        const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
+        if(!oldUser){
+            throw new CustomError(404,'user not found')
+        }
+        const result = await this.prisma.takeOff.findMany({where:{userId:oldUser.id}})
+        return result
+    }
 
 }
