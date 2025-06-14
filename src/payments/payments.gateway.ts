@@ -112,8 +112,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       userId:serviceResult.message.user_id,
       date:serviceResult.message.to_send_date,
       howMuch:serviceResult.message.how_much,
-      currency:serviceResult.message.currency,
-      status:serviceResult.message.status
+
     })
     console.log(`${data.username} sent: ${data.message}`)
 
