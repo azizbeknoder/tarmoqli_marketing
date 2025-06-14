@@ -64,5 +64,16 @@ export  class PaymentService{
         return false
       }
     }
+    async adminHistoryPayments(){
+      const result = await this.prisma.payments.findMany({where:{status:'PENDING'}})
+      return result
+    }
+    async userHistoryPayments(data:any){
+      const result = await this.prisma.payments.findFirst({where:{user_id:data.id,status:'PENDING'}})
+      console.log(result);   
+      return result
+      
+      
+    }
 
 }

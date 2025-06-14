@@ -24,12 +24,38 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
     const token = client.handshake.auth.token
     const deToken:any = await  this.authService.verifyAccestokenSocket(token)
     const roomName = `room-${deToken.id}`
+   
+    
+
     
     
     client.join(roomName )
-    this.server.to(roomName).emit('paymentResponse',{
-      roomName:roomName
-    })
+    // this.server.to(roomName).emit('paymentResponse',{
+    //   roomName:roomName
+    // })
+    if(deToken.role == 'ADMIN' || deToken.role == 'SUPERADMIN' ){
+   
+      const result = await this.paymentService.adminHistoryPayments()
+      
+      if(result.length){
+
+        for(let i of result){
+          
+          this.server.emit('newPayment',{
+            message:"Yangi to'lov so'rovi",
+            paymentId:i.id,
+            userId:i.user_id,
+            date:i.to_send_date,
+            howMuch:i.coin,
+            status:i.status
+            
+          })
+        }
+      }
+    }
+    
+    // console.log(result);
+    client.emit('roomAssigned',roomName)
     // console.log(`Client connected ${client.id}`)
   }
   handleDisconnect(client: any) {
@@ -59,6 +85,8 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
         success:false
       })
     }
+    console.log('logloglog');
+    
     // this.server.emit('paymentResponse',{
     //   message:'success',
     //   success:true
@@ -87,27 +115,29 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       currency:serviceResult.message.currency,
       status:serviceResult.message.status
     })
-    // console.log(`${data.username} sent: ${data.message}`)
+    console.log(`${data.username} sent: ${data.message}`)
 
-    // this.server.emit('newmessage',{
-    //   userName:data.username,
-    //   message:data.message
+    this.server.emit('newmessage',{
+      userName:data.username,
+      message:data.message
 
-    // })
+    })
 
-    // client.join('room1')
+    client.join('room1')
   }
   @SubscribeMessage('adminResponse')
 async handleUserMessage(@ConnectedSocket() client: Socket, @MessageBody() body: any) {
   const token = client.handshake.auth.token;
   const deToken: any = await this.authService.verifyAccestokenSocket(token);
 
-  if (!deToken && deToken.role != 'USER') {
+  if (!deToken || (deToken.role !== 'ADMIN' && deToken.role !== 'SUPERADMIN')) {
     return this.server.emit('newPayment', {
       message: "Faqat admin uchun mumkun",
       status: false
     });
   }
+  console.log(body.roomName);
+  
 
   // const roomName = `room-${deToken.id}`;
   console.log(body.roomName);

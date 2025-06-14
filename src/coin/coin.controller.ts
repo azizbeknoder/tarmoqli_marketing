@@ -32,7 +32,7 @@ export class CoinController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard,AdminGuard)
     @Delete(':id')
-    async deleteCoin(@Param() id:string){
+    async deleteCoin(@Param('id') id:string){
         const data = await this.service.deleteCoin(Number(id))
         return data
     }
