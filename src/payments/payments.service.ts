@@ -10,9 +10,9 @@ export  class PaymentService{
         const oldPayments = await this.prisma.payments.findFirst({where:{user_id:body.id, status:'PENDING'}})
         console.log();
         
-        if(oldPayments){
-            return {message:"Avvalgi to'lov so'rovi hali hamon PENDING",success:false,status:'PENDING'}
-        }
+        // if(oldPayments){
+        //     return {message:"Avvalgi to'lov so'rovi hali hamon PENDING",success:false,status:'PENDING'}
+        // }
         const result = await this.prisma.payments.create({data:{user_id:body.id,coin:Number(data.how_much)}})
     
         return {message:result,status:'PENDING',success:true}

@@ -23,11 +23,14 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
   async handleConnection(@ConnectedSocket() client:Socket) {
     const token = client.handshake.auth.token
     const deToken:any = await  this.authService.verifyAccestokenSocket(token)
+    
+    
     const roomName = `room-${deToken.id}`
    
     
 
     
+    // console.log(roomName);
     
     client.join(roomName )
     // this.server.to(roomName).emit('paymentResponse',{
@@ -53,9 +56,8 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
         }
       }
     }
-    
     // console.log(result);
-    client.emit('roomAssigned',roomName)
+    client.emit('roomAssigned',deToken.id)
     // console.log(`Client connected ${client.id}`)
   }
   handleDisconnect(client: any) {
@@ -114,7 +116,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       howMuch:serviceResult.message.how_much,
 
     })
-    console.log(`${data.username} sent: ${data.message}`)
+    console.log(`${roomName} sent: admin`)
 
     this.server.emit('newmessage',{
       userName:data.username,
