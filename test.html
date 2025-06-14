@@ -36,7 +36,6 @@
   <h2>💬 Real-Time To‘lov Paneli</h2>
 
   <div>
-    <input type="text" id="currency" placeholder="Valyuta (UZS, USD, ...)" />
     <input type="text" id="how_much" placeholder="Qancha miqdor (masalan: 50000)" />
     <button onclick="sendPaymentRequest()">To‘lov so‘rovi yuborish</button>
   </div>
@@ -70,7 +69,6 @@
 
     socket = io('https://mlm-backend.pixl.uz/', {
       auth: { token },
-      
     });
 
     socket.on('connect', () => {
@@ -105,16 +103,14 @@
     });
 
     function sendPaymentRequest() {
-      const currency = document.getElementById('currency').value.trim();
       const how_much = document.getElementById('how_much').value.trim();
-
-      if (!currency || !how_much) {
-        alert('Valyuta va miqdorni to‘liq kiriting');
+      if (!how_much) {
+        alert('Miqdorni kiriting');
         return;
       }
 
-      socket.emit('paymentRequest', { currency, how_much });
-      logMessage(`📤 So‘rov yuborildi: ${currency} ${how_much}`);
+      socket.emit('paymentRequest', { how_much });
+      logMessage(`📤 So‘rov yuborildi: ${how_much}`);
     }
 
     uploadScreenshotBtn.addEventListener('click', () => {
