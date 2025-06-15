@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserDtoUpdate } from './dto/user.dto';
+import { ChangePasswordDto, UserDtoUpdate } from './dto/user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { SuperAdminGuard } from 'src/auth/super-admin.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminGuard } from 'src/auth/admin.guard';
+import { CheckedPaymentDto } from 'src/payments/dto/payment.dto';
 
 @Controller('users')
 export class UsersController {
@@ -76,6 +77,13 @@ export class UsersController {
     async deBlock(@Param('id') id:string){
         const data = await this.service.deBlock(id)
         return data
+    }
+    @Post('up-password')
+    @ApiOperation({summary:"Userni parolini yangilamoqchi bo'lsa"})
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
+    async checkedPassword(@Body() body:ChangePasswordDto, @Req() req:any){
+        return this.service.changePassword(body,req)
     }
     // @Get('token')
     // @ApiOperation({summary:"Bitta userni olish /id bilan"})
