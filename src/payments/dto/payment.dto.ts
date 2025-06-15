@@ -2,9 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString } from "class-validator";
 
 export class CheckedPaymentDto{
-    @ApiProperty({example:"UZS",description:"To'lov qilingandagi valyuta birligi"})
-    @IsString()
-    currency:string
 
     @ApiProperty({example:"123000",description:"Qancha ekanligi"})
     @IsNumber()

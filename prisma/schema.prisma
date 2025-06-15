@@ -26,7 +26,7 @@ model Users {
   orders        Orders[]
   ordersProduct OrdersProduct[]
   payments      Payments[]
-  balances      UserBalance[]
+
   createdProducts Product[]    @relation("CreatedMainProducts")
   userTariff      UserTarif[]
   takeOff         TakeOff[]
@@ -34,16 +34,7 @@ model Users {
   @@map("users")
 }
 
-model UserBalance {
-  id        Int     @id @default(autoincrement())
-  userId    Int
-  currency  String
-  amount    Float   @default(0)
 
-  user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, currency])
-}
 
 model Referral {
   id              Int     @id @default(autoincrement())
@@ -66,7 +57,7 @@ model Tariff {
   dailyProfit    Int             @default(0) // kunlik foyda
   createdAt      DateTime          @default(now())
   photo_url      String
-  coin   Int?
+  coin   Int
   
   userTariff UserTarif[]
   orders         Orders[]             

@@ -16,9 +16,10 @@ export class OrdersService {
       }
       const oldTariff = await this.prisma.tariff.findFirst({where:{id:body.tariff_id}})
       if(!oldTariff){
+       
         throw new CustomError(403,"Tariff not found")
       }
-      if(oldTariff.coin || 1000000000  <= oldUser.coin ){
+      if(oldTariff.coin  > oldUser.coin ){
         throw new CustomError(402,"coin is not enough")
       }
       

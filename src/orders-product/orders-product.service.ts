@@ -7,14 +7,18 @@ import CustomError from 'src/utils/custom-error';
 export class OrdersProductService {
     constructor(private prisma:PrismaService){}
     async addProductOrders(body: AddProductOrder,req:any){
-        const userId = req.user.id
+        
+        const email = req.user.email
+       
+        
+    
         const oldProduct:any = await this.prisma.product.findFirst({where:{id:body.productId}})
-        const oldUser:any = await this.prisma.users.findFirst({where:{id:userId}})
+        const oldUser:any = await this.prisma.users.findFirst({where:{email:email}})
         if(oldUser?.coin <= oldProduct?.coin){
              throw new CustomError(403,"Coin is not enogueh")
         }
         const userBalance = await this.prisma.users.update({where:{id:oldUser.id},data:{coin:{decrement:oldProduct.coin}}})
-        const result = await this.prisma.ordersProduct.create({data:{product_id:body.productId,contactLink:body.contactLink,contactNumber:body.contactNumber,user_id:userId,isChecked:'PENDING'}})
+        const result = await this.prisma.ordersProduct.create({data:{product_id:body.productId,contactLink:body.contactLink,contactNumber:body.contactNumber,user_id:oldUser.id,isChecked:'PENDING'}})
         return {result,userBalance}
     }
     async getAllOrdersProduct(){
