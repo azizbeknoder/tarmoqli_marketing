@@ -49,7 +49,7 @@ export class BonusService {
         if(!oldUser){
             throw new CustomError(404,"User not found")
         }
-        const userReferalFriends = await this.prisma.referral.findMany({where:{user_id:oldUser?.id}})
+        const userReferalFriends = await this.prisma.referral.findMany({where:{referal_user_id:oldUser?.id}})
         if(!userReferalFriends[0]){
             throw new CustomError(404,"User referall friends not")
         }

@@ -39,7 +39,7 @@ model Users {
 model Referral {
   id              Int     @id @default(autoincrement())
   user_id         Int     @unique()
-  referal_user_id Int?    
+  referal_user_id Int  
   date      DateTime @default(now())
   // referals        Int 
 
@@ -324,6 +324,11 @@ model TakeOff{
     user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   
+}
+model ReferalBonus{
+  id Int @id @default(autoincrement())
+  user_id Int
+  endTime DateTime
 }
 
 enum TakeOffStatus {

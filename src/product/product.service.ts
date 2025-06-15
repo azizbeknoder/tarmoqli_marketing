@@ -61,24 +61,47 @@ export class ProductsService {
     });
   }
 
-  update(id: number, dto: any) {
-    return this.prisma.product.update({
+  async update(id: number, dto: any) {
+    // 1. Product mavjudligini tekshir
+    const oldProduct = await this.prisma.product.findUnique({ where: { id } });
+    if (!oldProduct) {
+      throw new CustomError(404, 'Product not found');
+    }
+  
+    // 2. Product asosiy ma’lumotlarini yangilash
+    const updatedProduct = await this.prisma.product.update({
       where: { id },
       data: {
         count: dto.count,
         rating: dto.rating,
         rewiev: dto.rewiev,
-        coin:dto.coin
-        // Note: updateMany yoki delete/createMany qilish mumkin tafsilotga qarab
+        coin: dto.coin,
+  
+        // 3. translations ni tozalab, yangilarini qo‘shish
+        translations: {
+          deleteMany: {}, // hammasini o‘chir
+          createMany: {
+            data: dto.translations,
+          },
+        },
+  
+        // 4. photo_url larni ham xuddi shu tarzda
+        photo_url: {
+          deleteMany: {}, // eski rasmlarni o‘chir
+          createMany: {
+            data: dto.photo_url.map((img) => ({ photo_url: img.photo_url })),
+          },
+        },
       },
       include: {
-        photo_url: true,
         translations: true,
-        // prices: true,
-        
+        photo_url: true,
       },
     });
+  
+    return updatedProduct;
   }
+  
 
   remove(id: number) {
     return this.prisma.product.delete({
