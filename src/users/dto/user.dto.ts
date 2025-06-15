@@ -13,3 +13,9 @@ export class UserDtoUpdate{
     @MinLength(8)
     password?:string
 }
+
+export class ChangePasswordDto{
+    @ApiProperty({example:"12345678",description:"Foydalanuvchini "})
+    @IsString()
+    password:string
+}

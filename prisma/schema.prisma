@@ -275,6 +275,7 @@ model UserTarif{
   user_id Int
   tariff_id Int
   start_time DateTime @default(now())
+  status  Boolean @default(true)
   end_time DateTime?
   lastBonusDate DateTime?
   user Users @relation(fields: [user_id],references: [id],onDelete: Cascade)

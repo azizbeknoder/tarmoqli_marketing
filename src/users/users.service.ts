@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import CustomError from 'src/utils/custom-error';
-import { UserDtoUpdate } from './dto/user.dto';
+import { ChangePasswordDto, UserDtoUpdate } from './dto/user.dto';
 import * as bcrypt from 'bcrypt'
 @Injectable()
 export class UsersService {
@@ -103,6 +103,15 @@ export class UsersService {
         const data = this.prisma.users.findFirst({where:{email:email},include:{payments:true,orders:true,userTariff:true,referrals:true}})
         return data
 
+      }
+      async changePassword(body:ChangePasswordDto,req:any){
+        const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
+        if(!oldUser){
+          throw new CustomError(404,'user not found')
+        }
+        const hashedPassword =  await bcrypt.hash(body.password, 10);
+        const result = await this.prisma.users.update({where:{id:oldUser.id},data:{password:hashedPassword}})
+        return result
       }
       
 }
