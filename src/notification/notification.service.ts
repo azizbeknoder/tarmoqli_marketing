@@ -18,11 +18,17 @@ export class NotificationService {
         const emails = await users.map((u)=>u.email)
         
         const data = await this.emailQueue.sendBulk(emails,title,description)
+         for(let user of emails){
+            await this.mailService.sendNotificationMail(user,title,description)
+        }
         
         return emails
     }
-    async sendNotificationEmailTariffUser(body:SendNotificationMailTariffUserDto){
-        const {tariff,title,description} = body
-        const users = await this.prisma.tariff.findMany({where:{}})
-    }
+    // async sendNotificationEmailTariffUser(body:SendNotificationMailTariffUserDto){
+    //     const {tariff,title,description} = body
+    //     const users = await this.prisma.users.findMany()
+    //     for(let user of users){
+    //         await this.emailQueue.sendBulk(user.,title,description)
+    //     }
+    // }
 }
