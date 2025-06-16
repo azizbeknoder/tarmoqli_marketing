@@ -13,6 +13,10 @@ export class AddTakeOffDto{
     @IsString()
     fullName:string
 
+    @ApiProperty({example:"uzs",description:"Yechib olinadigon karta turi"})
+    @IsString()
+    currency:string
+
 }
 export class CheckedTakeOffDto{
     @ApiProperty({example:1,description:"Tasdiqlanishi kerak bo'lgan yechib olish so'rovi"})

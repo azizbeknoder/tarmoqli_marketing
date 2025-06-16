@@ -30,6 +30,7 @@ model Users {
   createdProducts Product[]    @relation("CreatedMainProducts")
   userTariff      UserTarif[]
   takeOff         TakeOff[]
+  incomeHistroy   IncomeHistory[]
 
   @@map("users")
 }
@@ -278,16 +279,20 @@ model TakeOff{
   checkedDate DateTime?
   commend  String?
   fullName String?
+  currency String
 
 
     user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   
 }
-model ReferalBonus{
+model IncomeHistory{
   id Int @id @default(autoincrement())
-  user_id Int
-  endTime DateTime
+  userId Int
+  date DateTime @default(now())
+  coin Int
+
+  user      Users @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
 
 enum TakeOffStatus {

@@ -18,7 +18,7 @@ export class TakeOffService {
             throw new CustomError(403,"Mablag' yetarli emas")
         }
         
-        const result = await this.prisma.takeOff.create({data:{userId:oldUser.id,how_much:body.how_much,cardNumber:body.cardNumber,fullName:body.fullName}})
+        const result = await this.prisma.takeOff.create({data:{userId:oldUser.id,how_much:body.how_much,cardNumber:body.cardNumber,fullName:body.fullName,currency:body.currency}})
         return result
     }
     async checkedTakeOff(body:CheckedTakeOffDto){

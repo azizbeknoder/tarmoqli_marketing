@@ -25,6 +25,7 @@ export class BonusService {
             if(hoursPassed >= 24){
                 const bonus = usertariff.tariff.dailyProfit
                 await this.prisma.users.update({where:{id:oldUser.id},data:{coin:{increment:bonus}}})
+                await this.prisma.incomeHistory.create({data:{userId:oldUser.id,coin:bonus}})
 
                 await this.prisma.userTarif.update({where:{id:usertariff.id},data:{lastBonusDate:now}})
 
@@ -52,6 +53,9 @@ export class BonusService {
         const userReferalFriends = await this.prisma.referral.findMany({where:{referal_user_id:oldUser?.id}})
         if(!userReferalFriends[0]){
             throw new CustomError(404,"User referall friends not")
+        }
+        for(let i of userReferalFriends){
+
         }
         return userReferalFriends
 
