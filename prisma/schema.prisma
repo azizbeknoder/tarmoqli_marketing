@@ -135,6 +135,7 @@ model Payments {
   card            String?
   coin            Int?
   reason          String?
+  currency        String?
   
 
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)

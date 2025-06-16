@@ -107,6 +107,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       success:true,
       status:serviceResult.status
     })
+    console.log(serviceResult);
     
     this.server.emit('newPayment',{
       message:"Yangi to'lov so'rovi",
@@ -114,6 +115,10 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       userId:serviceResult.message.user_id,
       date:serviceResult.message.to_send_date,
       howMuch:serviceResult.message.how_much,
+      currency:serviceResult.message.currency,
+      fullname:serviceResult.user.name,
+      email:serviceResult.user.email,
+      coin:serviceResult.user.coin
 
     })
     console.log(`${roomName} sent: admin`)

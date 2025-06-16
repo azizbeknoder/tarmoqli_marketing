@@ -13,7 +13,7 @@ export  class PaymentService{
         if(oldPayments){
             return {message:"Avvalgi to'lov so'rovi hali hamon PENDING",success:false,status:'PENDING'}
         }
-        const result = await this.prisma.payments.create({data:{user_id:body.id,coin:Number(data.how_much)},})
+        const result = await this.prisma.payments.create({data:{user_id:body.id,coin:Number(data.how_much),currency:data.currency},include:{user:true}})
     
         return {message:result,status:'PENDING',success:true}
     }
