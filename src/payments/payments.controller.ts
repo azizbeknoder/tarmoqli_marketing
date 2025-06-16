@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PaymentHTTPService } from './paymentHTTP.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { PaymentStatus } from '@prisma/client';
-import { CheckedPaymentDto, RejectedPaymentDto } from './dto/payment.dto';
+import { CheckedPaymentDto, RejectedPaymentDto, ScrinsohtUploadDto } from './dto/payment.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
 
@@ -61,5 +61,13 @@ export class PaymentsController {
         return data
     }
     
+    @ApiOperation({summary:"To'lov chekini yuborish"})
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Post()
+    async scrishotUpload(@Body() body:ScrinsohtUploadDto, @Req() req:any){
+        return  this.service.scrinshotUpload(body,req)
+    }
+
     
 }
