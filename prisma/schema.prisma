@@ -89,18 +89,7 @@ model ProductTranslation {
   @@map("product_translations")
 }
 
-// model ProductPrice {
-//   id         Int       @id @default(autoincrement())
-//   tariff_id  Int?
-//   product_id Int?
-//   currency   String
-//   value      Float
-//   product    Product?  @relation("ProductPrices", fields: [product_id], references: [id], onDelete: Cascade)
 
-//   @@unique([tariff_id, currency])
-//   @@unique([product_id, currency])
-//   @@map("product_prices")
-// }
 
 model Orders {
   id         Int       @id @default(autoincrement())
@@ -204,37 +193,7 @@ model ProductImage {
 }
 
 
-// model StatsWidget {
-//   id            String         @id @default(uuid())
-//   onlineUserCount Int
-//   totalEarned    Decimal
-//   statEarnings   StatEarning[]
-//   recentUsers    RecentUser[]
-// }
 
-// model StatEarning {
-//   id         String       @id @default(uuid())
-//   currency   String       // Masalan: 'USD', 'UZS'
-//   amount     Decimal
-//   widget     StatsWidget?  @relation(fields: [widgetId], references: [id],onDelete: Cascade)
-//   widgetId   String?
-// }
-
-// model RecentUser {
-//   id           String       @id @default(uuid())
-//   email        String?
-//   widget       StatsWidget? @relation(fields: [widgetId], references: [id],onDelete: Cascade)
-//   widgetId     String?
-//   userEarnings UserEarning[]
-// }
-
-// model UserEarning {
-//   id           String       @id @default(uuid())
-//   currency     String
-//   amount       Decimal
-//   recentUser   RecentUser   @relation(fields: [recentUserId], references: [id],onDelete: Cascade)
-//   recentUserId String
-// }
 
 
 model TariffTranslation {
@@ -293,7 +252,7 @@ model BonusDetailes{
 
 model ReferalLevel{
   id Int @id @default(autoincrement())
-  level Int
+  level Int @unique
   prize String
   count Int
 }

@@ -8,7 +8,7 @@ export class ReferalLevelService {
     constructor(private prisma:PrismaService){}
     async addReferalLevel(body:createReferalLevel){
         const oldReferalLevel = await this.prisma.referalLevel.findFirst({where:{level:body.level}})
-        if(!oldReferalLevel){
+        if(oldReferalLevel){
             throw new CustomError(403,"Referall level already exists")
         }
         const data = await this.prisma.referalLevel.create({data:{prize:body.prize,level:body.level,count:body.count}})
