@@ -101,6 +101,16 @@ export class UpdateTariffDto {
   @IsOptional()
   translations?: TariffTranslateDto[];
 
+  @ApiProperty({example:1,description:"Coin uchun"})
+  @IsNumber()
+  @IsOptional()
+  coin?:number
+
+  @ApiProperty({example:123,description:'Kunlik foyda'})
+  @IsNumber()
+  @IsOptional()
+  dailyProfit:number
+
   // @ApiPropertyOptional({ type: [TariffPriceDto] })
   // @IsArray()
   // @ValidateNested({ each: true })

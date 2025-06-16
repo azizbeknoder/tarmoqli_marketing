@@ -266,7 +266,7 @@ model TariffTranslation {
 model Coin{
   id Int @id @default(autoincrement())
   currency String
-  count Int
+  count Float
   @@unique([currency])
 }
 
@@ -339,3 +339,4 @@ enum TakeOffStatus {
   SCRINSHOTUPLOAD
   CANCELLEDADMIN
 }
+
