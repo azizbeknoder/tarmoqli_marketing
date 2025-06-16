@@ -279,7 +279,7 @@ model TakeOff{
   checkedDate DateTime?
   commend  String?
   fullName String?
-  currency String
+  currency String?
 
 
     user      Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
