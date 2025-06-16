@@ -17,7 +17,7 @@ export class NotificationService {
         const users = await this.prisma.users.findMany({select:{email:true}})
         const emails = await users.map((u)=>u.email)
         
-        const data = await this.emailQueue.sendBulk(emails,title,description)
+        // const data = await this.emailQueue.sendBulk(emails,title,description)
          for(let user of emails){
             await this.mailService.sendNotificationMail(user,title,description)
         }
