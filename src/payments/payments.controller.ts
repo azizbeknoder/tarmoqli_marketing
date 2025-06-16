@@ -64,7 +64,7 @@ export class PaymentsController {
     @ApiOperation({summary:"To'lov chekini yuborish"})
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @Post()
+    @Post('scrinshot')
     async scrishotUpload(@Body() body:ScrinsohtUploadDto, @Req() req:any){
         return  this.service.scrinshotUpload(body,req)
     }
