@@ -24,3 +24,11 @@ export class RejectedPaymentDto{
     @IsString()
     reason:string
 }
+export class ScrinsohtUploadDto{
+    @ApiProperty({example:'https://mlm-backend.uz/example.jpg',description:"Rasm uchun bo'lgan link"})
+    @IsString()
+    photoUrl:string
+    @ApiProperty({example:1,description:"To'lov id si"})
+    @IsNumber()
+    paymentId:number
+}

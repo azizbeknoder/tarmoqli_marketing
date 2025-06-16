@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PaymentStatus } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { CheckedPaymentDto, RejectedPaymentDto } from "./dto/payment.dto";
+import { CheckedPaymentDto, RejectedPaymentDto, ScrinsohtUploadDto } from "./dto/payment.dto";
 import CustomError from "src/utils/custom-error";
 
 @Injectable()
@@ -46,6 +46,14 @@ export class PaymentHTTPService{
         }
         const payments = await this.prisma.payments.findMany({where:{user_id:oldUser.id}})
         return payments
+    }
+    async scrinshotUpload(body:ScrinsohtUploadDto, req:any){
+        const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
+        if(!oldUser){
+            throw new CustomError(404,'User not found')
+        }
+        const result = await this.prisma.payments.update({where:{user_id:oldUser.id,id:body.paymentId},data:{photo_url:body.photoUrl,status:'SCRINSHOTUPLOAD'}})
+        return result 
     }
 
 }
