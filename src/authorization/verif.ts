@@ -55,7 +55,7 @@ const verifyHtml = ()=>{
       <div class="card">
         <h1>✅ Your email has been successfully verified!</h1>
         <p>Thank you for verifying your email address.</p>
-        <a class="button" href="${String(BASE_URL)}">Continue</a>
+        <a class="button" href="${String()}">Continue</a>
       </div>
     </body>
     </html>

@@ -150,6 +150,7 @@ async handleUserMessage(@ConnectedSocket() client: Socket, @MessageBody() body: 
   const serviceResult = await this.paymentService.cardSend(body.paymentId,body.cardNumber)
   this.server.to(body.roomName).emit('card_info', {
     cardNumber: body.cardNumber,
+    paymentId:body.paymentId
     
   });
 }

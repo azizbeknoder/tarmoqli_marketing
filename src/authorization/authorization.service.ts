@@ -120,4 +120,5 @@ export class AuthorizationService {
     const data = await this.prisma.users.findFirst({where:{email:email}})
     return data
   }
+  
 }
