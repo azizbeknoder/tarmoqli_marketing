@@ -15,10 +15,10 @@ export class AuthDtoRegister {
     @IsString()
     password:string
 
-    @ApiProperty({example:"haksdhfakjsdf",description:"Agar foydalanuvchini kimdur taklif qilgan havola orqali ro'yhatdan o'tayotgan bo'lsa"})
+    @ApiProperty({example:1,description:"Agar foydalanuvchini kimdur taklif qilgan havola orqali ro'yhatdan o'tayotgan bo'lsa"})
     @IsOptional()
-    @IsString()
-    referal:number
+    @IsNumber()
+    referal?:number
 }
 export class AuthDtoLogin{
     @ApiProperty({example:"example@gmail.com",description:"Foydalanuvchi emaili"})

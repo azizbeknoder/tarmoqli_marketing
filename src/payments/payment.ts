@@ -203,6 +203,7 @@
 //             : 'To‘lov rad etildi. Iltimos, admin bilan bog‘laning.',
 //         });
 //       }
+
 //     });
 //   }
 // }

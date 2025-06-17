@@ -19,11 +19,28 @@ export class MailService {
     const base_url = this.config.get('BASE_URL')
     const link = `${String(base_url)}authorization/verify/${token}`;
 
-    const subject = 'Emailni tasdiqlang';
-    const text = `Quyidagi link orqali emailingizni tasdiqlang: ${link}`;
-    const html = `<p>Assalomu alaykum,</p>
-                  <p>Emailingizni tasdiqlash uchun quyidagi havolani bosing:</p>
-                  <a href="${link}">Emailni tasdiqlash</a>`;
+    const subject = 'Подтвердите ваш адрес электронной почты';
+const text = `Пожалуйста, подтвердите вашу почту, перейдя по ссылке: ${link}`;
+const html = `
+  <div style="font-family: Arial, sans-serif; background-color: #f4f4f7; padding: 40px;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding: 30px;">
+      <h2 style="color: #333333; text-align: center;">Здравствуйте!</h2>
+      <p style="font-size: 16px; color: #555555; line-height: 1.6;">
+        Спасибо за регистрацию. Пожалуйста, подтвердите ваш адрес электронной почты, нажав на кнопку ниже:
+      </p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${link}" style="background-color: #4CAF50; color: white; padding: 14px 24px; text-decoration: none; border-radius: 6px; font-size: 16px; display: inline-block;">
+          Подтвердить Email
+        </a>
+      </div>
+      <p style="font-size: 14px; color: #888888;">
+        Если вы не регистрировались у нас, просто проигнорируйте это письмо.
+      </p>
+      <p style="font-size: 14px; color: #888888;">С уважением, <br/>Команда поддержки</p>
+    </div>
+  </div>
+`;
+
 
     await this.transporter.sendMail({
       from: `"Tizim" <${process.env.EMAIL_USER}>`,
