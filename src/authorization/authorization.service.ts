@@ -67,7 +67,7 @@ export class AuthorizationService {
       await this.prisma.referral.create({
         data: {
           user_id: createdUser.id,
-          referal_user_id: referal_user_id, // null bo‘lishi ham mumkin
+          referal_user_id: Number(referal_user_id), // null bo‘lishi ham mumkin
          
         },
       });
