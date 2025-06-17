@@ -11,7 +11,7 @@ export class BonusService {
             throw new CustomError(404,"user not found")
         }
         const userTariffs = await this.prisma.userTarif.findMany({
-            where:{user_id:oldUser.id},
+            where:{user_id:oldUser.id,status:true},
             include:{tariff:true,}
         })
         const now = new Date()
@@ -70,7 +70,7 @@ export class BonusService {
       
           // 2. Shu do‘stga tegishli tariflarni olish
           const userTariffs = await this.prisma.userTarif.findMany({
-            where: { user_id: userId },
+            where: { user_id: userId,status:true },
             include: { tariff: true },
           });
       

@@ -31,69 +31,45 @@ export class CheckerService {
     }
 
     console.log(`Checked ${expiredRequests.length} expired requests`);
+
+    
   }
-  @Cron('0 0 * * *') // har kuni soat 00:00 da ishlaydi (ya'ni 24 soatda bir marta)
-async referalBonus() {
-  // 1. Referral jadvalidan barcha referallarni o'qish
-  const allReferrals = await this.prisma.referral.findMany({});
+  @Cron('*/1 * * * *') // har 1 daqiqada ishlaydi
+  async handleTariffExpireCron() {
+    const now = new Date();
 
-  let count = 0;
-
-  for (const referral of allReferrals) {
-    // 2. Ushbu referral foydalanuvchisi tarif sotib olganmi, tekshiramiz
-    const userTariff = await this.prisma.userTarif.findFirst({
+    const userTariffs = await this.prisma.userTarif.findMany({
       where: {
-        user_id: referral.user_id,
         status: true,
       },
-    });
-
-    if (!userTariff) continue; // agar tarif yo'q bo'lsa, davom etmaymiz
-
-    // 3. referral_bonus qiymatini tarifdan olish
-    const tariff = await this.prisma.tariff.findUnique({
-      where: { id: userTariff.tariff_id },
-    });
-
-    const bonusAmount = tariff?.referral_bonus || 5;
-
-    // 4. Coin qo‘shish: referal_user_id (ya'ni taklif qilgan foydalanuvchi)
-    await this.prisma.users.update({
-      where: { id: referral.referal_user_id },
-      data: {
-        coin: {
-          increment: bonusAmount,
-        },
+      include: {
+        tariff: true,
       },
     });
 
-    count++;
+    let count = 0;
+
+    for (const userTarif of userTariffs) {
+      const startDate = new Date(userTarif.start_time);
+      const endDate = new Date(startDate.getTime() + userTarif.tariff.term * 24 * 60 * 60 * 1000);
+
+      if (now > endDate) {
+        await this.prisma.userTarif.update({
+          where: { id: userTarif.id },
+          data: {
+            status: false,
+          },
+        });
+
+        count++;
+        // Agar kerak bo‘lsa: WebSocket yoki logger
+        // this.server.to(userTarif.user_id).emit('tariff-expired', ...)
+      }
+    }
+
+    
+      console.log(`⛔ ${count} ta UserTarif CANCELLED holatiga o‘tkazildi`);
+    
   }
-
-  console.log(`Referal bonus tugallandi. ${count} ta foydalanuvchiga coin qo‘shildi.`);
-}
-@Cron('*/1 * * * *')
-async bonusHistory() {
-
-  const expiredRequests = await this.prisma.payments.findMany({
-    where: {
-      status: 'PENDING',
-      to_send_date: {
-        lt: subMinutes(new Date(), 3),
-      },
-    },
-  });
-
-  for (const request of expiredRequests) {
-    await this.prisma.payments.update({
-      where: { id: request.id },
-      data: { status: 'CANCELLED' },
-    });
-
-    // xohlasangiz, real-time socket yuboring
-    // this.server.to(request.userId).emit('cancelled', ...)
-  }
-
-  console.log(`Checked ${expiredRequests.length} expired requests`);
-}
+ 
 }

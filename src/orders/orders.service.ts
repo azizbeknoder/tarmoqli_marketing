@@ -10,7 +10,9 @@ export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
   async createOrder(body:CreatedOrderDto,req:any){
-      const oldUser:any = await this.prisma.users.findFirst({where:{id:req.user.id}})
+    
+    
+      const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
       if(!oldUser){
         throw new CustomError(403,"User not found")
       }
