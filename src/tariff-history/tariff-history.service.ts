@@ -14,5 +14,6 @@ export class TariffHistoryService {
             throw new CustomError(404,'User not found')
         }
         const data = await this.prisma.userTarif.findMany({where:{user_id:oldUser.id},include:{tariff:true,user:true}})
+        return data
     }
 }
