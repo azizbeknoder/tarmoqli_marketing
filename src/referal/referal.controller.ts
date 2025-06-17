@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { ReferalService } from './referal.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
@@ -24,6 +24,13 @@ export class ReferalController {
         const user = req.user
         const data = await this.service.getReferalByToken(user)
         return data
+    }
+    @ApiOperation({summary:"Google orqali ro'yhatdan o'tganda referalga qo'shish uchun"})
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Get('google/:id')
+    async getFirstReferalRequest(@Param('id') id:string,@Req() req:any){
+        return this.service.getFirstReferalRequest(Number(id),req)
     }
 }
 

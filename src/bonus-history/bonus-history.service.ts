@@ -6,7 +6,7 @@ import CustomError from 'src/utils/custom-error';
 export class BonusHistoryService {
     constructor(private prisma:PrismaService){}
     async getAllIncomeHistory(){
-        const data = await this.prisma.incomeHistory.findMany()
+        const data = await this.prisma.incomeHistory.findMany({include:{user:true}})
         return data
     }
     async getByUserTokenIncomeHistory(req:any){

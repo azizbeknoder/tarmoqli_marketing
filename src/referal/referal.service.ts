@@ -18,4 +18,16 @@ export class ReferalService {
         const count = await this.prisma.referral.count({where:{referal_user_id:oldUser.id}})
         return {data,count}
     }
+    async getFirstReferalRequest(id:number,req:any){
+        const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
+        if(!oldUser){
+            throw new CustomError(404,"user not found")
+        }
+        const oldReferal = await this.prisma.referral.findFirst({where:{user_id:oldUser.id}})
+        if(oldReferal){
+            throw new CustomError(301,"already")
+        }
+        const result = await this.prisma.referral.create({data:{user_id:oldUser.id,referal_user_id:id}})
+        return result
+    }
 }
