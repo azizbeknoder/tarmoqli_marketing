@@ -3,10 +3,6 @@ import { IsNumber, IsString } from "class-validator";
 
 export class CheckedPaymentDto{
 
-    @ApiProperty({example:"123000",description:"Qancha ekanligi"})
-    @IsNumber()
-    how_much:number
-
     @ApiProperty({example:"123",description:"Sayt valyutasida qancha ekanligi"})
     @IsNumber()
     coin:number
