@@ -46,6 +46,8 @@ export class OrdersProductService {
     }
     async cancelledOrdersProduct(body:CancelledOrdersProductDto){
         const oldProduct = await this.prisma.ordersProduct.findFirst({where:{id:body.orderId}})
+        const product = await this.prisma.product.findFirst({where:{id:oldProduct?.product_id}})
+        await this.prisma.users.update({where:{id:oldProduct?.user_id},data:{coin:{increment:product?.coin}}})
         if(!oldProduct){
             throw new CustomError(404,"Product order if not exists")
         }
