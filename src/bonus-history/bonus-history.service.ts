@@ -17,4 +17,15 @@ export class BonusHistoryService {
         const data = await this.prisma.incomeHistory.findMany({where:{userId:oldUser.id}})
         return data
     }
+    async getByUserBonusReferal(req:any){
+        const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
+        if(!oldUser){
+            throw new CustomError(404,'User not found')
+        }
+        const data = await this.prisma.bonusReferalHistory.findMany({where:{userId:oldUser.id},include:{user:true}})
+        return data
+    }
+    async getAllBonusHhistoryReferal(){
+        return await this.prisma.bonusReferalHistory.findMany()
+    }
 }

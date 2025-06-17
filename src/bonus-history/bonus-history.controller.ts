@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { BonusHistoryService } from './bonus-history.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -20,5 +20,18 @@ export class BonusHistoryController {
     @Get('user')
     async getByTokenBonusHistory(@Req() req:any){
         return this.service.getByUserTokenIncomeHistory(req)
+    }
+    @ApiOperation({summary:"To'lov tarixini olish referal bilan kelgan do'stlari bo'yicha"})
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Get('referal')
+    async getByBonusReferal(@Req() req:any){
+        return this.service.getByUserBonusReferal(req)
+    }
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard,AdminGuard)
+    @Get('referal/admin')
+    async getAllBonuReferal(){
+        return this.service.getAllIncomeHistory()
     }
 }
