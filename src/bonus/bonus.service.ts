@@ -44,20 +44,84 @@ export class BonusService {
         }
         return bonusResults
     }
-    async dailyBonusReferal(req:any){
-        const userEmail = req.user.email
-        const oldUser = await  this.prisma.users.findFirst({where:{email:userEmail}})
-        if(!oldUser){
-            throw new CustomError(404,"User not found")
+    async dailyBonusReferal(req: any) {
+        const userEmail = req.user.email;
+        const oldUser = await this.prisma.users.findFirst({
+          where: { email: userEmail },
+        });
+      
+        if (!oldUser) {
+          throw new CustomError(404, 'User not found');
         }
-        const userReferalFriends = await this.prisma.referral.findMany({where:{referal_user_id:oldUser?.id}})
-        if(!userReferalFriends[0]){
-            throw new CustomError(404,"User referall friends not")
+      
+        // 1. Referal bo‘lgan do‘stlarni olish
+        const userReferalFriends = await this.prisma.referral.findMany({
+          where: { referal_user_id: oldUser.id },
+        });
+      
+        if (userReferalFriends.length === 0) {
+          throw new CustomError(404, 'User referal friends not found');
         }
-        for(let i of userReferalFriends){
-
+      
+        let totalBonus = 0;
+      
+        for (const friend of userReferalFriends) {
+          const userId = friend.user_id;
+      
+          // 2. Shu do‘stga tegishli tariflarni olish
+          const userTariffs = await this.prisma.userTarif.findMany({
+            where: { user_id: userId },
+            include: { tariff: true },
+          });
+      
+          for (const userTariff of userTariffs) {
+            const bonusAmount = userTariff.tariff.referral_bonus;
+      
+            // 3. Bonus tarixi tekshirish - bu foydalanuvchi bu referal uchun bugun bonus olganmi?
+            const today = new Date();
+            const startOfDay = new Date(today);
+            startOfDay.setHours(0, 0, 0, 0);
+      
+            const endOfDay = new Date(today);
+            endOfDay.setHours(23, 59, 59, 999);
+      
+            const isBonusGiven = await this.prisma.bonusReferalHistory.findFirst({
+              where: {
+                userId: oldUser.id,
+                referalUserId: userId,
+                date: { gte: startOfDay, lte: endOfDay },
+              },
+            });
+      
+            if (!isBonusGiven) {
+              // 4. Bonusni qo‘shish
+              await this.prisma.users.update({
+                where: { id: oldUser.id },
+                data: {
+                  coin: {
+                    increment: bonusAmount,
+                  },
+                },
+              });
+      
+              // 5. Tarixga yozish
+              await this.prisma.bonusReferalHistory.create({
+                data: {
+                  userId: oldUser.id,
+                  referalUserId: userId,
+                  coin: bonusAmount,
+                },
+              });
+      
+              totalBonus += bonusAmount;
+            }
+          }
         }
-        return userReferalFriends
-
-    }
+      
+        return {
+          message: 'Daily referral bonus calculated.',
+          totalBonus,
+        };
+      }
+      
 }

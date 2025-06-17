@@ -30,7 +30,9 @@ model Users {
   createdProducts Product[]    @relation("CreatedMainProducts")
   userTariff      UserTarif[]
   takeOff         TakeOff[]
-  incomeHistroy   IncomeHistory[]
+  incomeHistroy   IncomeHistory[] 
+  bonusReferalUserId    BonusReferalHistory[] @relation("userId")
+  bonusReferalId  BonusReferalHistory[] @relation("referalUserId")
 
   @@map("users")
 }
@@ -295,7 +297,16 @@ model IncomeHistory{
 
   user      Users @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
+model BonusReferalHistory{
+  id Int @id @default(autoincrement())
+  userId Int
+  referalUserId Int
+  date DateTime @default(now())
+  coin Int
 
+  user Users @relation("userId",fields: [userId],references: [id],onDelete: Cascade)
+  referalUser Users @relation("referalUserId",fields: [referalUserId],references: [id],onDelete: Cascade)
+}
 enum TakeOffStatus {
   PENDING
   CANCELLED
