@@ -259,6 +259,7 @@ model ReferalLevel{
   level Int @unique
   prize String
   count Int
+  maxCount Int?
 }
 
 model RecentUser{
@@ -316,3 +317,7 @@ enum TakeOffStatus {
   CANCELLEDADMIN
 }
 
+model MinTakeOff{
+  id Int @id @default(autoincrement())
+  minValue Int
+}

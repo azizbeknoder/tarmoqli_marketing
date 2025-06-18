@@ -13,6 +13,10 @@ export class createReferalLevel{
     @ApiProperty({example:3,description:"Nechta do'stini taklif qilgan bo'lishi kerak"})
     @IsNumber()
     count:number
+
+    @ApiProperty({example:10,description:"Maximum nechigacha ekani kiritilayotgan to'lvo"})
+    @IsNumber()
+    maxCount:number
 }
 
 export class UpdateReferalLevel{
@@ -33,4 +37,9 @@ export class UpdateReferalLevel{
     @ApiProperty({example:3,description:"Nechta do'stini taklif qilgan bo'lishi kerak"})
     @IsNumber()
     count?:number
+
+    @ApiProperty({example:10,description:"Maximum nechigacha ekani kiritilayotgan to'lvo"})
+    @IsOptional()
+    @IsNumber()
+    maxCount?:number
 }
