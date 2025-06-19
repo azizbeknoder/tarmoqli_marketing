@@ -117,7 +117,7 @@ export class UsersService {
         
       }
       async getOneUserToken(email:string){
-        const data = await this.prisma.users.findFirst({where:{email:email},include:{referrals:true,
+        const data = await this.prisma.users.findFirst({where:{email:email},include:{referrals:{include:{user:true}},
           userTariff:{include:{tariff:{include:{translations:true}}}},orders:true,ordersProduct:{include:{main_products:{include:{translations:true}}}},payments:true}})
         if(!data){
             throw new CustomError(404,"Foydalanuvchi topilmadi")
