@@ -15,7 +15,7 @@ export class CheckerService {
       where: {
         status: 'PENDING',
         to_send_date: {
-          lt: subMinutes(new Date(), 3),
+          lt: subMinutes(new Date(), 6),
         },
       },
     });

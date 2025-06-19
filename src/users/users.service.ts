@@ -11,14 +11,20 @@ export class UsersService {
           referrals:true,
           payments:true,
           orders:true,
-          ordersProduct:true,
-          userTariff:true
+          ordersProduct:
+          {include:{main_products:
+            {include:{translations:true}}
+          }},
+          userTariff:{include:
+            {tariff:{include:{translations:true}}}
+          }
         }})
         return data
 
     }
     async findOne(id:string){
-        const data = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,userTariff:true,orders:true,ordersProduct:true,payments:true}})
+        const data = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,
+          userTariff:true,orders:true,ordersProduct:true,payments:true}})
         if(!data[0]){
             throw new CustomError(404,"Foydalanuvchi topilmadi")
         }

@@ -103,7 +103,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       })
     }
     this.server.to(roomName).emit('paymentResponse',{
-      message:"To'lov ko'rib chiqilmoqda sizga 2 daqiqa ichida karta ko'rsatiladi.",
+      message:"To'lov ko'rib chiqilmoqda sizga 4 daqiqa ichida karta ko'rsatiladi.",
       success:true,
       status:serviceResult.status
     })

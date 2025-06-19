@@ -24,8 +24,13 @@ export class PaymentHTTPService{
         if(oldPayments && oldPayments.status == 'SUCCESS'){
             throw new CustomError(403,"already exists success payments")
         }
+      
         const data = await this.prisma.payments.update({where:{id:dto.id},data:{status:'SUCCESS',coin:dto.coin,to_checked_date: new Date()}})
         const userBalance = await this.prisma.users.update({where:{id:data.user_id},data:{coin:{increment:dto.coin}}})
+        const referalUser = await this.prisma.referral.findFirst({where:{user_id:oldPayments?.user_id}})
+        if(referalUser){
+            await this.prisma.users.update({where:{id:referalUser.referal_user_id},data:{coin:{increment:oldPayments?.coin || 0}}})
+        }
         return{success:true,message:'success',payment:data,user:userBalance}
         
     }

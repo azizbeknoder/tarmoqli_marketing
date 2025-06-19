@@ -101,7 +101,8 @@ export class AuthorizationService {
 
   async login(body: AuthDtoLogin) {
     const { email, password } = body;
-    const user = await this.prisma.users.findFirst({ where: { email },include:{userTariff:true,payments:true,orders:true,ordersProduct:true} });
+    const user = await this.prisma.users.findFirst({ where: { email },include:{userTariff:{include:{tariff:{include:{translations:true}}}},
+      payments:true,orders:true,ordersProduct:{include:{main_products:{include:{translations:true}}}}} });
 
     if (!user) {
       throw new CustomError(404, "Ro'yhatdan o'ting!");
