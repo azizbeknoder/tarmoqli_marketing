@@ -6,6 +6,7 @@ import { Server, Socket } from "socket.io";
 // import { Body, flatten, UseGuards } from "@nestjs/common";
 // import { AuthGuard } from "src/auth/auth.guard";
 import { AuthService } from "src/auth/auth.service";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @WebSocketGateway({
   cors:{
@@ -16,7 +17,7 @@ import { AuthService } from "src/auth/auth.service";
 
 export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
   // private paymentTimoutes = new Map<string,NodeJS.Timeout>()
-  constructor(private authService:AuthService,private paymentService:PaymentService){}
+  constructor(private authService:AuthService,private paymentService:PaymentService,private prisma:PrismaService){}
   @WebSocketServer()
   server:Server
 
@@ -43,6 +44,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       if(result.length){
 
         for(let i of result){
+          const old = await this.prisma.users.findFirst({where:{id:i.user_id}})
           
           this.server.emit('newPayment',{
             message:"Yangi to'lov so'rovi",
@@ -50,7 +52,9 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
             userId:i.user_id,
             date:i.to_send_date,
             howMuch:i.coin,
-            status:i.status
+            status:i.status,
+            userName:old?.name,
+            email:old?.email,
             
           })
         }
