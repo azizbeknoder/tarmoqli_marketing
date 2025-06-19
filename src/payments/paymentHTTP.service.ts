@@ -32,7 +32,7 @@ export class PaymentHTTPService{
             await this.prisma.users.update({where:{id:referalUser.referal_user_id},data:{referalCoin:{increment:oldPayments?.coin || 0}}})
         }
         return{success:true,message:'success',payment:data,user:userBalance}
-        
+          
     }
     async rejectedPayments(dto:RejectedPaymentDto){
         const oldPayments = await this.prisma.payments.findFirst({where:{id:dto.id}})

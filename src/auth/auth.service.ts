@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -11,7 +10,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
-    private prisma:PrismaService
+    private prisma: PrismaService
   ) {}
 
   // Email tasdiqlash tokenini yaratish
@@ -25,11 +24,12 @@ export class AuthService {
 
     try {
       return await this.jwtService.signAsync(user, {
-        secret: this.configService.get<string>('MAIL_SECRET'), // .env faylidan olish
-        expiresIn: this.configService.get<string>('MAIL_TOKEN_EXPIRES_IN') || '10m', // default expiry 10m
+        secret: this.configService.get<string>('MAIL_SECRET'),
+        expiresIn: this.configService.get<string>('MAIL_TOKEN_EXPIRES_IN') || '10m',
       });
     } catch (error) {
-      throw new UnauthorizedException(error.message)
+      console.error('createMailToken error:', error);
+      throw new UnauthorizedException(error.message);
     }
   }
 
@@ -37,10 +37,11 @@ export class AuthService {
   async verifyMailToken(token: string): Promise<AuthDtoRegister> {
     try {
       return await this.jwtService.verifyAsync<AuthDtoRegister>(token, {
-        secret: this.configService.get<string>('MAIL_SECRET'), // .env faylidan olish
+        secret: this.configService.get<string>('MAIL_SECRET'),
       });
     } catch (error) {
-      throw new UnauthorizedException(error.message)
+      console.error('verifyMailToken error:', error);
+      throw new UnauthorizedException(error.message);
     }
   }
 
@@ -48,45 +49,45 @@ export class AuthService {
   async createAccessToken(payload: { email: string }): Promise<string> {
     try {
       return await this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('ACCESS_SECRET'), // .env faylidan olish
-        expiresIn: this.configService.get<string>('ACCESS_TOKEN_EXPIRES_IN') || '48h', // default expiry 48h
+        secret: this.configService.get<string>('ACCESS_SECRET'),
+        expiresIn: this.configService.get<string>('ACCESS_TOKEN_EXPIRES_IN') || '48h',
       });
     } catch (error) {
+      console.error('createAccessToken error:', error);
       throw new UnauthorizedException(error.message);
     }
   }
 
   // Kirish tokenini tekshirish
   async verifyAccessToken(token: string) {
-    try {      
-  
+    try {
       return await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('ACCESS_SECRET'),
       });
     } catch (error) {
-      return false
+      console.error('verifyAccessToken error:', error);
+      return false;
     }
   }
-  async verifyAccestokenSocket(token:string){
-    try{
+
+  async verifyAccestokenSocket(token: string) {
+    try {
       const t = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
-      
-      const deToken =  await this.jwtService.verifyAsync(t,{
-        secret: this.configService.get<string>("ACCESS_SECRET")
-      })
 
-      const oldUser = await this.prisma.users.findFirst({where:{email:deToken.email}});
-      
-      if(!oldUser){
-        return false
+      const deToken = await this.jwtService.verifyAsync(t, {
+        secret: this.configService.get<string>('ACCESS_SECRET'),
+      });
+
+      const oldUser = await this.prisma.users.findFirst({ where: { email: deToken.email } });
+
+      if (!oldUser) {
+        return false;
       }
-      return oldUser
-      
-    }catch(error){
-      return false
+
+      return oldUser;
+    } catch (error) {
+      console.error('verifyAccestokenSocket error:', error);
+      return false;
     }
   }
-
-  
 }
-
