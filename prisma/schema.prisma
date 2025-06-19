@@ -18,7 +18,7 @@ model Users {
   isActive   Boolean        @default(true)
   coin      Int @default(0)
   googleId   String? @unique
-  referalCoin Int?
+  referalCoin Int @default(0)
 
   referrals     Referral[]     @relation("UserReferrals")
   // referradBy    Referral[]     @relation("Referals")

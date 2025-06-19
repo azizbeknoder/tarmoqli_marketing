@@ -23,12 +23,23 @@ export class UsersService {
 
     }
     async findOne(id:string){
-        const data = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,
+        const data = await this.prisma.users.findFirst({where:{id:Number(id)},include:{referrals:true,
           userTariff:true,orders:true,ordersProduct:true,payments:true}})
-        if(!data[0]){
+        if(!data){
             throw new CustomError(404,"Foydalanuvchi topilmadi")
         }
-        return data
+       
+        
+        if (!data) throw new Error('User topilmadi');
+        
+        const referalLevel = await this.prisma.referalLevel.findFirst({
+          where: {
+            count: { lte: data.referalCoin ?? 0 },
+            maxCount: { gte: data.referalCoin ?? 0 },
+          },
+        });
+        
+        console.log('Foydalanuvchi leveli:', referalLevel);
     }
     async delete(id:string){
         const oldUser = await this.prisma.users.findMany({where:{id:Number(id)},include:{referrals:true,userTariff:true,}})
