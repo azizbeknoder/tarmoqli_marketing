@@ -21,6 +21,10 @@ export class BalanceService {
               },
             },
           });
+          const referalUser = await this.prisma.referral.findFirst({where:{user_id:body.userId}})
+          if(referalUser){
+              await this.prisma.users.update({where:{id:referalUser.referal_user_id},data:{coin:{increment:body.count || 0}}})
+          }
           return data
     }
     async decrementCoin(body:IncrementCoin){
