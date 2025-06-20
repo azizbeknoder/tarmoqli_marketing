@@ -39,9 +39,10 @@ import { BonusHistoryModule } from './bonus-history/bonus-history.module';
 import { TariffHistoryModule } from './tariff-history/tariff-history.module';
 import { ProductHistoryModule } from './product-history/product-history.module';
 import { MinTakeOffModule } from './min-take-off/min-take-off.module';
+import { CardnumberModule } from './cardnumber/cardnumber.module';
 
 @Module({
-  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ,ScheduleModule.forRoot(), CoinModule, BalanceModule, SpinModule, BonusModule, OrdersProductModule, ReferalLevelModule, TakeOffModule, StatistikaModule, BonusHistoryModule, TariffHistoryModule, ProductHistoryModule, MinTakeOffModule],
+  imports: [AuthorizationModule, PrismaModule, MailModule, ReferalModule, UsersModule, ConfigModule.forRoot({ isGlobal: true }), TariffModule, UploadModule, OrdersModule, CardModule, AdminModule, ProductModule, NotificationModule, GatewayModule, EmailQueueModule ,PaymentsModule ,ScheduleModule.forRoot(), CoinModule, BalanceModule, SpinModule, BonusModule, OrdersProductModule, ReferalLevelModule, TakeOffModule, StatistikaModule, BonusHistoryModule, TariffHistoryModule, ProductHistoryModule, MinTakeOffModule, CardnumberModule],
   controllers: [AppController,],
   providers: [AppService, MailService, NotificationGateway,CheckerService],
   exports:[NotificationGateway]

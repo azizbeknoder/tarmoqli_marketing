@@ -330,3 +330,12 @@ model MinTakeOff{
   id Int @id @default(autoincrement())
   minValue Int
 }
+
+model CardNumber{
+  id Int @id @default(autoincrement())
+  seriaNumber String
+  currency String
+  type CoinType @default(MONEY)
+  date DateTime @default(now())
+  
+}
