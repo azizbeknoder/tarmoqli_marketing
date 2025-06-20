@@ -20,6 +20,7 @@ model Users {
   googleId   String? @unique
   referalCoin Float @default(0)
 
+
   referrals     Referral[]     @relation("UserReferrals")
   // referradBy    Referral[]     @relation("Referals")
   
@@ -37,6 +38,8 @@ model Users {
 
   @@map("users")
 }
+
+
 
 
 
@@ -231,7 +234,12 @@ model Coin{
   id Int @id @default(autoincrement())
   currency String
   count Float
+  type CoinType @default(MONEY)
   @@unique([currency])
+}
+enum CoinType{
+  CRYTO
+  MONEY
 }
 
 model UserTarif{
