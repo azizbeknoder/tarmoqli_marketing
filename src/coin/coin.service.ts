@@ -11,7 +11,7 @@ export class CoinService {
         if(oldCoin){
             throw new CustomError(403,"Coin already exists")
         }
-        const data = await this.prisma.coin.create({data:{currency:body.currency,count:body.count}})
+        const data = await this.prisma.coin.create({data:{currency:body.currency,count:body.count,type:body.type}})
         return data
     }
     async getAllCoin(){
@@ -31,7 +31,7 @@ export class CoinService {
         if(!oldCoin){
             throw new CustomError(403,"Coin not found")
         }
-        const data = await this.prisma.coin.update({where:{id:id},data:body})
+        const data = await this.prisma.coin.update({where:{id:id},data:body,})
         return data
     }
 }
