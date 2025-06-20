@@ -260,7 +260,7 @@ model ReferalLevel{
   level Int @unique
   prize String
   count Float
-  maxCount Int?
+  maxCount Int 
 }
 
 model RecentUser{
