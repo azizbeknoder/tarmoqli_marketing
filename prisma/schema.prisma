@@ -16,9 +16,9 @@ model Users {
   createdAt  DateTime       @default(now())
   updateAt   DateTime       @updatedAt
   isActive   Boolean        @default(true)
-  coin      Int @default(0)
+  coin      Float @default(0)
   googleId   String? @unique
-  referalCoin Int @default(0)
+  referalCoin Float @default(0)
 
   referrals     Referral[]     @relation("UserReferrals")
   // referradBy    Referral[]     @relation("Referals")
@@ -61,7 +61,7 @@ model Tariff {
   dailyProfit    Int             @default(0) // kunlik foyda
   createdAt      DateTime          @default(now())
   photo_url      String
-  coin   Int
+  coin   Float
   
   userTariff UserTarif[]
   orders         Orders[]             
@@ -136,7 +136,7 @@ model Payments {
   to_send_date    DateTime     @default(now())
   to_checked_date DateTime?
   card            String?
-  coin            Int?
+  coin            Float?
   reason          String?
   currency        String?
   
@@ -163,7 +163,7 @@ model Product {
   photo_url     ProductImage[]
   rating       Int
   rewiev       Int
-  coin      Int
+  coin      Float
 
   creator       Users                @relation("CreatedMainProducts", fields: [created_user], references: [id], onDelete: Cascade)
   translations  ProductTranslation[] @relation("ProductTranslations")
@@ -259,20 +259,20 @@ model ReferalLevel{
   id Int @id @default(autoincrement())
   level Int @unique
   prize String
-  count Int
+  count Float
   maxCount Int?
 }
 
 model RecentUser{
   id Int @id @default(autoincrement())
   email String  @unique
-  coin Int
+  coin Float
 }
 
 model StatistikaWeb{
   id Int @id @default(autoincrement())
   userCount Int
-  allCoin Int
+  allCoin Float
 }
 model TakeOff{
   id Int @id @default(autoincrement())
@@ -295,7 +295,7 @@ model IncomeHistory{
   id Int @id @default(autoincrement())
   userId Int
   date DateTime @default(now())
-  coin Int
+  coin Float
 
   user      Users @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
@@ -304,7 +304,7 @@ model BonusReferalHistory{
   userId Int
   referalUserId Int
   date DateTime @default(now())
-  coin Int
+  coin Float
 
   user Users @relation("userId",fields: [userId],references: [id],onDelete: Cascade)
   referalUser Users @relation("referalUserId",fields: [referalUserId],references: [id],onDelete: Cascade)
