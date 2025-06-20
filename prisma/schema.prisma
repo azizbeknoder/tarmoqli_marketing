@@ -339,3 +339,10 @@ model CardNumber{
   date DateTime @default(now())
   
 }
+
+model Suport{
+  id Int @id @default(autoincrement())
+  name String
+  link String
+  date DateTime @default(now())
+}
