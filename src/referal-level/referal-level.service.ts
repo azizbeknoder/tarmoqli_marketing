@@ -15,7 +15,7 @@ export class ReferalLevelService {
         return data
     }
     async getAll(){
-        const data = await this.prisma.referalLevel.findMany()
+        const data = await this.prisma.referalLevel.findMany({orderBy:{level:'asc'}})
         return data
     }
     async delete(id:number){
