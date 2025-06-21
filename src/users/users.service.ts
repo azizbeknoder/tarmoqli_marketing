@@ -125,12 +125,16 @@ export class UsersService {
         
         if (!data) throw new Error('User topilmadi');
         
-        const referalLevel = await this.prisma.referalLevel.findFirst({
+        let referalLevel = await this.prisma.referalLevel.findFirst({
           where: {
             count: { lte: data.referalCoin ?? 0 },
             maxCount: { gte: data.referalCoin ?? 0 },
           },
         });
+        if(!referalLevel){
+          const ifLevel = await this.prisma.referalLevel.findMany({orderBy:{maxCount:'asc'}})
+          referalLevel = ifLevel[-1]
+        }
         
         return {data,referalLevel,referals}
 
