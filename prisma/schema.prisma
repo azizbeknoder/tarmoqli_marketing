@@ -69,6 +69,7 @@ model Tariff {
   userTariff UserTarif[]
   orders         Orders[]             
   translations   TariffTranslation[]
+  imcomeHistory  IncomeHistory[]
   // prices         TariffPrice[]
 
   @@map("products")
@@ -304,7 +305,9 @@ model IncomeHistory{
   userId Int
   date DateTime @default(now())
   coin Float
+  tariff_id Int
 
+  tariff    Tariff @relation(fields: [tariff_id],references: [id],onDelete: Cascade)
   user      Users @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
 model BonusReferalHistory{

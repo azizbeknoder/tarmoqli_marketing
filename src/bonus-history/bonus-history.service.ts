@@ -14,7 +14,7 @@ export class BonusHistoryService {
         if(!oldUser){
             throw new CustomError(404,"User not found")
         }
-        const data = await this.prisma.incomeHistory.findMany({where:{userId:oldUser.id}})
+        const data = await this.prisma.incomeHistory.findMany({where:{userId:oldUser.id},include:{tariff:{include:{translations:{select:{name:true}}}}}})
         return data
     }
     async getByUserBonusReferal(req:any){
