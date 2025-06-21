@@ -131,10 +131,7 @@ export class UsersService {
             maxCount: { gte: data.referalCoin ?? 0 },
           },
         });
-        if(!referalLevel){
-          const ifLevel = await this.prisma.referalLevel.findMany({orderBy:{maxCount:'asc'}})
-          referalLevel = ifLevel[-1]
-        }
+
         
         return {data,referalLevel,referals}
 
