@@ -45,6 +45,13 @@ export class TakeOffController {
         return this.service.getByToken(req)
         
     }
+    @ApiOperation({summary:"Undan oldingi yechib olish so'rovi pending bo'lsa"})
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Get('pending')
+    async getByPending(@Req() req:any){
+        return this.service.getByPending(req)
+    }
 
 }
 
