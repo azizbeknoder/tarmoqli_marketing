@@ -49,6 +49,7 @@ export class TariffService {
         translations: true,
         // prices: true,
       },
+      orderBy:{coin:'asc'}
     });
     return result;
   }
