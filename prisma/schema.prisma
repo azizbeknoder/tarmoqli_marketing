@@ -238,7 +238,7 @@ model Coin{
   @@unique([currency])
 }
 enum CoinType{
-  CRYTO
+  CRYPTO
   MONEY
 }
 
