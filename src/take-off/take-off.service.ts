@@ -68,7 +68,10 @@ export class TakeOffService {
             throw new CustomError(404,'user not found')
         }
         const data = await this.prisma.takeOff.findFirst({where:{userId:oldUser.id,status:'PENDING'}})
-        return data
+        if(data){
+            return true
+        }
+        return false
     }
 
 }
