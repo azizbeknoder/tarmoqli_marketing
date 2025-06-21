@@ -18,7 +18,7 @@ export class UsersService {
           userTariff:{include:
             {tariff:{include:{translations:true}}}
           }
-        }})
+        },orderBy:{id:'asc'}})
         return data
 
     }

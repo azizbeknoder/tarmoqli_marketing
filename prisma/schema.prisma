@@ -234,7 +234,7 @@ model Coin{
   id Int @id @default(autoincrement())
   currency String
   count Float
-  type CoinType @default(MONEY)
+  type CoinType?
   @@unique([currency])
 }
 enum CoinType{
@@ -335,7 +335,7 @@ model CardNumber{
   id Int @id @default(autoincrement())
   seriaNumber String
   currency String
-  type CoinType @default(MONEY)
+  type CoinType?
   date DateTime @default(now())
   
 }
