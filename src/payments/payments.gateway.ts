@@ -55,6 +55,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
             status:i.status,
             userName:old?.name,
             email:old?.email,
+            currency:i.currency
             
           })
         }
