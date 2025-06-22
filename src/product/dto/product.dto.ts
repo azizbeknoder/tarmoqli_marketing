@@ -59,15 +59,15 @@ export class ProductTranslationDto {
 
 export class CreateProductDto {
   @ApiProperty({ example: 5, description: 'Reyting (1-5 oralig‘ida)' })
-  @IsInt()
+  @IsNumber()
   rating: number;
 
   @ApiProperty({ example: 100, description: 'Sharhlar soni' })
-  @IsInt()
+  @IsNumber()
   rewiev: number;
 
   @ApiProperty({example:10,description:"Product soni"})
-  @IsInt()
+  @IsNumber()
   count:number
 
   @ApiProperty({

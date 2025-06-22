@@ -44,11 +44,11 @@ class TariffTranslateDto {
 
 export class CreatedTariffDto {
   @ApiProperty({example:30,description:"Mahsulot muddati"})
-  @IsInt()
+  @IsNumber()
   term: number;
 
   @ApiProperty({example:20,description:"Referal uchun necha foiz bonus berishi"})
-  @IsInt()
+  @IsNumber()
   referral_bonus: number;
 
   // Yangi qo‘shilgan maydon: rasm URL
@@ -79,12 +79,12 @@ export class CreatedTariffDto {
 
 export class UpdateTariffDto {
   @ApiPropertyOptional({ example: 30, description: "Mahsulot muddati" })
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   term?: number;
 
   @ApiPropertyOptional({ example: 20, description: "Referal uchun necha foiz bonus berishi" })
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   referral_bonus?: number;
 
