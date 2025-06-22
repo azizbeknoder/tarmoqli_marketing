@@ -59,9 +59,9 @@ model Referral {
 
 model Tariff {
   id             Int               @id @default(autoincrement())
-  term           Int
-  referral_bonus Int
-  dailyProfit    Int             @default(0) // kunlik foyda
+  term           Float
+  referral_bonus Float
+  dailyProfit    Float             @default(0) // kunlik foyda
   createdAt      DateTime          @default(now())
   photo_url      String
   coin   Float
@@ -163,10 +163,10 @@ model Product {
   id            Int                  @id @default(autoincrement())
   createdAt     DateTime             @default(now())
   created_user  Int
-  count         Int?
+  count         Float?
   photo_url     ProductImage[]
-  rating       Int
-  rewiev       Int
+  rating       Float
+  rewiev       Float
   coin      Float
 
   creator       Users                @relation("CreatedMainProducts", fields: [created_user], references: [id], onDelete: Cascade)
