@@ -22,4 +22,14 @@ export class BonusController {
         const data = await this.service.dailyBonusReferal(req)
         return data
     }
+    @ApiOperation({summary:'Kunlik qancha bonus olishi haqida'})
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
+    @Get('view')
+    async viewDailyBonus(@Req() req:any){
+        const daily = await this.service.viewTariffBonus(req)
+        const referalDaily = await this.service.viewReferalBonus(req)
+        return {daily,referalDaily}
+
+    }
 }
