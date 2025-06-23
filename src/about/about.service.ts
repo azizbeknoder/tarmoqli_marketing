@@ -15,16 +15,14 @@ export class AboutService {
     return result
   }
   async update( dto: UpdateAboutDto) {
-    const about = await this.prisma.about.findUnique({
-      where: {id: 2 },
-    });
+    const about = await this.prisma.about.findFirst({});
   
     if (!about) {
       throw new CustomError(404, 'About topilmadi');
     }
   
     const updated = await this.prisma.about.update({
-      where: { id: 2 },
+      where: { id: about.id },
       data: {
         aboutTranslation: {
           deleteMany: {}, // eski tarjimalarni o‘chirish

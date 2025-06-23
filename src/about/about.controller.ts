@@ -11,11 +11,11 @@ export class AboutController {
     async getAbot(){
         return this.service.getAbout()
     }
-    @ApiOperation({summary:'delete'})
-    @Delete()
-    async deleteAbout(){
-        return this.service.deleteAbout()
-    }
+    // @ApiOperation({summary:'delete'})
+    // @Delete()
+    // async deleteAbout(){
+    //     return this.service.deleteAbout()
+    // }
     @ApiOperation({summary:"About page update"})
     @Put()
     async updateAbout(@Body() body:UpdateAboutDto ){
