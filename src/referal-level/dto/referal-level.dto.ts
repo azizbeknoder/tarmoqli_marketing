@@ -6,7 +6,7 @@ export class createReferalLevel{
     @IsNumber()
     level:number
 
-    @ApiProperty({example:"Iphone",description:'Feferal prize misol uchun iphone yokida coin'})
+    @ApiProperty({example:"Boshlangich",description:'Feferal prize nomi misol uchun Boshlangich '})
     @IsString()
     prize:string
 
@@ -17,6 +17,10 @@ export class createReferalLevel{
     @ApiProperty({example:10,description:"Maximum nechigacha ekani kiritilayotgan to'lvo"})
     @IsNumber()
     maxCount:number
+
+    @ApiProperty({example:'Iphone',description:'Referal level uchun sovrin misol uchun iphone yokida televizor '})
+    @IsString()
+    prizeName?:string
 }
 
 export class UpdateReferalLevel{
@@ -42,4 +46,9 @@ export class UpdateReferalLevel{
     @IsOptional()
     @IsNumber()
     maxCount?:number
+
+    @ApiProperty({example:'Iphone',description:'Referal level uchun sovrin misol uchun iphone yokida televizor '})
+    @IsOptional()
+    @IsString()
+    prizeName?:string
 }

@@ -11,7 +11,7 @@ export class ReferalLevelService {
         if(oldReferalLevel){
             throw new CustomError(403,"Referall level already exists")
         }
-        const data = await this.prisma.referalLevel.create({data:{prize:body.prize,level:body.level,count:body.count,maxCount:body.maxCount}})
+        const data = await this.prisma.referalLevel.create({data:{prize:body.prize,level:body.level,count:body.count,maxCount:body.maxCount,prizeName:body.prizeName}})
         return data
     }
     async getAll(){
@@ -23,7 +23,7 @@ export class ReferalLevelService {
         return data
     }
     async update(body:UpdateReferalLevel){
-        const data = await this.prisma.referalLevel.update({where:{id:body.id},data:{level:body.level,count:body.count,prize:body.prize,maxCount:body.maxCount}})
+        const data = await this.prisma.referalLevel.update({where:{id:body.id},data:{level:body.level,count:body.count,prize:body.prize,maxCount:body.maxCount,prizeName:body.prizeName}})
         return data
     }
 }
