@@ -46,7 +46,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
         for(let i of result){
           const old = await this.prisma.users.findFirst({where:{id:i.user_id}})
           
-          this.server.emit('newPayment',{
+          this.server.to(roomName).emit('newPayment',{
             message:"Yangi to'lov so'rovi",
             paymentId:i.id,
             userId:i.user_id,
