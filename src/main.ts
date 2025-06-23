@@ -9,8 +9,10 @@ import createSuperAdmin from './script/create-super-admin';
 import { ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import * as coocieParser from 'cookie-parser'
+import { createAboutWithTranslations } from './script/create-about-page';
 
 async function bootstrap() {
+  
   // NestJS ilovasini NestExpressApplication tipida yaratamiz (statik fayllar uchun kerak)
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
@@ -56,6 +58,7 @@ async function bootstrap() {
 
   // Dastlabki superadmin yaratish (agar kerak bo'lsa)
   await createSuperAdmin();
+  await createAboutWithTranslations()
 
   // PORT ni olish (env dan yoki default 3000)
   const port = configService.get<number>('PORT') || 3000;

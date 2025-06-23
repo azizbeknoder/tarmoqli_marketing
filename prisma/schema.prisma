@@ -74,7 +74,20 @@ model Tariff {
 
   @@map("products")
 }
+model TariffTranslation {
+  id          Int      @id @default(autoincrement())
+  tariff_id   Int
+  language    String
+  name        String
+  description String?
+  longDescription String?
+  features    String?
+  usage       String?
 
+  tariff      Tariff   @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
+
+  @@unique([tariff_id, language])
+}
 
 model ProductTranslation {
   id         Int       @id @default(autoincrement())
@@ -205,20 +218,7 @@ model ProductImage {
 
 
 
-model TariffTranslation {
-  id          Int      @id @default(autoincrement())
-  tariff_id   Int
-  language    String
-  name        String
-  description String?
-  longDescription String?
-  features    String?
-  usage       String?
 
-  tariff      Tariff   @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
-
-  @@unique([tariff_id, language])
-}
 
 // model TariffPrice {
 //   id        Int     @id @default(autoincrement())
@@ -349,4 +349,28 @@ model Suport{
   name String
   link String
   date DateTime @default(now())
+}
+model About{
+  id Int @id @default(autoincrement())
+  aboutTranslation AboutTranslation[]
+}
+
+
+model AboutTranslation{
+  id Int @id @default(autoincrement())
+  aboutId Int
+  language String
+  heroTitle String
+  heroDescription String
+  howWorkSystem String
+  withPlansTitle String
+  withPlansDescription String
+  referalTitle String
+  referalDescription String
+  levelTitle String
+  levelDescription String
+  USDTTitle String
+  USDTDescription String
+
+  about About @relation(fields: [aboutId],references: [id],onDelete: Cascade)
 }
