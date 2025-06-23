@@ -371,6 +371,9 @@ model AboutTranslation{
   levelDescription String
   USDTTitle String
   USDTDescription String
+  aboutCompanyTitle String?
+  aboutCompanyDescription String?
+  aboutCompanyExpence String?
 
   about About @relation(fields: [aboutId],references: [id],onDelete: Cascade)
 }

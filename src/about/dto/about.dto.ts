@@ -33,6 +33,7 @@ export class AboutTranslationDto {
   @IsString()
   withPlansDescription: string;
 
+  
   @ApiProperty({ example: 'Referral System' })
   @IsOptional()
   @IsString()
@@ -62,7 +63,23 @@ export class AboutTranslationDto {
   @IsOptional()
   @IsString()
   USDTDescription: string;
+
+  @ApiProperty({example:"Bir nima"})
+  @IsOptional()
+  @IsString()
+  aboutCompanyTitle?:string
+
+  @ApiProperty({example:"bir nima"})
+  @IsOptional()
+  @IsString()
+  aboutCompanyDescription?:string
+
+  @ApiProperty({example:'bir nima'})
+  @IsString()
+  @IsString()
+  aboutCompanyExpence?:string
 }
+
 
 export class UpdateAboutDto {
   @ApiProperty({

@@ -40,6 +40,9 @@ export class AboutService {
               levelDescription: item.levelDescription,
               USDTTitle: item.USDTTitle,
               USDTDescription: item.USDTDescription,
+              aboutCompanyDescription:item.aboutCompanyDescription,
+              aboutCompanyExpence:item.aboutCompanyExpence,
+              aboutCompanyTitle:item.aboutCompanyTitle
             })),
           },
         },
