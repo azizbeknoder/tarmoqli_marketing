@@ -38,7 +38,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
     //   roomName:roomName
     // })
     if(deToken.role == 'ADMIN' || deToken.role == 'SUPERADMIN' ){
-   
+      client.join('room-admin')
       const result = await this.paymentService.adminHistoryPayments()
       
       if(result.length){
