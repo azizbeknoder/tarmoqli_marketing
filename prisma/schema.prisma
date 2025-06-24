@@ -65,6 +65,7 @@ model Tariff {
   createdAt      DateTime          @default(now())
   photo_url      String
   coin   Float
+  rating Int?
   
   userTariff UserTarif[]
   orders         Orders[]             

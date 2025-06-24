@@ -28,6 +28,8 @@ class TariffTranslateDto {
   usage: string;
 
   
+
+  
 }
 
 
@@ -55,6 +57,9 @@ export class CreatedTariffDto {
   @ApiProperty({ example: 'http://localhost:3000/uploads/filename.jpg', description: 'Mahsulot rasmi URL manzili' })
   @IsString()
   photo_url: string;
+  @ApiProperty({example:'Rating',description:'rating'})
+  @IsNumber()
+  rating:number
 
   @ApiProperty({ type: [TariffTranslateDto] })
   @IsArray()
@@ -110,6 +115,11 @@ export class UpdateTariffDto {
   @IsNumber()
   @IsOptional()
   dailyProfit:number
+
+  @ApiProperty({example:'Rating',description:'rating'})
+  @IsOptional()
+  @IsNumber()
+  rating:number
 
   // @ApiPropertyOptional({ type: [TariffPriceDto] })
   // @IsArray()

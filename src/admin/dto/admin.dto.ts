@@ -18,8 +18,6 @@ export class AdminCreateDto {
 
   @ApiProperty({example:"SUPERADMIN",description:"role kiritish uchun etirob berish kerak ADMIN YOKI SUPERADMIN barcha harflar kattada bo'lishi kerak"})
   @IsOptional()
-  @IsEnum(Role, {
-    message: 'Role faqat USER, ADMIN yoki SUPERADMIN bo‘lishi mumkin',
-  })
+  @IsEnum(Role, {message: 'Role faqat USER, ADMIN yoki SUPERADMIN bo‘lishi mumkin'})
   role?: Role;
 }

@@ -16,6 +16,7 @@ export class TariffService {
         photo_url: dto.photo_url,
         coin:dto.coin,
         dailyProfit:Number(dto.dailyProfit),
+        rating:dto.rating,
         translations: {
           create: dto.translations.map(t => ({
             language: t.language,
@@ -93,6 +94,9 @@ export class TariffService {
   
     if (dto.term !== undefined) {
       updateData.term = dto.term;
+    }
+    if (dto.rating !== undefined) {
+      updateData.term = dto.rating;
     }
   
     if (dto.referral_bonus !== undefined) {
