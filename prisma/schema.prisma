@@ -157,6 +157,7 @@ model Payments {
   coin            Float?
   reason          String?
   currency        String?
+  fullName        String?
   
 
   user     Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)

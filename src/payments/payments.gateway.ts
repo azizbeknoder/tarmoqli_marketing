@@ -46,6 +46,11 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
         for(let i of result){
           const old = await this.prisma.users.findFirst({where:{id:i.user_id}})
           
+          const now = new Date();
+          const toSendDate = new Date(i.to_send_date);
+          const fourMinutesLater = new Date(toSendDate.getTime() + 4 * 60 * 1000); // 4 daqiqa qo‘shildi
+          const sekundnamerDate = Math.max(0, Math.floor((fourMinutesLater.getTime() - now.getTime()) / 1000)); // sekund
+        
           this.server.to(roomName).emit('newPayment',{
             message:"Yangi to'lov so'rovi",
             paymentId:i.id,
@@ -55,7 +60,8 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
             status:i.status,
             userName:old?.name,
             email:old?.email,
-            currency:i.currency
+            currency:i.currency,
+            sekundnamerDate:sekundnamerDate
             
           })
         }
@@ -113,7 +119,11 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       status:serviceResult.status
     })
     console.log(serviceResult);
-    
+    const now = new Date();
+    const toSendDate = new Date(serviceResult.to_send_date);
+    const fourMinutesLater = new Date(toSendDate.getTime() + 4 * 60 * 1000); // 4 daqiqa qo‘shildi
+    const sekundnamerDate = Math.max(0, Math.floor((fourMinutesLater.getTime() - now.getTime()) / 1000)); // sekund
+  
     this.server.to('room-admin').emit('newPayment',{
       message:"Yangi to'lov so'rovi",
       paymentId:serviceResult.message.id,
@@ -123,7 +133,8 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
       currency:serviceResult.message.currency,
       fullname:serviceResult.user.name,
       email:serviceResult.user.email,
-      coin:serviceResult.user.coin
+      coin:serviceResult.user.coin,
+      sekundnamerDate:sekundnamerDate
 
     })
     console.log(`${roomName} sent: admin`)
