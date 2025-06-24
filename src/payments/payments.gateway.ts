@@ -114,7 +114,7 @@ export class PaymentGateway implements OnGatewayConnection,OnGatewayDisconnect{
     })
     console.log(serviceResult);
     
-    this.server.emit('newPayment',{
+    this.server.to('room-admin').emit('newPayment',{
       message:"Yangi to'lov so'rovi",
       paymentId:serviceResult.message.id,
       userId:serviceResult.message.user_id,
