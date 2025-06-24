@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CheckedPaymentDto{
 
@@ -25,6 +25,12 @@ export class ScrinsohtUploadDto{
     @IsString()
     photoUrl:string
     @ApiProperty({example:1,description:"To'lov id si"})
+    @IsOptional()
     @IsNumber()
     paymentId:number
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    fullName:string
 }

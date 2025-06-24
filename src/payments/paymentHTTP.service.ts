@@ -57,7 +57,7 @@ export class PaymentHTTPService{
         if(!oldUser){
             throw new CustomError(404,'User not found')
         }
-        const result = await this.prisma.payments.update({where:{user_id:oldUser.id,id:body.paymentId},data:{photo_url:body.photoUrl,status:'SCRINSHOTUPLOAD'}})
+        const result = await this.prisma.payments.update({where:{user_id:oldUser.id,id:body.paymentId},data:{photo_url:body.photoUrl,status:'SCRINSHOTUPLOAD',fullName:body.fullName}})
         return result 
     }
 
