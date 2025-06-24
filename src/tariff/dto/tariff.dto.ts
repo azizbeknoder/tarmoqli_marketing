@@ -57,7 +57,7 @@ export class CreatedTariffDto {
   @ApiProperty({ example: 'http://localhost:3000/uploads/filename.jpg', description: 'Mahsulot rasmi URL manzili' })
   @IsString()
   photo_url: string;
-  @ApiProperty({example:'Rating',description:'rating'})
+  @ApiProperty({example:1,description:'rating'})
   @IsNumber()
   rating:number
 
@@ -116,7 +116,7 @@ export class UpdateTariffDto {
   @IsOptional()
   dailyProfit:number
 
-  @ApiProperty({example:'Rating',description:'rating'})
+  @ApiProperty({example:1,description:'rating'})
   @IsOptional()
   @IsNumber()
   rating:number
