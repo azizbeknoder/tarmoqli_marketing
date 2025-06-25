@@ -22,6 +22,7 @@ export class RejectedPaymentDto{
 }
 export class ScrinsohtUploadDto{
     @ApiProperty({example:'https://mlm-backend.uz/example.jpg',description:"Rasm uchun bo'lgan link"})
+    @IsOptional()
     @IsString()
     photoUrl:string
     @ApiProperty({example:1,description:"To'lov id si"})
