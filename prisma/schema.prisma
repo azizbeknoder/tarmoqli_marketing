@@ -66,6 +66,7 @@ model Tariff {
   photo_url      String
   coin   Float
   rating Float?
+  review Float?
   
   userTariff UserTarif[]
   orders         Orders[]             
@@ -126,6 +127,8 @@ model Orders {
 
   @@map("orders")
 }
+
+
 model OrdersProduct {
   id         Int       @id @default(autoincrement())
   user_id    Int

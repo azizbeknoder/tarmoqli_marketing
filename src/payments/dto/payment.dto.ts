@@ -26,7 +26,6 @@ export class ScrinsohtUploadDto{
     @IsString()
     photoUrl:string
     @ApiProperty({example:1,description:"To'lov id si"})
-    @IsOptional()
     @IsNumber()
     paymentId:number
 

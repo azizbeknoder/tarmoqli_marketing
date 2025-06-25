@@ -32,4 +32,5 @@ export class BonusController {
         return {daily,referalDaily}
 
     }
+   
 }

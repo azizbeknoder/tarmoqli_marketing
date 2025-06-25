@@ -80,6 +80,10 @@ export class CreatedTariffDto {
   @ApiProperty({example:1,description:"Kunlik cashback miqdori"})
   @IsNumber()
   dailyProfit:number
+
+  @ApiProperty({example:1,description:"Review uchun"})
+  @IsNumber()
+  review:number
 }
 
 export class UpdateTariffDto {
@@ -110,6 +114,11 @@ export class UpdateTariffDto {
   @IsNumber()
   @IsOptional()
   coin?:number
+
+  @ApiProperty({example:1,description:"Review uchun"})
+  @IsOptional()
+  @IsNumber()
+  review:number
 
   @ApiProperty({example:123,description:'Kunlik foyda'})
   @IsNumber()

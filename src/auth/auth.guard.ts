@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const token = authHeader.split(' ')[1];
-  
+
     
     try {
       const decoded = await this.authService.verifyAccessToken(token)
