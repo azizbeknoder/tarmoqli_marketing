@@ -17,6 +17,7 @@ export class TariffService {
         coin:dto.coin,
         dailyProfit:Number(dto.dailyProfit),
         rating:dto.rating,
+        review:dto.review,
         translations: {
           create: dto.translations.map(t => ({
             language: t.language,
@@ -25,6 +26,7 @@ export class TariffService {
             longDescription: t.longDescription,
             features: t.features,
             usage: t.usage,
+            
           })),
         },
         // prices: {
@@ -94,6 +96,9 @@ export class TariffService {
   
     if (dto.term !== undefined) {
       updateData.term = dto.term;
+    }
+    if (dto.review !== undefined) {
+      updateData.review = dto.review;
     }
     if (dto.rating !== undefined) {
       updateData.term = dto.rating;
