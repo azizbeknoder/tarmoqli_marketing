@@ -29,7 +29,7 @@ export class ScrinsohtUploadDto{
     @IsNumber()
     paymentId:number
 
-    @ApiProperty()
+    @ApiProperty({example:'Azizbek Tuychiyev',description:'Karta raqam egasi ism familyasi'})
     @IsOptional()
     @IsString()
     fullName:string
