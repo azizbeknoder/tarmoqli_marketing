@@ -6,19 +6,15 @@ import CustomError from 'src/utils/custom-error';
 @Injectable()
 export class OrdersProductService {
     constructor(private prisma:PrismaService){}
-    async addProductOrders(body: AddProductOrder,req:any){
-        
-        const email = req.user.email
-       
-        
-    
+    async addProductOrders(body: AddProductOrder,req:any){    
+        const email = req.user.email 
         const oldProduct:any = await this.prisma.product.findFirst({where:{id:body.productId}})
         const oldUser:any = await this.prisma.users.findFirst({where:{email:email}})
         if(oldUser?.coin <= oldProduct?.coin){
              throw new CustomError(403,"Coin is not enogueh")
         }
         const userBalance = await this.prisma.users.update({where:{id:oldUser.id},data:{coin:{decrement:oldProduct.coin}}})
-        const result = await this.prisma.ordersProduct.create({data:{product_id:body.productId,contactLink:body.contactLink,contactNumber:body.contactNumber,user_id:oldUser.id,isChecked:'PENDING'}})
+        const result = await this.prisma.ordersProduct.create({data:{product_id:body.productId,contactLink:body.contactLink,contactNumber:body.contactNumber,user_id:oldUser.id,isChecked:'PENDING',coutnry:body.country,city:body.city}})
         return {result,userBalance}
     }
     async getAllOrdersProduct(){
@@ -52,6 +48,7 @@ export class OrdersProductService {
             throw new CustomError(404,"Product order if not exists")
         }
         const result = await this.prisma.ordersProduct.update({where:{id:body.orderId},data:{isChecked:"CANCELLED",comment:body.comment}})
+        return result
     }
     
 }

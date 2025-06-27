@@ -42,7 +42,7 @@ export class OrdersProductController {
     @UseGuards(AuthGuard,AdminGuard)
     @Post('cancelled')
     async cancelledOrdersProduct(@Body() body:CancelledOrdersProductDto){
-        return this.service.checkedOrdersProduct(body)
+        return this.service.cancelledOrdersProduct(body)
     }
 
 }

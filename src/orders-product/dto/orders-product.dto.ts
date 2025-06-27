@@ -16,6 +16,14 @@ export class AddProductOrder{
     @IsString()
     contactLink:string
 
+    @ApiProperty({example:"Uzbekistan",description:'Mamlakatining nomi zakaz berayotgan mijozning'})
+    @IsString()
+    country:string
+
+    @ApiProperty({example:"Fargo'na",description:"Zakaz berayotgan mijozning istiqomat qiluvchi shahar nomi"})
+    @IsString()
+    city:string
+
 }
 export class CheckedOrdersProductDto{
     @ApiProperty({example:1,description:"Product id si uchun"})

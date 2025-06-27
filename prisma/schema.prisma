@@ -138,6 +138,8 @@ model OrdersProduct {
   comment     String?
   contactNumber    String?
   contactLink       String?
+  coutnry           String?
+  city              String?
   orderedAt  DateTime  @default(now())
   checkedAt  DateTime?
 
