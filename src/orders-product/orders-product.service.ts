@@ -18,7 +18,7 @@ export class OrdersProductService {
         return {result,userBalance}
     }
     async getAllOrdersProduct(){
-        const result = await this.prisma.ordersProduct.findMany()
+        const result = await this.prisma.ordersProduct.findMany({include:{user:true}})
         return result
     }
     async getOneOrderProductByToken(req:any){
