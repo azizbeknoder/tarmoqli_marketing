@@ -9,9 +9,7 @@ import { addDays } from 'date-fns';
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
-  async createOrder(body:CreatedOrderDto,req:any){
-    
-    
+  async createOrder(body:CreatedOrderDto,req:any){ 
       const oldUser = await this.prisma.users.findFirst({where:{email:req.user.email}})
       if(!oldUser){
         throw new CustomError(403,"User not found")
